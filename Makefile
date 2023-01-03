@@ -1,4 +1,4 @@
-.PHONY: build setup install bash bash-root
+.PHONY: build setup install bash bash-root format
 
 build:
 	docker-compose pull --ignore-pull-failures; \
@@ -17,3 +17,6 @@ bash:
 
 bash-root:
 	docker-compose run --user=root:root --rm player bash;
+
+format:
+	npx prettier --write .;

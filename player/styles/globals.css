@@ -1,5 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   margin: 0;
   padding: 1rem;
+}
+
+@layer components {
+  .header-1 {
+    @apply text-4xl;
+  }
+
+  .header-2 {
+    @apply text-2xl;
+  }
+
+  .header-3 {
+    @apply text-xl;
+  }
+
+  .button {
+    @apply px-4 py-2 rounded border border-zinc-800/60 hover:bg-zinc-300;
+  }
+
+  .link {
+    @apply underline text-green-600;
+  }
 }

@@ -8,7 +8,7 @@ export default function Layout({ children }: PropsType) {
   return (
     <html lang="en">
       <head>
-        <title>Next.js</title>
+        <title>Vodon Player</title>
       </head>
       <body>{children}</body>
     </html>
