@@ -1,10 +1,14 @@
 "use client";
 
-import store from "services/data/stores/root";
+import React from "react";
+import { observer } from "mobx-react-lite";
+import { RootStoreContext } from "services/models/root";
 
 import Link from "next/link";
 
-export default function Component() {
+const Component = observer(() => {
+  const store = React.useContext(RootStoreContext);
+
   const sessions = store.allSessions().map((session) => (
     <tr key={session.id}>
       <td>
@@ -31,4 +35,6 @@ export default function Component() {
       <tbody>{sessions}</tbody>
     </table>
   );
-}
+});
+
+export default Component;

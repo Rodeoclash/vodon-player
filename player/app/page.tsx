@@ -1,5 +1,11 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
 import CreateSession from "components/sessions/Create";
-import SessionList from "components/sessions/List";
+const SessionList = dynamic(() => import("components/sessions/List"), {
+  ssr: false,
+});
 
 export default function Page() {
   return (

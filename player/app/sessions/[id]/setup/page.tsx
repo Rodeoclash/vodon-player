@@ -1,6 +1,7 @@
 "use client";
 
-import store from "services/data/stores/root";
+import React from "react";
+import { RootStoreContext } from "services/models/root";
 
 import AddVideo from "components/videos/Add";
 
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const Page = ({ params }: Props) => {
+  const store = React.useContext(RootStoreContext);
   const session = store.getSessionById(params.id);
 
   if (session === undefined) {

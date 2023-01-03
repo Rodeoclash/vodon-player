@@ -1,7 +1,7 @@
 "use client";
 
-import store from "services/data/stores/root";
-import { ISession } from "services/data/types/session";
+import React from "react";
+import { RootStoreContext } from "services/models/root";
 
 const pickerOpts = {
   types: [
@@ -21,9 +21,11 @@ type Props = {
 };
 
 export default function Component({ session }: Props) {
+  const store = React.useContext(RootStoreContext);
+
   const handleClick = async () => {
     const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
-    store.addVideoToSession({ name: fileHandle.name, session });
+    //store.addVideoToSession({ name: fileHandle.name, session });
   };
 
   return (

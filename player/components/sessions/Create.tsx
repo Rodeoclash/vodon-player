@@ -1,13 +1,17 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
-import store from "services/data/stores/root";
+import { Session } from "services/models/session";
+import { RootStoreContext } from "services/models/root";
 
 export default function Component() {
+  const store = React.useContext(RootStoreContext);
   const router = useRouter();
 
   const handleClick = () => {
-    const session = store.createSession({ name: "Test" });
+    const session = new Session({ name: "Test" });
+    store.addSession(session);
     router.push(`/sessions/${session.id}/setup`);
   };
 
