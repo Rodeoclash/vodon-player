@@ -1,18 +1,3 @@
-/*
-import { types, Instance } from "mobx-state-tree";
-import Video from "./video";
-
-const Session = types.model({
-  id: types.identifier,
-  name: types.string,
-  video: types.late(() => types.reference(Video)),
-});
-
-export interface ISession extends Instance<typeof Session> {}
-
-export default Session;
-*/
-
 import { model, modelAction, Model, types, tProp, idProp } from "mobx-keystone";
 import { Video } from "./video";
 
@@ -25,5 +10,10 @@ export class Session extends Model({
   @modelAction
   setName(name: string) {
     this.name = name;
+  }
+
+  @modelAction
+  addVideo(video: Video) {
+    this.videos.push(video);
   }
 }

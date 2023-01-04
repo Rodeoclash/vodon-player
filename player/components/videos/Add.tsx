@@ -2,6 +2,8 @@
 
 import React from "react";
 import { RootStoreContext } from "services/models/root";
+import { Session } from "services/models/session";
+import { Video } from "services/models/video";
 
 const pickerOpts = {
   types: [
@@ -17,7 +19,7 @@ const pickerOpts = {
 };
 
 type Props = {
-  session: ISession;
+  session: Session;
 };
 
 export default function Component({ session }: Props) {
@@ -25,7 +27,7 @@ export default function Component({ session }: Props) {
 
   const handleClick = async () => {
     const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
-    //store.addVideoToSession({ name: fileHandle.name, session });
+    session.addVideo(new Video({ name: fileHandle.name, session }));
   };
 
   return (
