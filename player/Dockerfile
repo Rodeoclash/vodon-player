@@ -12,12 +12,11 @@ COPY ./package-lock.json ./
 
 RUN npm install
 
-COPY ./pages ./
 COPY ./public ./
-COPY ./styles ./
-COPY ./.eslintrc.json ./
-COPY ./next-env.d.ts ./
-COPY ./next.config.js ./
+COPY ./src ./
+COPY ./index.html ./
 COPY ./tsconfig.json ./
+COPY ./tsconfig.node.json ./
+COPY ./vite.config.ts ./
 
 CMD npm run dev
