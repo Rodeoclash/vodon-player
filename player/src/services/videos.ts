@@ -1,6 +1,7 @@
 import Video from "services/models/video";
 import { getFileHandle } from "services/local_files";
 import { LocalFileError } from "services/errors";
+import { CopyFileToStorage } from "services/file_storage";
 
 /**
  * Do we have a usuable local file handle for this video?
@@ -62,6 +63,16 @@ export const requestLocalFileHandlePermission = async (video: Video) => {
   return video.setLocalFileHandlePermission(permission);
 };
 
-export const copyToOPFS = async (video: Video) => {
-  console.log("=== do copy");
+export const storeFile = async (video: Video) => {
+  const localFileHandle = await getFileHandle(video);
+
+  if (video.localFileHandleExists === null) {
+    throw new LocalFileError(
+      "Attempted to determine access of local file system handle but it was not ready"
+    );
+  }
+
+  const session = video.getSession();
+
+  CopyFileToStorage(localFileHandle, session.id, video.id);
 };

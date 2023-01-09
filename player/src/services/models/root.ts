@@ -10,7 +10,7 @@ import {
   fromSnapshot,
 } from "mobx-keystone";
 import { reaction } from "mobx";
-import { localStorageKey, getInitalState } from "services/storage";
+import { localStorageKey, getInitalState } from "services/database";
 import Session from "./session";
 import Video from "./video";
 

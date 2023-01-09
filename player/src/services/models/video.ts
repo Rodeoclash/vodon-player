@@ -1,12 +1,6 @@
-import {
-  model,
-  tProp,
-  Model,
-  types,
-  idProp,
-  modelAction,
-  getParent,
-} from "mobx-keystone";
+import { model, tProp, Model, types, idProp, findParent } from "mobx-keystone";
+
+import Session from "./session";
 
 import {
   updateLocalFileHandleExists,
@@ -36,15 +30,22 @@ export default class Video extends Model({
     null
   ).withSetter(),
 }) {
+  /**
+   * Synchronise the local state based on what we've stored in the database.
+   */
   onAttachedToRootStore() {
     (async () => {
       await updateLocalFileHandleExists(this);
       await updateLocalFileHandlePermission(this);
-      //await copyToOPFS(this)
     })();
   }
 
+  /**
+   * Needs to have the slightly weird syntax here because the parent of the
+   * video is the "array" object in the session, not the session itself.
+   * @returns Session
+   */
   getSession() {
-    return getParent(this);
+    return findParent<Session>(this, (p) => p instanceof Session)!;
   }
 }

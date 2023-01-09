@@ -7,7 +7,7 @@ export default function ShowSession() {
 
   return (
     <>
-      <h1 class="header-1">Session: {data.session.id}</h1>
+      <h1 className="header-1">Session: {data.session.id}</h1>
       <nav>
         <ul>
           <li>

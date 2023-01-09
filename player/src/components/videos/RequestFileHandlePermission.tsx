@@ -2,6 +2,8 @@ import React from "react";
 import Video from "services/models/video";
 import { requestLocalFileHandlePermission } from "services/videos";
 
+import { storeFile } from "services/videos";
+
 type Props = {
   video: Video;
 };
@@ -9,7 +11,7 @@ type Props = {
 export default function RequestFileHandlePermission({ video }: Props) {
   const handleClick = React.useCallback(async () => {
     await requestLocalFileHandlePermission(video);
-    // TODO: Trigger copy of file to OPFS
+    await storeFile(video);
   }, [video]);
 
   if (video.localFileHandlePermission === "granted") {

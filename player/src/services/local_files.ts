@@ -6,6 +6,8 @@
  * internal id of the video object to find them.
  */
 
+// TODO: Move this to dexie / database.ts
+
 import { get as getValue, set as setValue } from "idb-keyval";
 import Video from "./models/video";
 

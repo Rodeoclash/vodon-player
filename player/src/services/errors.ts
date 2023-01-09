@@ -20,3 +20,9 @@ export class LocalFileError extends CustomError {
     super(message || "A problem occured with a local file");
   }
 }
+
+export class UnknownWorkerMessage extends CustomError {
+  public constructor(message?: string) {
+    super(message || "A web worker sent or received an unknown message");
+  }
+}
