@@ -1,4 +1,12 @@
-import { model, modelAction, Model, types, tProp, idProp } from "mobx-keystone";
+import {
+  model,
+  modelAction,
+  Model,
+  types,
+  tProp,
+  idProp,
+  onActionMiddleware,
+} from "mobx-keystone";
 import Video from "./video";
 
 @model("VodonPlayer/Session")

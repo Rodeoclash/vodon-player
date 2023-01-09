@@ -5,10 +5,10 @@ import { RootStoreContext } from "services/models/root";
 import Session from "services/models/session";
 import Video from "services/models/video";
 import {
-  updateLocalFileHandleExists,
-  updateLocalFileHandlePermission,
+  //updateLocalFileHandleExists,
+  //updateLocalFileHandlePermission,
+  createVideoInSession,
 } from "services/videos";
-import { setFileHandle } from "services/local_files";
 
 const pickerOpts = {
   types: [
@@ -30,24 +30,10 @@ type Props = {
 export default function Component({ session }: Props) {
   const store = React.useContext(RootStoreContext);
 
-  const handleClick = async () => {
+  const handleClick = async (): Promise<Video> => {
     const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
-
-    const video = new Video({
-      name: fileHandle.name,
-    });
-
-    session.addVideo(video);
-
-    try {
-      await setFileHandle(video, fileHandle);
-    } catch (error) {
-      console.error("Failed to set local file handle exists, error was", error);
-    }
-
-    await updateLocalFileHandleExists(video);
-    await updateLocalFileHandlePermission(video);
-    // TODO: Trigger copy of file to OPFS
+    const video = await createVideoInSession(session, fileHandle);
+    return video;
   };
 
   return (

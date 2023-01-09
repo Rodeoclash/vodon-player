@@ -1,4 +1,7 @@
 import React from "react";
+
+import { MissingRequiredAPIs } from "services/errors";
+
 import {
   model,
   tProp,
@@ -9,10 +12,24 @@ import {
   getSnapshot,
   fromSnapshot,
 } from "mobx-keystone";
+
 import { reaction } from "mobx";
-import { localStorageKey, getInitalState } from "services/database";
+
 import Session from "./session";
 import Video from "./video";
+
+const localStorageKey = "vodon-player-data";
+
+const getInitalState = () => {
+  if (typeof Storage === "undefined") {
+    throw new MissingRequiredAPIs(
+      "The LocalStorage API is required to use the app"
+    );
+  }
+
+  const storedData = localStorage.getItem(localStorageKey);
+  return !storedData ? null : JSON.parse(storedData);
+};
 
 @model("VodonPlayer/RootStore")
 export class RootStore extends Model({
@@ -24,10 +41,10 @@ export class RootStore extends Model({
   onAttachedToRootStore() {
     const reactionDisposer = reaction(
       () => getSnapshot(this),
-      (sn) => {
-        if (typeof Storage !== "undefined") {
-          localStorage.setItem(localStorageKey, JSON.stringify(sn));
-        }
+      async (sn) => {
+        // On change, store a snapshot of the current root store to
+        // localstorage
+        localStorage.setItem(localStorageKey, JSON.stringify(sn));
       },
       {
         fireImmediately: true,

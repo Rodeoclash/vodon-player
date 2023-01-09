@@ -15,7 +15,7 @@ export class RecordNotFound extends CustomError {
   }
 }
 
-export class LocalFileError extends CustomError {
+export class MissingLocalFileHandle extends CustomError {
   public constructor(message?: string) {
     super(message || "A problem occured with a local file");
   }
@@ -24,5 +24,11 @@ export class LocalFileError extends CustomError {
 export class UnknownWorkerMessage extends CustomError {
   public constructor(message?: string) {
     super(message || "A web worker sent or received an unknown message");
+  }
+}
+
+export class MissingRequiredAPIs extends CustomError {
+  public constructor(message?: string) {
+    super(message || "APIs that are required to run vodon-player were missing");
   }
 }

@@ -1,28 +1,21 @@
 import Dexie, { Table } from "dexie";
 
-export const localStorageKey = "vodon-player-data";
-
-// TODO: Move this to dexie
-export const getInitalState = () => {
-  if (typeof Storage === "undefined") {
-    return null;
-  }
-
-  const storedData = localStorage.getItem(localStorageKey);
-  return !storedData ? null : JSON.parse(storedData);
-};
-
-export interface VideoFile {
+export interface VideoFileHandle {
   id?: number;
 }
 
-export default class Storage extends Dexie {
-  videoFiles!: Table<VideoFile>;
+class Storage extends Dexie {
+  videoFileHandles!: Table<VideoFileHandle, number>;
 
   constructor() {
     super("vodon-player");
     this.version(1).stores({
-      videoFiles: "id",
+      rootStore: "id",
+      videoFileHandles: "id",
     });
   }
 }
+
+const database = new Storage();
+
+export default database;

@@ -83,7 +83,7 @@ define(["./workbox-148cb7e5"], function (workbox) {
     [
       {
         url: "registerSW.js",
-        revision: "3ca0b8505b4bec776b69afdba2768812",
+        revision: "2c81d9b0ad45b1d70d93e4e5be816fdc",
       },
       {
         revision: null,

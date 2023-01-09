@@ -3,15 +3,9 @@ import { model, tProp, Model, types, idProp, findParent } from "mobx-keystone";
 import Session from "./session";
 
 import {
-  updateLocalFileHandleExists,
-  updateLocalFileHandlePermission,
+  updateLocalFileHandle,
+  //updateLocalFileHandlePermission,
 } from "services/videos";
-
-enum PermissionType {
-  granted = "granted",
-  denied = "denied",
-  prompt = "prompt",
-}
 
 @model("VodonPlayer/Video")
 export default class Video extends Model({
@@ -22,7 +16,7 @@ export default class Video extends Model({
     null
   ).withSetter(),
   localFileHandlePermission: tProp(
-    types.maybeNull(types.enum(PermissionType)),
+    types.maybeNull(types.string),
     null
   ).withSetter(),
   opfsFileHandleExists: tProp(
@@ -30,13 +24,17 @@ export default class Video extends Model({
     null
   ).withSetter(),
 }) {
+  // File handle for the file the user has selected, may be required to prompt
+  // the user to grant access.
+  localFileHandle: null | FileSystemFileHandle = null;
+
   /**
    * Synchronise the local state based on what we've stored in the database.
    */
   onAttachedToRootStore() {
     (async () => {
-      await updateLocalFileHandleExists(this);
-      await updateLocalFileHandlePermission(this);
+      await updateLocalFileHandle(this);
+      //await updateLocalFileHandlePermission(this);
     })();
   }
 
