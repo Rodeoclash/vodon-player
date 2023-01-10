@@ -24,4 +24,8 @@ export default class Session extends Model({
   addVideo(video: Video) {
     this.videos.push(video);
   }
+
+  getVideoById(id: string) {
+    return this.videos.find((video) => video.id === id);
+  }
 }

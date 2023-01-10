@@ -1,5 +1,5 @@
 import { MissingLocalFileHandle } from "services/errors";
-import { CopyFileToStorage } from "services/file_storage";
+import { CopyToStorage } from "services/video_storage";
 import database from "services/database";
 
 import Session from "services/models/session";
@@ -15,57 +15,78 @@ export const createVideoInSession = async (
   session: Session,
   fileHandle: FileSystemFileHandle
 ): Promise<Video> => {
+  const file = await fileHandle.getFile();
+
   const video = new Video({
-    name: fileHandle.name,
+    name: file.name,
+    type: file.type,
   });
 
   // Join the video to the session it was being created under
   session.addVideo(video);
 
   // Store a reference to this videos local file handle in the persistence database
-  await database.table("videoFileHandles").put({
+  await database.table("localVideoFileHandles").put({
     id: video.id,
     fileHandle,
   });
 
-  // Trigger the synchronisation of the file handle with the mobx store
-  updateLocalFileHandle(video);
+  console.log("== placed file handle");
 
-  // TODO - Copy the video to our file storage
+  // Trigger the synchronisation of the file handle with the mobx store
+  await syncLocalFileHandle(video);
+  await syncLocalFilePermission(video);
+
+  // Trigger storing the file
+  await storeFile(video);
 
   return video;
 };
 
-/**
- * Called when loading the video file or after adding, configures the
- * availability of the local file system handle.
- * @param video The video to check and update permissions on.
- * @returns Video
- */
-export const updateLocalFileHandle = async (video: Video): Promise<Video> => {
-  const result = await database.table("videoFileHandles").get({
+export const syncLocalFileHandle = async (video: Video): Promise<Video> => {
+  const fileHandleRecord = await database.table("localVideoFileHandles").get({
     id: video.id,
   });
 
-  if (result === undefined) {
-    video.setLocalFileHandleExists(false);
-    return video;
-  }
-
-  video.localFileHandle = result.fileHandle;
-
-  if (video.localFileHandle === null) {
+  if (fileHandleRecord === undefined) {
     video.setLocalFileHandleExists(false);
     return video;
   }
 
   video.setLocalFileHandleExists(true);
 
-  const permission = await video.localFileHandle.queryPermission({
+  return video;
+};
+
+export const syncLocalFilePermission = async (video: Video): Promise<Video> => {
+  const fileHandleRecord = await database.table("localVideoFileHandles").get({
+    id: video.id,
+  });
+
+  if (fileHandleRecord === undefined) {
+    return video;
+  }
+
+  const permission = await fileHandleRecord.fileHandle.queryPermission({
     mode: "read",
   });
 
   video.setLocalFileHandlePermission(permission);
+
+  return video;
+};
+
+export const syncStorageFileHandle = async (video: Video): Promise<Video> => {
+  const fileHandleRecord = await database.table("storageVideoFileHandles").get({
+    id: video.id,
+  });
+
+  if (fileHandleRecord === undefined) {
+    video.setStorageFileHandleExists(false);
+    return video;
+  }
+
+  video.setStorageFileHandleExists(true);
 
   return video;
 };
@@ -73,13 +94,17 @@ export const updateLocalFileHandle = async (video: Video): Promise<Video> => {
 export const requestLocalFileHandlePermission = async (
   video: Video
 ): Promise<Video> => {
-  if (video.localFileHandle === null) {
+  const fileHandleRecord = await database.table("localVideoFileHandles").get({
+    id: video.id,
+  });
+
+  if (fileHandleRecord === undefined) {
     throw new MissingLocalFileHandle(
       "Attempted to request permissions on videos file handle but it was not present"
     );
   }
 
-  const permission = await video.localFileHandle.requestPermission({
+  const permission = await fileHandleRecord.fileHandle.requestPermission({
     mode: "read",
   });
 
@@ -88,8 +113,12 @@ export const requestLocalFileHandlePermission = async (
   return video;
 };
 
-export const storeFile = async (video: Video) => {
-  if (video.localFileHandle === null) {
+export const storeFile = async (video: Video): Promise<Video> => {
+  const fileHandleRecord = await database.table("localVideoFileHandles").get({
+    id: video.id,
+  });
+
+  if (fileHandleRecord === undefined) {
     throw new MissingLocalFileHandle(
       "Attempted to use local file handle but it was not present"
     );
@@ -101,7 +130,7 @@ export const storeFile = async (video: Video) => {
     );
   }
 
-  const session = video.getSession();
+  CopyToStorage(fileHandleRecord.fileHandle, video);
 
-  CopyFileToStorage(video.localFileHandle, session.id, video.id);
+  return video;
 };

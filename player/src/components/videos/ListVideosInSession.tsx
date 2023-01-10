@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
 
 import RequestFileHandlePermission from "./RequestFileHandlePermission";
+import VideoPlayer from "./VideoPlayer";
 
 type Props = {
   session: Session;
@@ -23,9 +24,20 @@ const SessionList = observer(({ session }: Props) => {
         <RequestFileHandlePermission video={video} />
       </td>
       <td className="td">
-        {video.opfsFileHandleExists === null
+        {video.copyToStorageInProgress === null
           ? "Unknown"
-          : video.opfsFileHandleExists.toString()}
+          : video.copyToStorageInProgress.toString()}
+        {video.copyToStorageProgress && (
+          <progress value={video.copyToStorageProgress} max="1" />
+        )}
+      </td>
+      <td className="td">
+        {video.storageFileHandleExists === null
+          ? "Unknown"
+          : video.storageFileHandleExists.toString()}
+      </td>
+      <td className="td">
+        <VideoPlayer video={video} />
       </td>
     </tr>
   ));
@@ -41,7 +53,9 @@ const SessionList = observer(({ session }: Props) => {
           <th className="th">ID</th>
           <th className="th">Local file handle exists</th>
           <th className="th">Local file handle permission state</th>
+          <th className="th">Copy progress</th>
           <th className="th">OPFS file handle exists</th>
+          <th className="th">Player</th>
         </tr>
       </thead>
       <tbody>{videos}</tbody>

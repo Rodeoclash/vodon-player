@@ -2,16 +2,18 @@ import Dexie, { Table } from "dexie";
 
 export interface VideoFileHandle {
   id?: number;
+  fileHandle: FileSystemFileHandle;
 }
 
 class Storage extends Dexie {
-  videoFileHandles!: Table<VideoFileHandle, number>;
+  localVideoFileHandles!: Table<VideoFileHandle, number>;
+  storageVideoFileHandles!: Table<VideoFileHandle, number>;
 
   constructor() {
     super("vodon-player");
     this.version(1).stores({
-      rootStore: "id",
-      videoFileHandles: "id",
+      localVideoFileHandles: "id",
+      storageVideoFileHandles: "id",
     });
   }
 }

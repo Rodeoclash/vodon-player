@@ -8,19 +8,19 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
   rootDirectory = fetchedRootDirectory;
 });
 
-const handleCopyFile = async (event) => {
+const handleCopyFile = async ({ data }) => {
   // Get a reference to the file that's being copied
-  const originFile = await event.data.fileHandle.getFile();
+  const originFile = await data.fileHandle.getFile();
 
   // Create a directory under the session id for the file to be copied to
   const parentDirectory = await rootDirectory.getDirectoryHandle(
-    event.data.folderId,
+    data.folderName,
     { create: true }
   );
 
   // Get a handle to the destination of where the file will be copied to
   const destinationFileHandle = await parentDirectory.getFileHandle(
-    event.data.sessionId,
+    data.fileName,
     { create: true }
   );
 
@@ -30,6 +30,11 @@ const handleCopyFile = async (event) => {
 
   // Total number of chunks we're going to copy the file using
   const totalChunks = Math.ceil(originFile.size / chunkSize, chunkSize);
+
+  postMessage({
+    kind: "COPY_FILE_START",
+    meta: data.meta,
+  });
 
   // Loop over the chunks, writing out the file. This avoids loading the entire
   // file into memory at once
@@ -46,6 +51,7 @@ const handleCopyFile = async (event) => {
     postMessage({
       kind: "COPY_FILE_PROGRESS",
       progress: currentChunk / totalChunks,
+      meta: data.meta,
     });
 
     currentChunk++;
@@ -54,10 +60,11 @@ const handleCopyFile = async (event) => {
   // Mark the destination file as being closed
   await destinationWritableStream.close();
 
-  // TODO - Send message to client that file has been copied
+  // Send a message back to the client that the copy has completed
   postMessage({
     kind: "COPY_FILE_COMPLETE",
     fileHandle: destinationFileHandle,
+    meta: data.meta,
   });
 };
 
