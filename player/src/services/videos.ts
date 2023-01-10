@@ -31,62 +31,8 @@ export const createVideoInSession = async (
     fileHandle,
   });
 
-  console.log("== placed file handle");
-
-  // Trigger the synchronisation of the file handle with the mobx store
-  await syncLocalFileHandle(video);
-  await syncLocalFilePermission(video);
-
   // Trigger storing the file
   await storeFile(video);
-
-  return video;
-};
-
-export const syncLocalFileHandle = async (video: Video): Promise<Video> => {
-  const fileHandleRecord = await database.table("localVideoFileHandles").get({
-    id: video.id,
-  });
-
-  if (fileHandleRecord === undefined) {
-    video.setLocalFileHandleExists(false);
-    return video;
-  }
-
-  video.setLocalFileHandleExists(true);
-
-  return video;
-};
-
-export const syncLocalFilePermission = async (video: Video): Promise<Video> => {
-  const fileHandleRecord = await database.table("localVideoFileHandles").get({
-    id: video.id,
-  });
-
-  if (fileHandleRecord === undefined) {
-    return video;
-  }
-
-  const permission = await fileHandleRecord.fileHandle.queryPermission({
-    mode: "read",
-  });
-
-  video.setLocalFileHandlePermission(permission);
-
-  return video;
-};
-
-export const syncStorageFileHandle = async (video: Video): Promise<Video> => {
-  const fileHandleRecord = await database.table("storageVideoFileHandles").get({
-    id: video.id,
-  });
-
-  if (fileHandleRecord === undefined) {
-    video.setStorageFileHandleExists(false);
-    return video;
-  }
-
-  video.setStorageFileHandleExists(true);
 
   return video;
 };
@@ -104,11 +50,16 @@ export const requestLocalFileHandlePermission = async (
     );
   }
 
-  const permission = await fileHandleRecord.fileHandle.requestPermission({
+  const fileHandle = fileHandleRecord.fileHandle;
+
+  await fileHandle.requestPermission({
     mode: "read",
   });
 
-  video.setLocalFileHandlePermission(permission);
+  await database.table("localVideoFileHandles").put({
+    id: video.id,
+    fileHandle,
+  });
 
   return video;
 };
@@ -124,7 +75,9 @@ export const storeFile = async (video: Video): Promise<Video> => {
     );
   }
 
-  if (video.localFileHandlePermission !== "granted") {
+  const fileHandle = fileHandleRecord.fileHandle;
+
+  if ((await fileHandle.queryPermission({ mode: "read" })) !== "granted") {
     throw new MissingLocalFileHandle(
       "Attempting to copy file but it does not have permission granted"
     );

@@ -6,7 +6,6 @@ import root from "services/models/root";
 import Video from "services/models/video";
 import { RecordNotFound } from "services/errors";
 import database from "services/database";
-import { syncStorageFileHandle } from "./videos";
 
 enum SendMessageKinds {
   COPY_FILE = "COPY_FILE",
@@ -88,9 +87,6 @@ worker.onmessage = async ({
         id: video.id,
         fileHandle: data.fileHandle,
       });
-
-      // Resync the handles
-      syncStorageFileHandle(video);
 
       break;
   }
