@@ -10,6 +10,7 @@ const useFileHandles = (video: Video) => {
     React.useState<PermissionState | null>(null);
   const [storageFileHandle, setStorageFileHandle] =
     React.useState<FileSystemFileHandle | null>(null);
+  const [url, setUrl] = React.useState<string | null>(null);
 
   const localFileHandleRecord = useLiveQuery(() =>
     database.table("localVideoFileHandles").get({
@@ -28,7 +29,8 @@ const useFileHandles = (video: Video) => {
       if (localFileHandleRecord === undefined) {
         setLocalFileHandle(null);
       } else {
-        setLocalFileHandle(localFileHandleRecord.fileHandle);
+        const localFileHandle = localFileHandleRecord.fileHandle;
+        setLocalFileHandle(localFileHandle);
         setLocalFileHandlePermission(
           await localFileHandleRecord.fileHandle.queryPermission({
             mode: "read",
@@ -39,16 +41,20 @@ const useFileHandles = (video: Video) => {
       if (storageFileHandleRecord === undefined) {
         setStorageFileHandle(null);
       } else {
-        setStorageFileHandle(storageFileHandleRecord.fileHandle);
+        const storageFileHandle = storageFileHandleRecord.fileHandle;
+        setStorageFileHandle(storageFileHandle);
+        const file = await storageFileHandle.getFile();
+        setUrl(URL.createObjectURL(file));
       }
     })();
   }, [localFileHandleRecord, storageFileHandleRecord]);
 
-  return [
+  return {
     localFileHandle,
     localFileHandlePermission,
     storageFileHandle,
-  ] as const;
+    url,
+  } as const;
 };
 
 export default useFileHandles;

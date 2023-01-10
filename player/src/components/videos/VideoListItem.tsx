@@ -3,14 +3,14 @@ import Video from "services/models/video";
 
 import RequestFileHandlePermission from "./RequestFileHandlePermission";
 import VideoPlayer from "./VideoPlayer";
-import useFileHandles from "services/hooks/useFileHandles";
+import useFileHandles from "services/hooks/useVideoFileHandles";
 
 type Props = {
   video: Video;
 };
 
 const VideoListItem = observer(({ video }: Props) => {
-  const [localFileHandle, localFileHandlePermission, storageFileHandle] =
+  const { localFileHandle, localFileHandlePermission, storageFileHandle } =
     useFileHandles(video);
 
   return (
