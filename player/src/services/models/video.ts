@@ -32,11 +32,17 @@ export default class Video extends Model({
   // What is the duration of this video
   duration: tProp(types.maybeNull(types.number), null).withSetter(),
 
+  // Original width of the video
   width: tProp(types.maybeNull(types.number), null).withSetter(),
 
+  // Original height of the video
   height: tProp(types.maybeNull(types.number), null).withSetter(),
 
+  // Framerate of the video
   frameRate: tProp(types.maybeNull(types.number), null).withSetter(),
+
+  // Is the video currently playing
+  playing: tProp(types.maybeNull(types.boolean), null).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
 
@@ -44,6 +50,9 @@ export default class Video extends Model({
     // We reset this back to false as the elements will have to be created
     // again from scratch
     this.setVideoElementsCreated(false);
+
+    // Videos always start in a non playing state
+    this.setPlaying(false);
 
     // Start observing the storage file handle, when it's present we'll create
     // the required video elements

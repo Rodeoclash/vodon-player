@@ -110,6 +110,14 @@ export const buildSetupElement = async (
     video.setFrameRate(settings.frameRate);
   });
 
+  el.addEventListener("play", async (event) => {
+    video.setPlaying(true);
+  });
+
+  el.addEventListener("pause", async (event) => {
+    video.setPlaying(false);
+  });
+
   el.src = url;
 
   return el;
