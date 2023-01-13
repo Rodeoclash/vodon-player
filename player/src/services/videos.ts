@@ -87,3 +87,30 @@ export const storeFile = async (video: Video): Promise<Video> => {
 
   return video;
 };
+
+export const buildSetupElement = async (
+  video: Video,
+  fileHandle: FileSystemFileHandle
+): Promise<HTMLVideoElement> => {
+  const el = document.createElement("video");
+  const file = await fileHandle.getFile();
+  const url = URL.createObjectURL(file);
+
+  el.addEventListener("loadedmetadata", async (event) => {
+    video.setDuration(el.duration);
+
+    // @ts-expect-error (`captureStream` is still experimental)
+    const mediaStream = el.captureStream();
+
+    const [videoTrack] = mediaStream.getVideoTracks();
+    const settings = videoTrack.getSettings();
+
+    video.setWidth(settings.width);
+    video.setHeight(settings.height);
+    video.setFrameRate(settings.frameRate);
+  });
+
+  el.src = url;
+
+  return el;
+};

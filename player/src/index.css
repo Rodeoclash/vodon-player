@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  padding: 1rem;
+  padding: 0rem;
 }
 
 @layer components {

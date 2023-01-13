@@ -31,7 +31,7 @@ export default function Component({ session }: Props) {
   return (
     <div>
       <button onClick={() => handleClick()} className="button">
-        Click to select video
+        Add video
       </button>
     </div>
   );
