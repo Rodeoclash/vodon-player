@@ -11,7 +11,7 @@ export default class Video extends Model({
   name: tProp(types.string),
   type: tProp(types.string),
 
-  // The local video file is being copied to storage
+  // Are we in progress with a copy to local storage?
   copyToStorageInProgress: tProp(
     types.maybeNull(types.boolean),
     null
@@ -23,7 +23,7 @@ export default class Video extends Model({
     null
   ).withSetter(),
 
-  // Has the setup video element been created?
+  // Have the video element been created for this video?
   videoElementsCreated: tProp(
     types.maybeNull(types.boolean),
     null
@@ -41,8 +41,8 @@ export default class Video extends Model({
   // Framerate of the video
   frameRate: tProp(types.maybeNull(types.number), null).withSetter(),
 
-  // Is the video currently playing
-  playing: tProp(types.maybeNull(types.boolean), null).withSetter(),
+  // Is the setup video currently playing?
+  setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
 
@@ -52,7 +52,7 @@ export default class Video extends Model({
     this.setVideoElementsCreated(false);
 
     // Videos always start in a non playing state
-    this.setPlaying(false);
+    this.setSetupVideoPlaying(false);
 
     // Start observing the storage file handle, when it's present we'll create
     // the required video elements

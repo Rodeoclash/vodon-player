@@ -20,6 +20,7 @@ const SetupList = observer(({ video }: Props) => {
   }, [video]);
 
   // Pause the video when pause clicked in the controls
+  // TODO: Move to video controls service
   const handlePause = React.useCallback(() => {
     if (video.setupVideoEl === null) {
       return;
@@ -29,6 +30,7 @@ const SetupList = observer(({ video }: Props) => {
   }, [video]);
 
   // Once the local file handle is present, append it to the player
+  // TODO: Move to video controls service
   React.useEffect(() => {
     if (containerEl.current === null || video.setupVideoEl === null) {
       return;
@@ -50,8 +52,8 @@ const SetupList = observer(({ video }: Props) => {
       <div ref={containerEl} />
       <div className="absolute left-0 right-0 bottom-0">
         <VideoControls
-          showPause={video.playing === true}
-          showPlay={video.playing === false}
+          showPause={video.setupVideoPlaying === true}
+          showPlay={video.setupVideoPlaying === false}
           onPlay={() => handlePlay()}
           onPause={() => handlePause()}
         />

@@ -111,11 +111,11 @@ export const buildSetupElement = async (
   });
 
   el.addEventListener("play", async (event) => {
-    video.setPlaying(true);
+    video.setSetupVideoPlaying(true);
   });
 
   el.addEventListener("pause", async (event) => {
-    video.setPlaying(false);
+    video.setSetupVideoPlaying(false);
   });
 
   el.src = url;
