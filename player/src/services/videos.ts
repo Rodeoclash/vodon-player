@@ -108,6 +108,7 @@ export const buildSetupElement = async (
     video.setWidth(settings.width);
     video.setHeight(settings.height);
     video.setFrameRate(settings.frameRate);
+    video.setSetupVideoCurrentTime(el.currentTime);
   });
 
   el.addEventListener("play", async (event) => {
@@ -117,6 +118,19 @@ export const buildSetupElement = async (
   el.addEventListener("pause", async (event) => {
     video.setSetupVideoPlaying(false);
   });
+
+  // Fired every time the frame in the video changes, used to automatically
+  // sync the current time of the video into the store. This is used for things
+  // like the video time counter and progress bar.
+  const handleVideoFrame = (
+    now: number,
+    metadata: VideoFrameCallbackMetadata
+  ) => {
+    video.setSetupVideoCurrentTime(metadata.mediaTime);
+    el.requestVideoFrameCallback(handleVideoFrame);
+  };
+
+  el.requestVideoFrameCallback(handleVideoFrame);
 
   el.src = url;
 

@@ -1,11 +1,20 @@
 type Props = {
+  duration: number;
+  currentTime: number;
+  onPause: () => void;
+  onPlay: () => void;
   showPause: boolean;
   showPlay: boolean;
-  onPlay: () => void;
-  onPause: () => void;
 };
 
-const VideoControls = ({ showPause, showPlay, onPlay, onPause }: Props) => {
+const VideoControls = ({
+  showPause,
+  showPlay,
+  onPlay,
+  onPause,
+  currentTime,
+  duration,
+}: Props) => {
   return (
     <div className="relative h-14">
       <div className="absolute top-0 left-0 right-0 bottom-0 z-20 flex items-center p-2">
@@ -45,6 +54,9 @@ const VideoControls = ({ showPause, showPlay, onPlay, onPause }: Props) => {
             </svg>
           </button>
         )}
+        <div className="text-white">
+          {Math.round(currentTime)} / {Math.round(duration)}
+        </div>
         <button className="videoControl">
           <svg
             xmlns="http://www.w3.org/2000/svg"

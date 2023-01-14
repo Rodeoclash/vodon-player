@@ -1,3 +1,7 @@
+if ("storage" in navigator === false) {
+  throw new "Vodon player required the OPFS file system to be available"();
+}
+
 // Size of the chunks when copying the files into the OPFS
 const chunkSize = 1024 * 1024 * 16; // 16MB Chunk size
 

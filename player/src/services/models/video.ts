@@ -29,8 +29,12 @@ export default class Video extends Model({
     null
   ).withSetter(),
 
-  // What is the duration of this video
+  // The duration of the video
   duration: tProp(types.maybeNull(types.number), null).withSetter(),
+
+  // The offset of this video to bring it into alignment with the others in the
+  // session
+  offset: tProp(types.maybeNull(types.number), null).withSetter(),
 
   // Original width of the video
   width: tProp(types.maybeNull(types.number), null).withSetter(),
@@ -43,6 +47,13 @@ export default class Video extends Model({
 
   // Is the setup video currently playing?
   setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
+
+  // The current time of the setup video (used to show video progress bars
+  // timers etc)
+  setupVideoCurrentTime: tProp(
+    types.maybeNull(types.number),
+    null
+  ).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
 

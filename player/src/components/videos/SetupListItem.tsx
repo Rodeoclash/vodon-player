@@ -50,14 +50,18 @@ const SetupList = observer(({ video }: Props) => {
   return (
     <div className="relative">
       <div ref={containerEl} />
-      <div className="absolute left-0 right-0 bottom-0">
-        <VideoControls
-          showPause={video.setupVideoPlaying === true}
-          showPlay={video.setupVideoPlaying === false}
-          onPlay={() => handlePlay()}
-          onPause={() => handlePause()}
-        />
-      </div>
+      {video.duration !== null && video.setupVideoCurrentTime !== null && (
+        <div className="absolute left-0 right-0 bottom-0">
+          <VideoControls
+            duration={video.duration}
+            currentTime={video.setupVideoCurrentTime}
+            onPause={() => handlePause()}
+            onPlay={() => handlePlay()}
+            showPause={video.setupVideoPlaying === true}
+            showPlay={video.setupVideoPlaying === false}
+          />
+        </div>
+      )}
     </div>
   );
 });
