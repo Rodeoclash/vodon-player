@@ -27,7 +27,7 @@ const VideoNavigationControls = ({
   }, []);
 
   return (
-    <div className="bg-black flex items-stretch h-10 gap-4">
+    <div className="bg-black flex items-stretch h-12 gap-4">
       {showPlay && (
         <button className="videoControl" onClick={() => onPlay()}>
           <svg
@@ -88,7 +88,7 @@ const VideoNavigationControls = ({
       </button>
       <div className="flex-grow videoControl p-0">
         <ReactSlider
-          className="h-10 flex items-center horizontal-slider"
+          className="h-12 flex items-center horizontal-slider"
           thumbClassName="bg-green-500 outline-4 px-2 w-4 h-4 rounded-full"
           trackClassName="h-2 bg-red-600"
           renderThumb={(props, state) => <div {...props} />}

@@ -11,7 +11,7 @@ export default function SetupSessions() {
   return (
     <>
       <h1 className="header-1">Setup Session</h1>
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-3 gap-4">
         <SetupList session={data.session} />
         <AddVideo session={data.session} />
       </div>
