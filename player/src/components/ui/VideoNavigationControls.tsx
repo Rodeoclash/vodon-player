@@ -22,7 +22,6 @@ const VideoNavigationControls = ({
   duration,
 }: Props) => {
   const handleAfterChange = React.useCallback((value: number) => {
-    console.log("fired");
     onGotoTime(value);
   }, []);
 
