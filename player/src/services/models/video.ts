@@ -9,7 +9,6 @@ import Session from "./session";
 export default class Video extends Model({
   id: idProp,
   name: tProp(types.string),
-  type: tProp(types.string),
 
   // Are we in progress with a copy to local storage?
   copyToStorageInProgress: tProp(

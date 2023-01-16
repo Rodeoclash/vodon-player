@@ -10,12 +10,10 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.7",
-    "@types/lodash.throttle": "^4.1.7",
     "@types/wicg-file-system-access": "^2020.9.5",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
     "idb-keyval": "^6.2.0",
-    "lodash.throttle": "^4.1.1",
     "mobx-keystone": "^1.2.0",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",

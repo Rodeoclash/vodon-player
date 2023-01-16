@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
-import VideoControls from "components/ui/VideoControls";
+import VideoNavigationControls from "components/ui/VideoNavigationControls";
 
 type Props = {
   video: Video;
@@ -62,17 +62,15 @@ const SetupList = observer(({ video }: Props) => {
     <div className="relative">
       <div ref={containerEl} />
       {video.duration !== null && video.offset !== null && (
-        <div className="absolute left-0 right-0 bottom-0">
-          <VideoControls
-            duration={video.duration}
-            currentTime={video.offset}
-            onPause={() => handlePause()}
-            onPlay={() => handlePlay()}
-            onGotoTime={(newTime) => handleGotoTime(newTime)}
-            showPause={video.setupVideoPlaying === true}
-            showPlay={video.setupVideoPlaying === false}
-          />
-        </div>
+        <VideoNavigationControls
+          duration={video.duration}
+          currentTime={video.offset}
+          onPause={() => handlePause()}
+          onPlay={() => handlePlay()}
+          onGotoTime={(newTime) => handleGotoTime(newTime)}
+          showPause={video.setupVideoPlaying === true}
+          showPlay={video.setupVideoPlaying === false}
+        />
       )}
     </div>
   );
