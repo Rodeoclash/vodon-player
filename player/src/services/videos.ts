@@ -1,5 +1,5 @@
 import { MissingLocalFileHandle } from "services/errors";
-import { CopyToStorage } from "services/video_storage";
+import { copyToStorage, removeFromStorage } from "services/video_storage";
 import database from "services/database";
 
 import Session from "services/models/session";
@@ -35,6 +35,18 @@ export const createVideoInSession = async (
   await storeFile(video);
 
   return video;
+};
+
+export const removeVideo = async (video: Video) => {
+  console.log("delete video", video.id);
+
+  // Remove from OPFS
+
+  // Remove local file handle (if it exists)
+
+  // Remove storage file handle (if it exists)
+
+  // Remove from mobx
 };
 
 export const requestLocalFileHandlePermission = async (
@@ -83,7 +95,7 @@ export const storeFile = async (video: Video): Promise<Video> => {
     );
   }
 
-  CopyToStorage(fileHandleRecord.fileHandle, video);
+  copyToStorage(fileHandleRecord.fileHandle, video);
 
   return video;
 };

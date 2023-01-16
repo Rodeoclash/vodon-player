@@ -28,6 +28,9 @@ export default class Video extends Model({
     null
   ).withSetter(),
 
+  // Mime type of the original video file
+  type: tProp(types.maybeNull(types.string), null).withSetter(),
+
   // The duration of the video
   duration: tProp(types.maybeNull(types.number), null).withSetter(),
 

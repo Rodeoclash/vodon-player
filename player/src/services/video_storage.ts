@@ -9,12 +9,14 @@ import database from "services/database";
 
 enum SendMessageKinds {
   COPY_FILE = "COPY_FILE",
+  REMOVE_FILE = "REMOVE_FILE",
 }
 
 enum RecieveMessageKinds {
   COPY_FILE_START = "COPY_FILE_START",
   COPY_FILE_PROGRESS = "COPY_FILE_PROGRESS",
   COPY_FILE_COMPLETE = "COPY_FILE_COMPLETE",
+  REMOVE_FILE_COMPLETE = "REMOVE_FILE_COMPLETE",
 }
 
 type CopyVideoMeta = {
@@ -98,7 +100,7 @@ worker.onmessage = async ({
  * @param folderId
  * @param id
  */
-export function CopyToStorage(
+export function copyToStorage(
   fileHandle: FileSystemFileHandle,
   video: Video
 ): void {
@@ -109,6 +111,26 @@ export function CopyToStorage(
     folderName: session.id,
     fileName: video.id,
     kind: SendMessageKinds.COPY_FILE,
+    meta: {
+      video_id: video.id,
+      session_id: session.id,
+    },
+  });
+}
+
+/**
+ * Remove a file from the storage system
+ * @param fileHandle
+ * @param folderId
+ * @param id
+ */
+export function removeFromStorage(video: Video): void {
+  const session = video.getSession();
+
+  worker.postMessage({
+    folderName: session.id,
+    fileName: video.id,
+    kind: SendMessageKinds.REMOVE_FILE,
     meta: {
       video_id: video.id,
       session_id: session.id,

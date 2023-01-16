@@ -1,20 +1,24 @@
+import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
-
-import SetupListItem from "./SetupListItem";
+import { removeVideo } from "services/videos";
 
 type Props = {
   video: Video;
 };
 
 const VideoToolbar = observer(({ video }: Props) => {
+  const handleClickDelete = React.useCallback(() => {
+    removeVideo(video);
+  }, [video]);
+
   return (
     <div className="h-12 bg-black flex items-center">
       <h2 className="text-bright header-3 underline decoration-white/50 flex-grow">
         {video.name}
       </h2>
       <div className="text-red-600">
-        <button className="block">
+        <button className="block" onClick={() => handleClickDelete()}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
