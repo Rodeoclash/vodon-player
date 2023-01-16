@@ -1,8 +1,14 @@
+import * as React from "react";
+import { secondsToHms } from "services/time";
+import ReactSlider from "react-slider";
+import throttle from "lodash.throttle";
+
 type Props = {
   duration: number;
   currentTime: number;
   onPause: () => void;
   onPlay: () => void;
+  onGotoTime: (newTime: number) => void;
   showPause: boolean;
   showPlay: boolean;
 };
@@ -12,12 +18,25 @@ const VideoControls = ({
   showPlay,
   onPlay,
   onPause,
+  onGotoTime,
   currentTime,
   duration,
 }: Props) => {
+  const handleAfterChange = React.useCallback((value: number) => {
+    console.log("fired");
+    onGotoTime(value);
+  }, []);
+
+  const throttledHandleAfterChange = throttle(handleAfterChange, 200, {
+    trailing: true,
+    leading: false,
+  });
+
+  console.log("currentTime", currentTime);
+
   return (
-    <div className="relative h-14">
-      <div className="absolute top-0 left-0 right-0 bottom-0 z-20 flex items-center p-2">
+    <div className="relative h-10">
+      <div className="absolute top-0 left-0 right-0 bottom-0 z-20 flex items-stretch h-10 gap-4">
         {showPlay && (
           <button className="videoControl" onClick={() => onPlay()}>
             <svg
@@ -54,8 +73,9 @@ const VideoControls = ({
             </svg>
           </button>
         )}
-        <div className="text-white">
-          {Math.round(currentTime)} / {Math.round(duration)}
+        <div className="videoControl">
+          {secondsToHms(Math.round(currentTime))} /{" "}
+          {secondsToHms(Math.round(duration))}
         </div>
         <button className="videoControl">
           <svg
@@ -73,7 +93,22 @@ const VideoControls = ({
             />
           </svg>
         </button>
-        <div className="flex-grow">Progress</div>
+        <div className="flex-grow videoControl p-0">
+          <ReactSlider
+            className="h-10 flex items-center horizontal-slider"
+            thumbClassName="bg-green-500 outline-4 px-2 w-4 h-4 rounded-full"
+            trackClassName="h-2 bg-red-600"
+            renderThumb={(props, state) => <div {...props} />}
+            onChange={(value, thumbIndex) =>
+              throttledHandleAfterChange(value, thumbIndex)
+            }
+            onSliderClick={(value) => handleAfterChange(value)}
+            min={0}
+            max={duration}
+            step={0.1}
+            value={currentTime}
+          />
+        </div>
         <button className="videoControl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +126,7 @@ const VideoControls = ({
           </svg>
         </button>
       </div>
-      <div className="absolute top-0 left-0 right-0 bottom-0 z-10 bg-gray-800 bg-opacity-60 backdrop-filter backdrop-blur-sm" />
+      <div className="absolute top-0 left-0 right-0 bottom-0 z-10 bg-gray-800 bg-opacity-60 backdrop-filter backdrop-blur-sm h-10" />
     </div>
   );
 };

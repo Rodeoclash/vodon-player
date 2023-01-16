@@ -29,6 +29,17 @@ const SetupList = observer(({ video }: Props) => {
     video.setupVideoEl.pause();
   }, [video]);
 
+  const handleGotoTime = React.useCallback(
+    (newTime: number) => {
+      if (video.setupVideoEl === null) {
+        return;
+      }
+
+      video.setupVideoEl.currentTime = newTime;
+    },
+    [video]
+  );
+
   // Once the local file handle is present, append it to the player
   // TODO: Move to video controls service
   React.useEffect(() => {
@@ -50,13 +61,14 @@ const SetupList = observer(({ video }: Props) => {
   return (
     <div className="relative">
       <div ref={containerEl} />
-      {video.duration !== null && video.setupVideoCurrentTime !== null && (
+      {video.duration !== null && video.offset !== null && (
         <div className="absolute left-0 right-0 bottom-0">
           <VideoControls
             duration={video.duration}
-            currentTime={video.setupVideoCurrentTime}
+            currentTime={video.offset}
             onPause={() => handlePause()}
             onPlay={() => handlePlay()}
+            onGotoTime={(newTime) => handleGotoTime(newTime)}
             showPause={video.setupVideoPlaying === true}
             showPlay={video.setupVideoPlaying === false}
           />

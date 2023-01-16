@@ -108,7 +108,7 @@ export const buildSetupElement = async (
     video.setWidth(settings.width);
     video.setHeight(settings.height);
     video.setFrameRate(settings.frameRate);
-    video.setSetupVideoCurrentTime(el.currentTime);
+    video.setOffset(el.currentTime);
   });
 
   el.addEventListener("play", async (event) => {
@@ -126,7 +126,7 @@ export const buildSetupElement = async (
     now: number,
     metadata: VideoFrameCallbackMetadata
   ) => {
-    video.setSetupVideoCurrentTime(metadata.mediaTime);
+    video.setOffset(metadata.mediaTime);
     el.requestVideoFrameCallback(handleVideoFrame);
   };
 

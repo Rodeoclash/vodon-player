@@ -40,6 +40,6 @@ body {
   }
 
   .videoControl {
-    @apply text-white/90 bg-gray-800 p-2 mr-2;
+    @apply text-white/90 bg-gray-800 px-2 relative h-10;
   }
 }
