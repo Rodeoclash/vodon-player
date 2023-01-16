@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.7",
+    "@types/lodash.throttle": "^4.1.7",
     "@types/wicg-file-system-access": "^2020.9.5",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
