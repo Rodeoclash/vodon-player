@@ -1,5 +1,5 @@
 import { useRouteLoaderData } from "react-router-dom";
-import AddVideo from "components/videos/AddVideo";
+import Add from "components/videos/Add";
 import VideoList from "components/videos/VideoList";
 import SetupList from "components/videos/SetupList";
 
@@ -13,7 +13,7 @@ export default function SetupSessions() {
       <h1 className="header-1">Setup Session</h1>
       <div className="grid grid-cols-3 gap-4">
         <SetupList session={data.session} />
-        <AddVideo session={data.session} />
+        <Add session={data.session} />
       </div>
     </>
   );
