@@ -1,35 +1,39 @@
 import Video from "services/models/video";
+import { FormikProps, FormikValues } from "formik";
 
-import { useFormik } from "formik";
+import { Formik } from "formik";
 
 type Props = {
+  innerRef: React.RefObject<FormikProps<FormikValues>>;
   video: Video;
+  onSubmit: (values: FormikValues) => void;
 };
 
-const Form = ({ video }: Props) => {
-  const formik = useFormik({
-    initialValues: {
-      name: video.name,
-    },
-    onSubmit: (values) => {
-      console.log(JSON.stringify(values, null, 2));
-    },
-  });
-
+const Form = ({ video, innerRef, onSubmit }: Props) => {
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="name">Player name</label>
-      <input
-        id="name"
-        name="name"
-        type="name"
-        onChange={formik.handleChange}
-        value={formik.values.name}
-        className={"input"}
-      />
-
-      <button type="submit">Submit</button>
-    </form>
+    <>
+      <Formik
+        initialValues={{ name: video.name }}
+        innerRef={innerRef}
+        onSubmit={(values) => onSubmit(values)}
+      >
+        {(formik) => {
+          return (
+            <>
+              <label htmlFor="name">Name</label>
+              <input
+                id="name"
+                name="name"
+                type="name"
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                className={"input"}
+              />
+            </>
+          );
+        }}
+      </Formik>
+    </>
   );
 };
 

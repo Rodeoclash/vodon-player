@@ -8,7 +8,9 @@ import Session from "./session";
 @model("VodonPlayer/Video")
 export default class Video extends Model({
   id: idProp,
-  name: tProp(types.string),
+  name: tProp(types.string).withSetter(),
+
+  runFirstSetup: tProp(types.boolean, false).withSetter(),
 
   // Are we in progress with a copy to local storage?
   copyToStorageInProgress: tProp(

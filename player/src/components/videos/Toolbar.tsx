@@ -2,6 +2,7 @@ import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import { removeVideo } from "services/videos";
+import { FormikProps, FormikValues } from "formik";
 
 import Modal from "components/ui/Modal";
 import Form from "components/videos/Form";
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const Toolbar = observer(({ video }: Props) => {
+  const formRef = React.useRef<FormikProps<FormikValues>>(null);
   const [editVideoOpen, setEditVideoOpen] = React.useState<boolean>(false);
 
   const handleClickDelete = React.useCallback(
@@ -30,8 +32,24 @@ const Toolbar = observer(({ video }: Props) => {
   );
 
   const handleRequestClose = React.useCallback(() => {
+    video.setRunFirstSetup(true);
     setEditVideoOpen(false);
   }, [video]);
+
+  const handleRequestSave = React.useCallback(() => {
+    if (formRef.current) {
+      formRef.current.handleSubmit();
+    }
+  }, [video]);
+
+  const handleSubmit = React.useCallback(
+    (values: FormikValues) => {
+      video.setName(values.name);
+      video.setRunFirstSetup(true);
+      setEditVideoOpen(false);
+    },
+    [video]
+  );
 
   return (
     <>
@@ -81,9 +99,31 @@ const Toolbar = observer(({ video }: Props) => {
           </svg>
         </button>
       </div>
-      <Modal isOpen={editVideoOpen} onRequestClose={() => handleRequestClose()}>
-        <h2 className="header-2">Edit video</h2>
-        <Form video={video} />
+      <Modal
+        isOpen={editVideoOpen || video.runFirstSetup === false}
+        onRequestClose={() => handleRequestClose()}
+      >
+        <h2 className="header-2 mb-4">Edit video</h2>
+        <Form
+          innerRef={formRef}
+          video={video}
+          onSubmit={(values) => handleSubmit(values)}
+        />
+        <div className="flex items-center gap-4 mt-4">
+          <button
+            className="btn btn-secondary"
+            onClick={() => handleRequestClose()}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => handleRequestSave()}
+            type="submit"
+          >
+            Save
+          </button>
+        </div>
       </Modal>
     </>
   );
