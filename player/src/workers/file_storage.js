@@ -12,6 +12,9 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
   rootDirectory = fetchedRootDirectory;
 });
 
+/**
+ * Handles copying a file into the local OPFS storage
+ */
 const handleCopyFile = async ({ data }) => {
   // Get a reference to the file that's being copied
   const originFile = await data.fileHandle.getFile();
@@ -73,12 +76,37 @@ const handleCopyFile = async ({ data }) => {
 };
 
 /**
+ * Handles removing a file from the local OPFS storage
+ */
+const handleRemoveFile = async ({ data }) => {
+  // Create a directory under the session id for the file to be copied to
+  const parentDirectory = await rootDirectory.getDirectoryHandle(
+    data.folderName
+  );
+
+  postMessage({
+    kind: "REMOVE_FILE_START",
+    meta: data.meta,
+  });
+
+  await parentDirectory.removeEntry(data.fileName);
+
+  postMessage({
+    kind: "REMOVE_FILE_COMPLETE",
+    meta: data.meta,
+  });
+};
+
+/**
  * Handles messages being sent from the client
  */
 onmessage = async (event) => {
   switch (event.data.kind) {
     case "COPY_FILE":
       handleCopyFile(event);
+      break;
+    case "REMOVE_FILE":
+      handleRemoveFile(event);
       break;
     default:
       throw new Error(`Unknown message type in worker: ${event.data.kind}`);

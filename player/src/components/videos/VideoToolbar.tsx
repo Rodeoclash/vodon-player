@@ -8,9 +8,13 @@ type Props = {
 };
 
 const VideoToolbar = observer(({ video }: Props) => {
-  const handleClickDelete = React.useCallback(() => {
-    removeVideo(video);
-  }, [video]);
+  const handleClickDelete = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
+      removeVideo(video);
+    },
+    [video]
+  );
 
   return (
     <div className="h-12 bg-black flex items-center">
@@ -18,7 +22,7 @@ const VideoToolbar = observer(({ video }: Props) => {
         {video.name}
       </h2>
       <div className="text-red-600">
-        <button className="block" onClick={() => handleClickDelete()}>
+        <button className="block" onClick={(event) => handleClickDelete(event)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

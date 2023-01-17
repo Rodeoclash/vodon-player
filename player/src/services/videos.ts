@@ -38,15 +38,17 @@ export const createVideoInSession = async (
 };
 
 export const removeVideo = async (video: Video) => {
-  console.log("delete video", video.id);
-
   // Remove from OPFS
+  removeFromStorage(video);
 
   // Remove local file handle (if it exists)
+  await database.table("localVideoFileHandles").delete(video.id);
 
   // Remove storage file handle (if it exists)
+  await database.table("storageVideoFileHandles").delete(video.id);
 
-  // Remove from mobx
+  // Remove from session
+  video.getSession().removeVideo(video);
 };
 
 export const requestLocalFileHandlePermission = async (

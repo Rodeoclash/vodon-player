@@ -16,29 +16,44 @@ enum RecieveMessageKinds {
   COPY_FILE_START = "COPY_FILE_START",
   COPY_FILE_PROGRESS = "COPY_FILE_PROGRESS",
   COPY_FILE_COMPLETE = "COPY_FILE_COMPLETE",
+  REMOVE_FILE_START = "REMOVE_FILE_START",
   REMOVE_FILE_COMPLETE = "REMOVE_FILE_COMPLETE",
 }
 
-type CopyVideoMeta = {
+type EventMeta = {
   session_id: string;
   video_id: string;
 };
 
+// Copy file events
 type CopyFileStartEvent = {
   kind: RecieveMessageKinds.COPY_FILE_START;
-  meta: CopyVideoMeta;
+  meta: EventMeta;
 };
 
 type CopyFileProgressEvent = {
   kind: RecieveMessageKinds.COPY_FILE_PROGRESS;
   progress: number;
-  meta: CopyVideoMeta;
+  meta: EventMeta;
 };
 
 type CopyFileCompleteEvent = {
   kind: RecieveMessageKinds.COPY_FILE_COMPLETE;
   fileHandle: FileSystemFileHandle;
-  meta: CopyVideoMeta;
+  meta: EventMeta;
+};
+
+// Remove file events
+type RemoveFileStartEvent = {
+  kind: RecieveMessageKinds.REMOVE_FILE_START;
+  fileHandle: FileSystemFileHandle;
+  meta: EventMeta;
+};
+
+type RemoveFileCompleteEvent = {
+  kind: RecieveMessageKinds.REMOVE_FILE_COMPLETE;
+  fileHandle: FileSystemFileHandle;
+  meta: EventMeta;
 };
 
 export const worker = new Worker(
@@ -91,6 +106,8 @@ worker.onmessage = async ({
       });
 
       break;
+    default:
+      console.warn(`Unhandled file system event: ${data.kind}`);
   }
 };
 

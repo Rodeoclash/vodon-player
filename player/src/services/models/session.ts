@@ -25,6 +25,13 @@ export default class Session extends Model({
     this.videos.push(video);
   }
 
+  @modelAction
+  removeVideo(video: Video) {
+    this.videos = this.videos.filter(
+      (innerVideo) => innerVideo.id !== video.id
+    );
+  }
+
   getVideoById(id: string) {
     return this.videos.find((video) => video.id === id);
   }

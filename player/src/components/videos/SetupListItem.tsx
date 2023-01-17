@@ -57,7 +57,14 @@ const SetupList = observer(({ video }: Props) => {
     video.videoElementsCreated === false ||
     video.videoElementsCreated === null
   ) {
-    return <p>Setup video element not yet created</p>;
+    return (
+      <div>
+        <p>Copying file</p>
+        {video.copyToStorageProgress && (
+          <progress max={1} value={video.copyToStorageProgress} />
+        )}
+      </div>
+    );
   }
 
   return (
