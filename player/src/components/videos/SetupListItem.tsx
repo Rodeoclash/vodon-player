@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
-import VideoToolbar from "components/videos/VideoToolbar";
+import Toolbar from "components/videos/Toolbar";
 
 type Props = {
   video: Video;
@@ -69,7 +69,7 @@ const SetupList = observer(({ video }: Props) => {
 
   return (
     <div className="relative">
-      <VideoToolbar video={video} />
+      <Toolbar video={video} />
       <div ref={containerEl} />
       {video.duration !== null && video.offset !== null && (
         <VideoNavigationControls
