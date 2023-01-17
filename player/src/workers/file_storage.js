@@ -3,7 +3,7 @@ if ("storage" in navigator === false) {
 }
 
 // Size of the chunks when copying the files into the OPFS
-const chunkSize = 1024 * 1024 * 16; // 16MB Chunk size
+const chunkSize = 1024 * 1024 * 128; // 128MB Chunk size
 
 // Store a reference to the overall root directory on loading
 let rootDirectory;

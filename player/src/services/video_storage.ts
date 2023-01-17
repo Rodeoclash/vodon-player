@@ -74,7 +74,11 @@ export const worker = new Worker(
 worker.onmessage = async ({
   data,
 }: MessageEvent<
-  CopyFileStartEvent | CopyFileProgressEvent | CopyFileCompleteEvent
+  | CopyFileStartEvent
+  | CopyFileProgressEvent
+  | CopyFileCompleteEvent
+  | RemoveFileStartEvent
+  | RemoveFileCompleteEvent
 >) => {
   const session = root.getSessionById(data.meta.session_id);
 
@@ -106,6 +110,7 @@ worker.onmessage = async ({
       });
 
       break;
+
     default:
       console.warn(`Unhandled file system event: ${data.kind}`);
   }
