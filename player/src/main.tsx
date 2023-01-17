@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import Modal from "react-modal";
 import App from "./App";
 import { MissingRequiredAPIs } from "services/errors";
 
@@ -11,7 +12,11 @@ if ("requestVideoFrameCallback" in HTMLVideoElement.prototype === false) {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+const el = document.getElementById("root") as HTMLElement;
+
+Modal.setAppElement(el);
+
+ReactDOM.createRoot(el).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

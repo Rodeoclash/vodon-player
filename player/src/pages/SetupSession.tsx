@@ -1,6 +1,5 @@
 import { useRouteLoaderData } from "react-router-dom";
 import Add from "components/videos/Add";
-import VideoList from "components/videos/VideoList";
 import SetupList from "components/videos/SetupList";
 
 import type { SessionLoaderData } from "services/routes";

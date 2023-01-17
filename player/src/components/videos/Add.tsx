@@ -1,5 +1,3 @@
-"use client";
-
 import Session from "services/models/session";
 import Video from "services/models/video";
 import { createVideoInSession } from "services/videos";
