@@ -26,3 +26,9 @@ export class MissingRequiredAPIs extends CustomError {
     super(message || "APIs that are required to run vodon-player were missing");
   }
 }
+
+export class InvalidVideo extends CustomError {
+  public constructor(message?: string) {
+    super(message || "The video was invalid in some way");
+  }
+}

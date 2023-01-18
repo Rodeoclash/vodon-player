@@ -1,6 +1,8 @@
 import { MissingLocalFileHandle } from "services/errors";
 import { copyToStorage, removeFromStorage } from "services/video_storage";
 import database from "services/database";
+import { readMediaData } from "./videos/mediainfo";
+import { InvalidVideo } from "services/errors";
 
 import Session from "services/models/session";
 import Video from "services/models/video";
@@ -33,6 +35,23 @@ export const createVideoInSession = async (
 
   // Trigger storing the file
   await storeFile(video);
+
+  // Parse video information and store it
+  const result = await readMediaData(file);
+  const videoTrack = result.media.track.find(
+    (track) => track["@type"] === "Video"
+  ) as any;
+
+  if (videoTrack === undefined) {
+    throw new InvalidVideo(
+      "Could not find a video track in the supplied video"
+    );
+  }
+
+  video.setHeight(parseInt(videoTrack.Height));
+  video.setWidth(parseInt(videoTrack.Width));
+  video.setFrameRate(parseFloat(videoTrack.FrameRate));
+  video.setDuration(parseFloat(videoTrack.Duration));
 
   return video;
 };
@@ -111,6 +130,7 @@ export const buildSetupElement = async (
   const url = URL.createObjectURL(file);
 
   el.addEventListener("loadedmetadata", async (event) => {
+    /*
     video.setDuration(el.duration);
 
     // @ts-expect-error (`captureStream` is still experimental)
@@ -118,11 +138,12 @@ export const buildSetupElement = async (
 
     const [videoTrack] = mediaStream.getVideoTracks();
     const settings = videoTrack.getSettings();
-
+    
     video.setWidth(settings.width);
     video.setHeight(settings.height);
-    video.setFrameRate(settings.frameRate);
+    //video.setFrameRate(settings.frameRate);
     video.setOffset(el.currentTime);
+    */
   });
 
   el.addEventListener("play", async (event) => {
