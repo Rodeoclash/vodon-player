@@ -18,28 +18,25 @@ const Edit = observer(({ video }: Props) => {
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setEditVideoOpen(true);
     },
-    [video]
+    []
   );
 
   const handleRequestClose = React.useCallback(() => {
     video.setRunFirstSetup(true);
     setEditVideoOpen(false);
-  }, [video]);
+  }, []);
 
   const handleRequestSave = React.useCallback(() => {
     if (formRef.current) {
       formRef.current.handleSubmit();
     }
-  }, [video]);
+  }, []);
 
-  const handleSubmit = React.useCallback(
-    (values: FormikValues) => {
-      video.setName(values.name);
-      video.setRunFirstSetup(true);
-      setEditVideoOpen(false);
-    },
-    [video]
-  );
+  const handleSubmit = React.useCallback((values: FormikValues) => {
+    video.setName(values.name);
+    video.setRunFirstSetup(true);
+    setEditVideoOpen(false);
+  }, []);
 
   return (
     <>
@@ -67,7 +64,7 @@ const Edit = observer(({ video }: Props) => {
       </button>
 
       <Modal
-        isOpen={editVideoOpen || video.runFirstSetup === false}
+        isOpen={editVideoOpen === true || video.runFirstSetup === false}
         onRequestClose={() => handleRequestClose()}
       >
         <h2 className="header-2 mb-4">Edit video</h2>
