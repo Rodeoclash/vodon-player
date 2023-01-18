@@ -1,3 +1,4 @@
+import React from "react";
 import Video from "services/models/video";
 import { FormikProps, FormikValues } from "formik";
 
@@ -10,6 +11,12 @@ type Props = {
 };
 
 const Form = ({ video, innerRef, onSubmit }: Props) => {
+  const handleFocusName = (
+    event: React.FocusEvent<HTMLInputElement, Element>
+  ) => {
+    event.target.select();
+  };
+
   return (
     <>
       <Formik
@@ -22,12 +29,14 @@ const Form = ({ video, innerRef, onSubmit }: Props) => {
             <>
               <label htmlFor="name">Name</label>
               <input
+                autoFocus
+                className={"input"}
                 id="name"
                 name="name"
-                type="name"
                 onChange={formik.handleChange}
+                type="name"
                 value={formik.values.name}
-                className={"input"}
+                onFocus={(event) => handleFocusName(event)}
               />
             </>
           );
