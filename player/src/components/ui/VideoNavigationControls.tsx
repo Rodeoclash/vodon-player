@@ -3,32 +3,50 @@ import { secondsToHms } from "services/time";
 import ReactSlider from "react-slider";
 
 type Props = {
-  duration: number;
   currentTime: number;
+  duration: number;
+  videoEl: HTMLVideoElement;
+  frameRate: number;
+  onGotoTime: (newTime: number) => void;
   onPause: () => void;
   onPlay: () => void;
-  onGotoTime: (newTime: number) => void;
   showPause: boolean;
   showPlay: boolean;
 };
 
 const VideoNavigationControls = ({
-  showPause,
-  showPlay,
-  onPlay,
-  onPause,
-  onGotoTime,
   currentTime,
   duration,
+  frameRate,
+  onGotoTime,
+  onPause,
+  onPlay,
+  showPause,
+  showPlay,
+  videoEl,
 }: Props) => {
-  const handleAfterChange = React.useCallback((value: number) => {
+  const frameLength = 1 / frameRate;
+
+  const onSliderChange = React.useCallback((value: number) => {
     onGotoTime(value);
+  }, []);
+
+  const handleFrameAdjust = React.useCallback((direction: number) => {
+    onGotoTime(videoEl.currentTime + frameLength * direction);
+  }, []);
+
+  const handlePlay = React.useCallback(() => {
+    onPause();
+  }, []);
+
+  const handlePause = React.useCallback(() => {
+    onPlay();
   }, []);
 
   return (
     <div className="bg-black flex items-stretch h-12 gap-4">
       {showPlay && (
-        <button className="videoControl" onClick={() => onPlay()}>
+        <button className="videoControl" onClick={() => handlePlay()}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -46,7 +64,7 @@ const VideoNavigationControls = ({
         </button>
       )}
       {showPause && (
-        <button className="videoControl" onClick={() => onPause()}>
+        <button className="videoControl" onClick={() => handlePause()}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -69,7 +87,7 @@ const VideoNavigationControls = ({
           {secondsToHms(Math.round(duration))}
         </span>
       </div>
-      <button className="videoControl">
+      <button className="videoControl" onClick={() => handleFrameAdjust(-1)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -91,15 +109,15 @@ const VideoNavigationControls = ({
           thumbClassName="bg-green-500 outline-4 px-2 w-4 h-4 rounded-full"
           trackClassName="h-2 bg-red-600"
           renderThumb={(props, state) => <div {...props} />}
-          onChange={(value, thumbIndex) => handleAfterChange(value)}
-          onSliderClick={(value) => handleAfterChange(value)}
+          onChange={(value, thumbIndex) => onSliderChange(value)}
+          onSliderClick={(value) => onSliderChange(value)}
           min={0}
           max={duration}
           step={0.1}
           value={currentTime}
         />
       </div>
-      <button className="videoControl">
+      <button className="videoControl" onClick={() => handleFrameAdjust(1)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

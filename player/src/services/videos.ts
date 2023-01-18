@@ -129,23 +129,6 @@ export const buildSetupElement = async (
   const file = await fileHandle.getFile();
   const url = URL.createObjectURL(file);
 
-  el.addEventListener("loadedmetadata", async (event) => {
-    /*
-    video.setDuration(el.duration);
-
-    // @ts-expect-error (`captureStream` is still experimental)
-    const mediaStream = el.captureStream();
-
-    const [videoTrack] = mediaStream.getVideoTracks();
-    const settings = videoTrack.getSettings();
-    
-    video.setWidth(settings.width);
-    video.setHeight(settings.height);
-    //video.setFrameRate(settings.frameRate);
-    video.setOffset(el.currentTime);
-    */
-  });
-
   el.addEventListener("play", async (event) => {
     video.setSetupVideoPlaying(true);
   });

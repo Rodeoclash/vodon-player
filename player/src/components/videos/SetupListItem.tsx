@@ -71,17 +71,22 @@ const SetupList = observer(({ video }: Props) => {
     <div className="relative">
       <Toolbar video={video} />
       <div ref={containerEl} />
-      {video.duration !== null && video.offset !== null && (
-        <VideoNavigationControls
-          duration={video.duration}
-          currentTime={video.offset}
-          onPause={() => handlePause()}
-          onPlay={() => handlePlay()}
-          onGotoTime={(newTime) => handleGotoTime(newTime)}
-          showPause={video.setupVideoPlaying === true}
-          showPlay={video.setupVideoPlaying === false}
-        />
-      )}
+      {video.setupVideoEl &&
+        video.duration !== null &&
+        video.offset !== null &&
+        video.frameRate !== null && (
+          <VideoNavigationControls
+            currentTime={video.offset}
+            duration={video.duration}
+            frameRate={video.frameRate}
+            onGotoTime={(newTime) => handleGotoTime(newTime)}
+            onPause={() => handlePause()}
+            onPlay={() => handlePlay()}
+            showPause={video.setupVideoPlaying === true}
+            showPlay={video.setupVideoPlaying === false}
+            videoEl={video.setupVideoEl}
+          />
+        )}
     </div>
   );
 });
