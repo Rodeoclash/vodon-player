@@ -40,7 +40,7 @@ body {
   }
 
   .videoControl {
-    @apply text-white/90 bg-gray-800 px-2 relative h-12;
+    @apply text-white/90 bg-gray-800 px-2 relative h-12 flex items-center;
   }
 
   .text-bright {

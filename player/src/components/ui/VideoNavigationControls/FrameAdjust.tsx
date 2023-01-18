@@ -69,7 +69,6 @@ const FrameAdjust = ({ distance, frameLength, onGotoTime, videoEl }: Props) => {
 
   return (
     <button
-      className="videoControl"
       onMouseDown={() => handleMouseDown()}
       onMouseUp={() => handleMouseUp()}
     >
