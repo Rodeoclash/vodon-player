@@ -10,6 +10,9 @@ export default function SetupSessions() {
   return (
     <>
       <h1 className="header-1">Setup Session</h1>
+      <p className="paragraph">
+        Configure the following videos to be the same moment in time
+      </p>
       <div className="grid grid-cols-3 gap-4">
         <SetupList session={data.session} />
         <Add session={data.session} />

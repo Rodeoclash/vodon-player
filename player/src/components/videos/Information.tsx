@@ -58,6 +58,8 @@ const Information = observer(({ video }: Props) => {
           <dd>{secondsToHms(video.duration)}</dd>
           <dt>Offset</dt>
           <dd>{secondsToHms(video.offset)}</dd>
+          <dt>Calculated offset</dt>
+          <dd>{video.calculatedOffset}</dd>
           <dt>Width</dt>
           <dd>{video.width}</dd>
           <dt>Height</dt>

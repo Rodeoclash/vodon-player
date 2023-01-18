@@ -1,12 +1,7 @@
-import {
-  model,
-  modelAction,
-  Model,
-  types,
-  tProp,
-  idProp,
-  onActionMiddleware,
-} from "mobx-keystone";
+import { computed } from "mobx";
+
+import { model, modelAction, Model, types, tProp, idProp } from "mobx-keystone";
+
 import Video from "./video";
 
 @model("VodonPlayer/Session")
@@ -30,6 +25,17 @@ export default class Session extends Model({
     this.videos = this.videos.filter(
       (innerVideo) => innerVideo.id !== video.id
     );
+  }
+
+  @computed
+  get shortestVideoOffset() {
+    return this.videos.reduce((acc, video) => {
+      if (video.offset === null) {
+        return acc;
+      }
+
+      return video.offset < acc ? video.offset : acc;
+    }, Infinity);
   }
 
   getVideoById(id: string) {

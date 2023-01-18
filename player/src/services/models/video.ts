@@ -1,3 +1,4 @@
+import { computed } from "mobx";
 import { model, tProp, Model, types, idProp, findParent } from "mobx-keystone";
 import { buildSetupElement } from "services/videos";
 import { liveQuery } from "dexie";
@@ -80,6 +81,17 @@ export default class Video extends Model({
       },
       error: (error) => console.error(error),
     });
+  }
+
+  @computed
+  get calculatedOffset() {
+    const session = this.getSession();
+
+    if (this.offset === null || session.shortestVideoOffset === Infinity) {
+      return null;
+    }
+
+    return this.offset - session.shortestVideoOffset;
   }
 
   /**
