@@ -1,4 +1,8 @@
-export function secondsToHms(input: number): string {
+export function secondsToHms(input: number | null): string {
+  if (input === null) {
+    return "-";
+  }
+
   const hours = Math.floor(input / 3600);
   const minutes = Math.floor(input / 60) % 60;
   const seconds = input % 60;
