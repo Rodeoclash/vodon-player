@@ -94,6 +94,15 @@ export default class Video extends Model({
     return this.offset - session.shortestVideoOffset;
   }
 
+  @computed
+  get frameLength() {
+    if (this.frameRate === null) {
+      return null;
+    }
+
+    return 1 / this.frameRate;
+  }
+
   /**
    * Needs to have the slightly weird syntax here because the parent of the
    * video is the "array" object in the session, not the session itself.

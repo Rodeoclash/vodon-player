@@ -74,11 +74,11 @@ const SetupList = observer(({ video }: Props) => {
       {video.setupVideoEl &&
         video.duration !== null &&
         video.offset !== null &&
-        video.frameRate !== null && (
+        video.frameLength !== null && (
           <VideoNavigationControls
             currentTime={video.offset}
             duration={video.duration}
-            frameRate={video.frameRate}
+            frameLength={video.frameLength}
             onGotoTime={(newTime) => handleGotoTime(newTime)}
             onPause={() => handlePause()}
             onPlay={() => handlePlay()}

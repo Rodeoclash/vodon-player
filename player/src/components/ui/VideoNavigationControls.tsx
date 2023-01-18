@@ -2,11 +2,13 @@ import * as React from "react";
 import { secondsToHms } from "services/time";
 import ReactSlider from "react-slider";
 
+import FrameAdjust from "./VideoNavigationControls/FrameAdjust";
+
 type Props = {
   currentTime: number;
   duration: number;
   videoEl: HTMLVideoElement;
-  frameRate: number;
+  frameLength: number;
   onGotoTime: (newTime: number) => void;
   onPause: () => void;
   onPlay: () => void;
@@ -17,7 +19,7 @@ type Props = {
 const VideoNavigationControls = ({
   currentTime,
   duration,
-  frameRate,
+  frameLength,
   onGotoTime,
   onPause,
   onPlay,
@@ -25,14 +27,8 @@ const VideoNavigationControls = ({
   showPlay,
   videoEl,
 }: Props) => {
-  const frameLength = 1 / frameRate;
-
   const onSliderChange = React.useCallback((value: number) => {
     onGotoTime(value);
-  }, []);
-
-  const handleFrameAdjust = React.useCallback((direction: number) => {
-    onGotoTime(videoEl.currentTime + frameLength * direction);
   }, []);
 
   const handlePlay = React.useCallback(() => {
@@ -87,22 +83,12 @@ const VideoNavigationControls = ({
           {secondsToHms(Math.round(duration))}
         </span>
       </div>
-      <button className="videoControl" onClick={() => handleFrameAdjust(-1)}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 19.5L8.25 12l7.5-7.5"
-          />
-        </svg>
-      </button>
+      <FrameAdjust
+        distance={-1}
+        frameLength={frameLength}
+        onGotoTime={onGotoTime}
+        videoEl={videoEl}
+      />
       <div className="flex-grow videoControl p-0">
         <ReactSlider
           className="h-12 flex items-center horizontal-slider"
@@ -117,22 +103,12 @@ const VideoNavigationControls = ({
           value={currentTime}
         />
       </div>
-      <button className="videoControl" onClick={() => handleFrameAdjust(1)}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.25 4.5l7.5 7.5-7.5 7.5"
-          />
-        </svg>
-      </button>
+      <FrameAdjust
+        distance={1}
+        frameLength={frameLength}
+        onGotoTime={onGotoTime}
+        videoEl={videoEl}
+      />
     </div>
   );
 };
