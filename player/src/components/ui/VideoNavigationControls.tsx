@@ -36,11 +36,11 @@ const VideoNavigationControls = ({
   }, []);
 
   const handlePlay = React.useCallback(() => {
-    onPause();
+    onPlay();
   }, []);
 
   const handlePause = React.useCallback(() => {
-    onPlay();
+    onPause();
   }, []);
 
   return (
