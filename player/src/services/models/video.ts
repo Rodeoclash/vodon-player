@@ -52,6 +52,9 @@ export default class Video extends Model({
 
   // Is the setup video currently playing?
   setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
+
+  // Volume of the video
+  volume: tProp(types.number, 0.5).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
 

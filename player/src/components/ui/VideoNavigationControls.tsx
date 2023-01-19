@@ -15,6 +15,7 @@ type Props = {
   onPlay: () => void;
   showPause: boolean;
   showPlay: boolean;
+  volume: number;
 };
 
 const VideoNavigationControls = ({
@@ -27,6 +28,7 @@ const VideoNavigationControls = ({
   showPause,
   showPlay,
   videoEl,
+  volume,
 }: Props) => {
   const handlePlay = React.useCallback(() => {
     onPlay();
@@ -107,8 +109,8 @@ const VideoNavigationControls = ({
           videoEl={videoEl}
         />
       </div>
-      <div className="videoControl">
-        <Volume videoEl={videoEl} />
+      <div className="videoControl w-32">
+        <Volume videoEl={videoEl} volume={volume} />
       </div>
     </div>
   );

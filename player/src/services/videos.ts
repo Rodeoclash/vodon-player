@@ -129,12 +129,23 @@ export const buildSetupElement = async (
   const file = await fileHandle.getFile();
   const url = URL.createObjectURL(file);
 
-  el.addEventListener("play", async (event) => {
+  el.volume = video.volume;
+
+  el.addEventListener("play", async () => {
     video.setSetupVideoPlaying(true);
   });
 
-  el.addEventListener("pause", async (event) => {
+  el.addEventListener("pause", async () => {
     video.setSetupVideoPlaying(false);
+  });
+
+  el.addEventListener("volumechange", async (event: Event) => {
+    const target = event.target as HTMLVideoElement | null;
+    if (target === null) {
+      return;
+    }
+
+    video.setVolume(target.volume);
   });
 
   // Fired every time the frame in the video changes, used to automatically

@@ -85,6 +85,7 @@ const SetupList = observer(({ video }: Props) => {
             showPause={video.setupVideoPlaying === true}
             showPlay={video.setupVideoPlaying === false}
             videoEl={video.setupVideoEl}
+            volume={video.volume}
           />
         )}
     </div>
