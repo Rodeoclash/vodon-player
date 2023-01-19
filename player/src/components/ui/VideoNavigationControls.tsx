@@ -1,20 +1,23 @@
 import * as React from "react";
 import { secondsToHms } from "services/time";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import FrameAdjust from "./VideoNavigationControls/FrameAdjust";
 import Progress from "./VideoNavigationControls/Progress";
 import Volume from "./VideoNavigationControls/Volume";
 
+import { Direction } from "./VideoNavigationControls/FrameAdjust";
+
 type Props = {
   currentTime: number;
   duration: number;
-  videoEl: HTMLVideoElement;
   frameLength: number;
+  keyboardShortcutsEnabled: boolean;
   onGotoTime: (newTime: number) => void;
   onPause: () => void;
   onPlay: () => void;
-  showPause: boolean;
-  showPlay: boolean;
+  playing: boolean;
+  videoEl: HTMLVideoElement;
   volume: number;
 };
 
@@ -22,11 +25,11 @@ const VideoNavigationControls = ({
   currentTime,
   duration,
   frameLength,
+  keyboardShortcutsEnabled,
   onGotoTime,
   onPause,
   onPlay,
-  showPause,
-  showPlay,
+  playing,
   videoEl,
   volume,
 }: Props) => {
@@ -38,9 +41,20 @@ const VideoNavigationControls = ({
     onPause();
   }, []);
 
+  useHotkeys(
+    "space",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      playing === true ? handlePause() : handlePlay();
+    },
+    [keyboardShortcutsEnabled, playing]
+  );
+
   return (
     <div className="bg-black flex items-stretch h-12 gap-4">
-      {showPlay && (
+      {playing === false && (
         <div className="videoControl">
           <button onClick={() => handlePlay()}>
             <svg
@@ -60,7 +74,7 @@ const VideoNavigationControls = ({
           </button>
         </div>
       )}
-      {showPause && (
+      {playing === true && (
         <div className="videoControl">
           <button onClick={() => handlePause()}>
             <svg
@@ -88,7 +102,7 @@ const VideoNavigationControls = ({
       </div>
       <div className="videoControl">
         <FrameAdjust
-          distance={-1}
+          direction={Direction.Back}
           frameLength={frameLength}
           onGotoTime={onGotoTime}
           videoEl={videoEl}
@@ -103,7 +117,7 @@ const VideoNavigationControls = ({
       </div>
       <div className="videoControl">
         <FrameAdjust
-          distance={1}
+          direction={Direction.Forward}
           frameLength={frameLength}
           onGotoTime={onGotoTime}
           videoEl={videoEl}

@@ -1,18 +1,39 @@
 import * as React from "react";
 
+export enum Direction {
+  Forward,
+  Back,
+}
+
 type Props = {
-  distance: number;
+  direction: Direction;
   frameLength: number;
   onGotoTime: (newTime: number) => void;
   videoEl: HTMLVideoElement;
 };
 
-const FrameAdjust = ({ distance, frameLength, onGotoTime, videoEl }: Props) => {
+const FrameAdjust = ({
+  direction,
+  frameLength,
+  onGotoTime,
+  videoEl,
+}: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
+
+  const handleActivate = React.useCallback(() => {
+    switch (direction) {
+      case Direction.Forward:
+        onGotoTime(videoEl.currentTime + frameLength * 1);
+        break;
+      case Direction.Back:
+        onGotoTime(videoEl.currentTime + frameLength * -1);
+        break;
+    }
+  }, [direction]);
 
   const handleMouseDown = React.useCallback(() => {
     setActive(true);
-    onGotoTime(videoEl.currentTime + frameLength * distance);
+    handleActivate();
   }, [setActive, onGotoTime]);
 
   const handleMouseUp = React.useCallback(() => {
@@ -25,13 +46,13 @@ const FrameAdjust = ({ distance, frameLength, onGotoTime, videoEl }: Props) => {
     }
 
     const interval = setInterval(() => {
-      onGotoTime(videoEl.currentTime + frameLength * distance);
+      handleActivate();
     }, 100);
 
     return () => {
       clearInterval(interval);
     };
-  }, [active, videoEl]);
+  }, [active]);
 
   const renderedLeftArrow = (
     <svg
@@ -72,7 +93,7 @@ const FrameAdjust = ({ distance, frameLength, onGotoTime, videoEl }: Props) => {
       onMouseDown={() => handleMouseDown()}
       onMouseUp={() => handleMouseUp()}
     >
-      {distance < 0 ? renderedLeftArrow : renderedRightArrow}
+      {direction === Direction.Back ? renderedLeftArrow : renderedRightArrow}
     </button>
   );
 };

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
+import classNames from "classnames";
 
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import Toolbar from "components/videos/Toolbar";
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const SetupList = observer(({ video }: Props) => {
+  const [active, setActive] = React.useState<boolean | null>(null);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
 
   // Play the video when play clicked in the controls
@@ -42,6 +44,14 @@ const SetupList = observer(({ video }: Props) => {
     [video]
   );
 
+  const handleMouseEnter = React.useCallback(() => {
+    setActive(true);
+  }, []);
+
+  const handleMouseLeave = React.useCallback(() => {
+    setActive(false);
+  }, []);
+
   // Once the local file handle is present, append it to the player
   // TODO: Move to video controls service
   React.useEffect(() => {
@@ -67,8 +77,17 @@ const SetupList = observer(({ video }: Props) => {
     );
   }
 
+  const classes = classNames({
+    relative: true,
+    "outline outline-blue-500": active,
+  });
+
   return (
-    <div className="relative">
+    <div
+      className={classes}
+      onMouseEnter={() => handleMouseEnter()}
+      onMouseLeave={() => handleMouseLeave()}
+    >
       <Toolbar video={video} />
       <div ref={containerEl} />
       {video.setupVideoEl &&
@@ -79,11 +98,11 @@ const SetupList = observer(({ video }: Props) => {
             currentTime={video.offset}
             duration={video.duration}
             frameLength={video.frameLength}
+            keyboardShortcutsEnabled={!!active}
             onGotoTime={(newTime) => handleGotoTime(newTime)}
             onPause={() => handlePause()}
             onPlay={() => handlePlay()}
-            showPause={video.setupVideoPlaying === true}
-            showPlay={video.setupVideoPlaying === false}
+            playing={video.setupVideoPlaying === true}
             videoEl={video.setupVideoEl}
             volume={video.volume}
           />
