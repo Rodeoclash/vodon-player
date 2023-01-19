@@ -1,5 +1,6 @@
 import * as React from "react";
-import ReactSlider from "react-slider";
+import throttle from "lodash.throttle";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 type Props = {
   currentTime: number;
@@ -12,20 +13,7 @@ const Progress = ({ currentTime, duration, onGotoTime }: Props) => {
     onGotoTime(value);
   }, []);
 
-  return (
-    <ReactSlider
-      className="h-12 flex items-center horizontal-slider"
-      thumbClassName="bg-green-500 outline-4 px-2 w-4 h-4 rounded-full"
-      trackClassName="h-2 bg-red-600"
-      renderThumb={(props, state) => <div {...props} />}
-      onChange={(value, thumbIndex) => onSliderChange(value)}
-      onSliderClick={(value) => onSliderChange(value)}
-      min={0}
-      max={duration}
-      step={0.1}
-      value={currentTime}
-    />
-  );
+  return <p>Slider</p>;
 };
 
 export default Progress;

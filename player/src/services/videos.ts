@@ -140,11 +140,7 @@ export const buildSetupElement = async (
   });
 
   el.addEventListener("volumechange", async (event: Event) => {
-    const target = event.target as HTMLVideoElement | null;
-    if (target === null) {
-      return;
-    }
-
+    const target = event.target as HTMLVideoElement;
     video.setVolume(target.volume);
   });
 
