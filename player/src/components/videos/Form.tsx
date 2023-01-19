@@ -11,12 +11,6 @@ type Props = {
 };
 
 const Form = ({ video, innerRef, onSubmit }: Props) => {
-  const handleFocusName = (
-    event: React.FocusEvent<HTMLInputElement, Element>
-  ) => {
-    event.target.select();
-  };
-
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>,
     formik: FormikProps<FormikValues>
@@ -46,7 +40,6 @@ const Form = ({ video, innerRef, onSubmit }: Props) => {
                 onChange={formik.handleChange}
                 type="name"
                 value={formik.values.name}
-                onFocus={(event) => handleFocusName(event)}
                 onKeyDown={(event) => handleKeyDown(event, formik)}
               />
             </>

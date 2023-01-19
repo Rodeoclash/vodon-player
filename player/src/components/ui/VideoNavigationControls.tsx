@@ -104,6 +104,7 @@ const VideoNavigationControls = ({
         <FrameAdjust
           direction={Direction.Back}
           frameLength={frameLength}
+          keyboardShortcutsEnabled={keyboardShortcutsEnabled}
           onGotoTime={onGotoTime}
           videoEl={videoEl}
         />
@@ -119,6 +120,7 @@ const VideoNavigationControls = ({
         <FrameAdjust
           direction={Direction.Forward}
           frameLength={frameLength}
+          keyboardShortcutsEnabled={keyboardShortcutsEnabled}
           onGotoTime={onGotoTime}
           videoEl={videoEl}
         />

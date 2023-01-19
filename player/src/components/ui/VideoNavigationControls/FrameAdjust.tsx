@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export enum Direction {
   Forward,
@@ -8,6 +9,7 @@ export enum Direction {
 type Props = {
   direction: Direction;
   frameLength: number;
+  keyboardShortcutsEnabled: boolean;
   onGotoTime: (newTime: number) => void;
   videoEl: HTMLVideoElement;
 };
@@ -15,6 +17,7 @@ type Props = {
 const FrameAdjust = ({
   direction,
   frameLength,
+  keyboardShortcutsEnabled,
   onGotoTime,
   videoEl,
 }: Props) => {
@@ -34,11 +37,79 @@ const FrameAdjust = ({
   const handleMouseDown = React.useCallback(() => {
     setActive(true);
     handleActivate();
-  }, [setActive, onGotoTime]);
+  }, []);
 
   const handleMouseUp = React.useCallback(() => {
     setActive(false);
-  }, [setActive, onGotoTime]);
+  }, []);
+
+  const handleMouseLeave = React.useCallback(() => {
+    setActive(false);
+  }, []);
+
+  useHotkeys(
+    "a,arrowLeft",
+    () => {
+      if (
+        keyboardShortcutsEnabled === false ||
+        direction === Direction.Forward
+      ) {
+        return;
+      }
+      handleActivate();
+      setActive(true);
+    },
+    {
+      keydown: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "a,arrowLeft",
+    () => {
+      if (
+        keyboardShortcutsEnabled === false ||
+        direction === Direction.Forward
+      ) {
+        return;
+      }
+      setActive(false);
+    },
+    {
+      keyup: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "d,arrowRight",
+    () => {
+      if (keyboardShortcutsEnabled === false || direction === Direction.Back) {
+        return;
+      }
+      handleActivate();
+      setActive(true);
+    },
+    {
+      keydown: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "d,arrowRight",
+    () => {
+      if (keyboardShortcutsEnabled === false || direction === Direction.Back) {
+        return;
+      }
+      setActive(false);
+    },
+    {
+      keyup: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
 
   React.useEffect(() => {
     if (active === false || active === null) {
@@ -53,6 +124,12 @@ const FrameAdjust = ({
       clearInterval(interval);
     };
   }, [active]);
+
+  React.useEffect(() => {
+    if (keyboardShortcutsEnabled === false && active === true) {
+      setActive(false);
+    }
+  }, [keyboardShortcutsEnabled, active]);
 
   const renderedLeftArrow = (
     <svg
@@ -92,6 +169,7 @@ const FrameAdjust = ({
     <button
       onMouseDown={() => handleMouseDown()}
       onMouseUp={() => handleMouseUp()}
+      onMouseLeave={() => handleMouseLeave()}
     >
       {direction === Direction.Back ? renderedLeftArrow : renderedRightArrow}
     </button>
