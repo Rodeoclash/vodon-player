@@ -5,12 +5,12 @@ import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 type Props = {
   currentTime: number;
   duration: number;
-  onGotoTime: (newTime: number) => void;
+  videoEl: HTMLVideoElement;
 };
 
-const Progress = ({ currentTime, duration, onGotoTime }: Props) => {
+const Progress = ({ currentTime, duration, videoEl }: Props) => {
   const onSliderChange = React.useCallback((value: number) => {
-    onGotoTime(value);
+    videoEl.currentTime = value;
   }, []);
 
   return <p>Slider</p>;

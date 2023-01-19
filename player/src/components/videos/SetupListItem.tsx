@@ -14,36 +14,6 @@ const SetupList = observer(({ video }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
 
-  // Play the video when play clicked in the controls
-  const handlePlay = React.useCallback(() => {
-    if (video.setupVideoEl === null) {
-      return;
-    }
-
-    video.setupVideoEl.play();
-  }, [video]);
-
-  // Pause the video when pause clicked in the controls
-  // TODO: Move to video controls service
-  const handlePause = React.useCallback(() => {
-    if (video.setupVideoEl === null) {
-      return;
-    }
-
-    video.setupVideoEl.pause();
-  }, [video]);
-
-  const handleGotoTime = React.useCallback(
-    (newTime: number) => {
-      if (video.setupVideoEl === null) {
-        return;
-      }
-
-      video.setupVideoEl.currentTime = newTime;
-    },
-    [video]
-  );
-
   const handleMouseEnter = React.useCallback(() => {
     setActive(true);
   }, []);
@@ -99,9 +69,6 @@ const SetupList = observer(({ video }: Props) => {
             duration={video.duration}
             frameLength={video.frameLength}
             keyboardShortcutsEnabled={!!active}
-            onGotoTime={(newTime) => handleGotoTime(newTime)}
-            onPause={() => handlePause()}
-            onPlay={() => handlePlay()}
             playing={video.setupVideoPlaying === true}
             videoEl={video.setupVideoEl}
             volume={video.volume}

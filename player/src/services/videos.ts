@@ -131,6 +131,11 @@ export const buildSetupElement = async (
 
   el.volume = video.volume;
 
+  // Restore the videos time position from what was saved if it exists
+  if (video.offset !== null) {
+    el.currentTime = video.offset;
+  }
+
   el.addEventListener("play", async () => {
     video.setSetupVideoPlaying(true);
   });

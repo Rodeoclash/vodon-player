@@ -13,9 +13,6 @@ type Props = {
   duration: number;
   frameLength: number;
   keyboardShortcutsEnabled: boolean;
-  onGotoTime: (newTime: number) => void;
-  onPause: () => void;
-  onPlay: () => void;
   playing: boolean;
   videoEl: HTMLVideoElement;
   volume: number;
@@ -26,19 +23,16 @@ const VideoNavigationControls = ({
   duration,
   frameLength,
   keyboardShortcutsEnabled,
-  onGotoTime,
-  onPause,
-  onPlay,
   playing,
   videoEl,
   volume,
 }: Props) => {
   const handlePlay = React.useCallback(() => {
-    onPlay();
+    videoEl.play();
   }, []);
 
   const handlePause = React.useCallback(() => {
-    onPause();
+    videoEl.pause();
   }, []);
 
   useHotkeys(
@@ -105,15 +99,14 @@ const VideoNavigationControls = ({
           direction={Direction.Back}
           frameLength={frameLength}
           keyboardShortcutsEnabled={keyboardShortcutsEnabled}
-          onGotoTime={onGotoTime}
           videoEl={videoEl}
         />
       </div>
       <div className="flex-grow videoControl p-0">
         <Progress
           currentTime={currentTime}
-          onGotoTime={onGotoTime}
           duration={duration}
+          videoEl={videoEl}
         />
       </div>
       <div className="videoControl">
@@ -121,7 +114,6 @@ const VideoNavigationControls = ({
           direction={Direction.Forward}
           frameLength={frameLength}
           keyboardShortcutsEnabled={keyboardShortcutsEnabled}
-          onGotoTime={onGotoTime}
           videoEl={videoEl}
         />
       </div>
