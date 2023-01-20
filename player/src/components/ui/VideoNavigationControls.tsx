@@ -101,14 +101,15 @@ const VideoNavigationControls = ({
           direction={Direction.Back}
           frameLength={frameLength}
           keyboardShortcutsEnabled={keyboardShortcutsEnabled}
-          videoEl={videoEl}
           seeking={seeking}
+          videoEl={videoEl}
         />
       </div>
       <div className="flex-grow videoControl p-0">
         <Progress
           currentTime={currentTime}
           duration={duration}
+          seeking={seeking}
           videoEl={videoEl}
         />
       </div>
@@ -117,8 +118,8 @@ const VideoNavigationControls = ({
           direction={Direction.Forward}
           frameLength={frameLength}
           keyboardShortcutsEnabled={keyboardShortcutsEnabled}
-          videoEl={videoEl}
           seeking={seeking}
+          videoEl={videoEl}
         />
       </div>
       <div className="videoControl w-32">

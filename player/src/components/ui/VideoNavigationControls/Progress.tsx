@@ -5,13 +5,14 @@ import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 type Props = {
   currentTime: number;
   duration: number;
+  seeking: boolean;
   videoEl: HTMLVideoElement;
 };
 
 const HANDLE_SIZE = 16;
 const DRAG_TIMEOUT = 100;
 
-const Progress = ({ currentTime, duration, videoEl }: Props) => {
+const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
   const handleRef = React.useRef<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [continerWidth, setContainerWidth] = React.useState<null | number>(
@@ -46,14 +47,14 @@ const Progress = ({ currentTime, duration, videoEl }: Props) => {
    */
   const handleDrag = React.useCallback(
     (event: DraggableEvent, data: DraggableData) => {
-      if (continerWidth === null) {
+      if (continerWidth === null || seeking === true) {
         return;
       }
 
       const perc = data.x / (continerWidth - HANDLE_SIZE);
       videoEl.currentTime = perc * duration;
     },
-    [continerWidth]
+    [continerWidth, seeking]
   );
 
   /**
@@ -66,7 +67,11 @@ const Progress = ({ currentTime, duration, videoEl }: Props) => {
    */
   const handleClickSlider = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (continerWidth === null || dragInProgress === true) {
+      if (
+        continerWidth === null ||
+        dragInProgress === true ||
+        seeking === true
+      ) {
         return;
       }
 
