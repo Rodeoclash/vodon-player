@@ -10,7 +10,7 @@ const SessionList = observer(() => {
   const sessions = store.sessions.map((session) => (
     <tr key={session.id}>
       <td>
-        <Link className="link" to={`/sessions/${session.id}`}>
+        <Link className="link" to={`/sessions/${session.id}/review`}>
           {session.id}
         </Link>
       </td>

@@ -1,3 +1,13 @@
+/**
+ * TODO: Should consider how to share code with the volume component.
+ *
+ * This component also needs the following:
+ *
+ * 1. Be able to click and drag anywhere on the slider to set the value. This
+ * will likely require removing the draggable component and replacing it with
+ * something else.
+ */
+
 import * as React from "react";
 import throttle from "lodash.throttle";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";

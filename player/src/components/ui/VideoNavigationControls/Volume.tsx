@@ -1,3 +1,7 @@
+/**
+ * TODO: Should consider how to share code with the progress component.
+ */
+
 import * as React from "react";
 import throttle from "lodash.throttle";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";

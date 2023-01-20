@@ -47,7 +47,7 @@ const router = createBrowserRouter([
         children: [
           {
             element: <ShowSession />,
-            index: true,
+            path: "review",
           },
           {
             element: <SetupSession />,
