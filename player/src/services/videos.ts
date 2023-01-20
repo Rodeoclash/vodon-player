@@ -144,6 +144,14 @@ export const buildSetupElement = async (
     video.setSetupVideoPlaying(false);
   });
 
+  el.addEventListener("seeking", async () => {
+    video.setSetupVideoSeeking(true);
+  });
+
+  el.addEventListener("seeked", async () => {
+    video.setSetupVideoSeeking(false);
+  });
+
   el.addEventListener("volumechange", async (event: Event) => {
     const target = event.target as HTMLVideoElement;
     video.setVolume(target.volume);

@@ -53,6 +53,9 @@ export default class Video extends Model({
   // Is the setup video currently playing?
   setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
+  // Is the setup video currently seeking?
+  setupVideoSeeking: tProp(types.maybeNull(types.boolean), null).withSetter(),
+
   // Volume of the video
   volume: tProp(types.number, 0.5).withSetter(),
 }) {
@@ -65,6 +68,9 @@ export default class Video extends Model({
 
     // Videos always start in a non playing state
     this.setSetupVideoPlaying(false);
+
+    // Videos always start in a non seeking state
+    this.setSetupVideoSeeking(false);
 
     // Start observing the storage file handle, when it's present we'll create
     // the required video elements

@@ -70,6 +70,7 @@ const SetupList = observer(({ video }: Props) => {
             frameLength={video.frameLength}
             keyboardShortcutsEnabled={!!active}
             playing={video.setupVideoPlaying === true}
+            seeking={video.setupVideoSeeking === true}
             videoEl={video.setupVideoEl}
             volume={video.volume}
           />

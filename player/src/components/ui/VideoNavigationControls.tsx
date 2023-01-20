@@ -14,6 +14,7 @@ type Props = {
   frameLength: number;
   keyboardShortcutsEnabled: boolean;
   playing: boolean;
+  seeking: boolean;
   videoEl: HTMLVideoElement;
   volume: number;
 };
@@ -24,6 +25,7 @@ const VideoNavigationControls = ({
   frameLength,
   keyboardShortcutsEnabled,
   playing,
+  seeking,
   videoEl,
   volume,
 }: Props) => {
@@ -100,6 +102,7 @@ const VideoNavigationControls = ({
           frameLength={frameLength}
           keyboardShortcutsEnabled={keyboardShortcutsEnabled}
           videoEl={videoEl}
+          seeking={seeking}
         />
       </div>
       <div className="flex-grow videoControl p-0">
@@ -115,6 +118,7 @@ const VideoNavigationControls = ({
           frameLength={frameLength}
           keyboardShortcutsEnabled={keyboardShortcutsEnabled}
           videoEl={videoEl}
+          seeking={seeking}
         />
       </div>
       <div className="videoControl w-32">

@@ -11,13 +11,17 @@ type Props = {
   frameLength: number;
   keyboardShortcutsEnabled: boolean;
   videoEl: HTMLVideoElement;
+  seeking: boolean;
 };
+
+const FRAME_ADVANCE_INTERVAL = 100;
 
 const FrameAdjust = ({
   direction,
   frameLength,
   keyboardShortcutsEnabled,
   videoEl,
+  seeking,
 }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
 
@@ -110,18 +114,20 @@ const FrameAdjust = ({
   );
 
   React.useEffect(() => {
-    if (active === false || active === null) {
+    // Abort setting up the interval if we're not active or a seek is already
+    // in progress (which overwhelms the video)
+    if (active === false || active === null || seeking === true) {
       return;
     }
 
     const interval = setInterval(() => {
       handleActivate();
-    }, 100);
+    }, FRAME_ADVANCE_INTERVAL);
 
     return () => {
       clearInterval(interval);
     };
-  }, [active]);
+  }, [active, seeking]);
 
   React.useEffect(() => {
     if (keyboardShortcutsEnabled === false && active === true) {
