@@ -15,10 +15,11 @@ const DRAG_TIMEOUT = 100;
 const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
   const handleRef = React.useRef<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  const [continerWidth, setContainerWidth] = React.useState<null | number>(
+  const [containerWidth, setContainerWidth] = React.useState<null | number>(
     null
   );
   const [dragInProgress, setDragInProgress] = React.useState<boolean>(false);
+  const [mouseDownSlider, setMouseDownSlider] = React.useState<boolean>(false);
 
   const progress = currentTime / duration;
 
@@ -44,17 +45,21 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
    * Fires as the volume slider is dragged along the track. Automatically sets
    * the volume of the video depending on the position of how far it has
    * been slid.
+   *
+   * We allow setting the time even when seeking here so that the slider
+   * remains smooth (even though we may overwhelm the ability for the video
+   * player to keep up)
    */
   const handleDrag = React.useCallback(
     (event: DraggableEvent, data: DraggableData) => {
-      if (continerWidth === null || seeking === true) {
+      if (containerWidth === null) {
         return;
       }
 
-      const perc = data.x / (continerWidth - HANDLE_SIZE);
+      const perc = data.x / containerWidth;
       videoEl.currentTime = perc * duration;
     },
-    [continerWidth, seeking]
+    [containerWidth, seeking]
   );
 
   /**
@@ -65,10 +70,10 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
    * Clicking sets the volume of the video equal to how far along the slider
    * that we clicked.
    */
-  const handleClickSlider = React.useCallback(
+  const handleMouseClickSlider = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (
-        continerWidth === null ||
+        containerWidth === null ||
         dragInProgress === true ||
         seeking === true
       ) {
@@ -78,11 +83,21 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
       const target = event.target as HTMLDivElement;
       const bounds = target.getBoundingClientRect();
       const localX = event.clientX - bounds.left;
-      const perc = localX / continerWidth;
+      const perc = localX / containerWidth;
       videoEl.currentTime = perc * duration;
+
+      setMouseDownSlider(true);
     },
-    [continerWidth, dragInProgress]
+    [containerWidth, dragInProgress]
   );
+
+  const handleClickStart = React.useCallback(() => {
+    videoEl.currentTime = 0;
+  }, []);
+
+  const handleClickEnd = React.useCallback(() => {
+    videoEl.currentTime = duration - 0.01; // for some reason, we can't set exactly the end time
+  }, [duration]);
 
   /**
    * Measure the width of the volume slider container as the page reloads.
@@ -112,30 +127,41 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
   return (
     <div className="flex items-stretch w-full">
       <div
+        className="bg-white rounded-l-full"
+        style={{ width: `${HANDLE_SIZE / 2}px` }}
+        onClick={() => handleClickStart()}
+      />
+      <div
         className="bg-white w-full relative flex-grow"
         ref={containerRef}
-        onClick={(event) => handleClickSlider(event)}
+        onClick={(event) => handleMouseClickSlider(event)}
       >
-        {continerWidth !== null && (
+        {containerWidth !== null && (
           <Draggable
             axis="x"
-            bounds="parent"
+            bounds={{ left: 0, right: containerWidth }}
             handle=".handle"
             scale={1}
             onStart={() => handleStart()}
             onDrag={(event, data) => handleDrag(event, data)}
             onStop={() => handleStop()}
             nodeRef={handleRef}
-            position={{ x: (continerWidth - HANDLE_SIZE) * progress, y: 0 }}
+            position={{ x: containerWidth * progress, y: 0 }}
+            positionOffset={{ x: -(HANDLE_SIZE / 2), y: 0 }}
           >
             <div
               ref={handleRef}
-              className="handle bg-green-500 rounded-full"
+              className="handle bg-green-500 rounded-full outline outline-white"
               style={{ width: `${HANDLE_SIZE}px`, height: `${HANDLE_SIZE}px` }}
             />
           </Draggable>
         )}
       </div>
+      <div
+        className="bg-white rounded-r-full"
+        style={{ width: `${HANDLE_SIZE / 2}px` }}
+        onClick={() => handleClickEnd()}
+      />
     </div>
   );
 };

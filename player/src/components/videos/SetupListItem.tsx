@@ -1,7 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
-import classNames from "classnames";
 
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import Toolbar from "components/videos/Toolbar";
@@ -47,14 +46,9 @@ const SetupList = observer(({ video }: Props) => {
     );
   }
 
-  const classes = classNames({
-    relative: true,
-    "outline outline-blue-500": active,
-  });
-
   return (
     <div
-      className={classes}
+      className="relative"
       onMouseEnter={() => handleMouseEnter()}
       onMouseLeave={() => handleMouseLeave()}
     >

@@ -105,7 +105,7 @@ const VideoNavigationControls = ({
           videoEl={videoEl}
         />
       </div>
-      <div className="flex-grow videoControl p-0">
+      <div className="flex-grow videoControl">
         <Progress
           currentTime={currentTime}
           duration={duration}
@@ -122,7 +122,7 @@ const VideoNavigationControls = ({
           videoEl={videoEl}
         />
       </div>
-      <div className="videoControl w-32">
+      <div className="videoControl w-24">
         <Volume videoEl={videoEl} volume={volume} />
       </div>
     </div>
