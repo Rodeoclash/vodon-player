@@ -7,7 +7,7 @@ import RootLayout from "layouts/Root";
 import SessionLayout from "layouts/Session";
 
 import ManageSessions from "pages/ManageSessions";
-import ShowSession from "pages/ShowSession";
+import ReviewSession from "pages/ReviewSession";
 import SetupSession from "pages/SetupSession";
 
 export type SessionLoaderData = {
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         },
         children: [
           {
-            element: <ShowSession />,
+            element: <ReviewSession />,
             path: "review",
           },
           {

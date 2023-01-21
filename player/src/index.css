@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  padding: 0rem;
-}
-
 @layer components {
   .header-1 {
     @apply text-4xl;
@@ -25,6 +21,14 @@ body {
 
   .link {
     @apply underline text-green-600;
+  }
+
+  .navlink {
+    @apply text-green-300;
+  }
+
+  .navlink.active {
+    @apply text-green-600;
   }
 
   .table {
@@ -62,4 +66,14 @@ body {
   .btn-secondary {
     @apply px-4 py-2 border border-slate-400;
   }
+}
+
+body {
+  padding: 0rem;
+  color: #fff;
+  font-family: "Open Sans", sans-serif;
+}
+
+.signika {
+  font-family: "Signika", sans-serif;
 }

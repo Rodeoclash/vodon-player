@@ -1,6 +1,7 @@
 import { computed } from "mobx";
 import { model, tProp, Model, types, idProp, findParent } from "mobx-keystone";
-import { buildSetupElement } from "services/videos";
+import { buildElement as buildSetupElement } from "services/videos/setup_videos";
+import { buildElement as buildReviewElement } from "services/videos/review_videos";
 import { liveQuery } from "dexie";
 import database from "services/database";
 
@@ -38,8 +39,11 @@ export default class Video extends Model({
   duration: tProp(types.maybeNull(types.number), null).withSetter(),
 
   // The time offset of this video to bring it into alignment with the others
-  // in the session
+  // in the session.
   offset: tProp(types.maybeNull(types.number), null).withSetter(),
+
+  // The current time of the review video
+  currentTime: tProp(types.maybeNull(types.number), null).withSetter(),
 
   // Original width of the video
   width: tProp(types.maybeNull(types.number), null).withSetter(),
@@ -56,10 +60,17 @@ export default class Video extends Model({
   // Is the setup video currently seeking?
   setupVideoSeeking: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
+  // Is the review video currently playing?
+  reviewVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
+
+  // Is the review video currently seeking?
+  reviewVideoSeeking: tProp(types.maybeNull(types.boolean), null).withSetter(),
+
   // Volume of the video
   volume: tProp(types.number, 0.5).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
+  reviewVideoEl: HTMLVideoElement | null = null;
 
   onAttachedToRootStore() {
     // We reset this back to false as the elements will have to be created
@@ -68,9 +79,11 @@ export default class Video extends Model({
 
     // Videos always start in a non playing state
     this.setSetupVideoPlaying(false);
+    this.setReviewVideoPlaying(false);
 
     // Videos always start in a non seeking state
     this.setSetupVideoSeeking(false);
+    this.setReviewVideoSeeking(false);
 
     // Start observing the storage file handle, when it's present we'll create
     // the required video elements
@@ -85,7 +98,10 @@ export default class Video extends Model({
         }
 
         this.setupVideoEl = await buildSetupElement(this, result.fileHandle);
-        // todo, build playerVideo element as well
+        this.reviewVideoEl = await buildReviewElement(this, result.fileHandle);
+
+        // Mark that all setup videos have now been created, this controls
+        // further UI being created
         this.setVideoElementsCreated(true);
       },
       error: (error) => console.error(error),
