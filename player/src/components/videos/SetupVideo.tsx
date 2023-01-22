@@ -9,7 +9,7 @@ type Props = {
   video: Video;
 };
 
-const SetupList = observer(({ video }: Props) => {
+const SetupListItem = observer(({ video }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
 
@@ -22,7 +22,6 @@ const SetupList = observer(({ video }: Props) => {
   }, []);
 
   // Once the local file handle is present, append it to the player
-  // TODO: Move to video controls service
   React.useEffect(() => {
     if (containerEl.current === null || video.setupVideoEl === null) {
       return;
@@ -73,4 +72,4 @@ const SetupList = observer(({ video }: Props) => {
   );
 });
 
-export default SetupList;
+export default SetupListItem;

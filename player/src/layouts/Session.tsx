@@ -22,7 +22,7 @@ export default function Session() {
         </div>
         <div className="basis-5/12"></div>
       </header>
-      <main className="flex-grow overflow-y-auto overflow-x-hidden bg-stone-900">
+      <main className="flex-grow overflow-y-auto overflow-x-hidden">
         <Outlet />
       </main>
     </div>

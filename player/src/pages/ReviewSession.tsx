@@ -1,4 +1,6 @@
-import { useRouteLoaderData, Link } from "react-router-dom";
+import { useRouteLoaderData } from "react-router-dom";
+
+import ReviewVideoList from "components/sessions/ReviewVideoList";
 
 import type { SessionLoaderData } from "services/routes";
 
@@ -7,9 +9,11 @@ export default function ReviewSession() {
 
   return (
     <div className="flex items-stretch w-full h-full">
-      <div className="min-w-[16rem]">viewpoints</div>
+      <div className="w-2/12 border-r border-stone-700">
+        <ReviewVideoList session={data.session} />
+      </div>
       <div className="flex-grow">Main video</div>
-      <div className="min-w-[32rem]">Notes</div>
+      <div className="w-2/12 border-l border-stone-700">Notes</div>
     </div>
   );
 }

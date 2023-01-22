@@ -13,7 +13,11 @@ const customStyles = {
 
 const Modal = ({ children, ...props }: Props) => {
   return (
-    <BaseModal style={customStyles} {...props}>
+    <BaseModal
+      overlayClassName="fixed inset-0 bg-black/70 flex items-center justify-center"
+      className="bg-stone-800 p-4"
+      {...props}
+    >
       {children}
     </BaseModal>
   );
