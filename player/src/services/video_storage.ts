@@ -126,16 +126,14 @@ export function copyToStorage(
   fileHandle: FileSystemFileHandle,
   video: Video
 ): void {
-  const session = video.getSession();
-
   worker.postMessage({
     fileHandle,
-    folderName: session.id,
+    folderName: video.session.id,
     fileName: video.id,
     kind: SendMessageKinds.COPY_FILE,
     meta: {
       video_id: video.id,
-      session_id: session.id,
+      session_id: video.session.id,
     },
   });
 }
@@ -147,15 +145,13 @@ export function copyToStorage(
  * @param id
  */
 export function removeFromStorage(video: Video): void {
-  const session = video.getSession();
-
   worker.postMessage({
-    folderName: session.id,
+    folderName: video.session.id,
     fileName: video.id,
     kind: SendMessageKinds.REMOVE_FILE,
     meta: {
       video_id: video.id,
-      session_id: session.id,
+      session_id: video.session.id,
     },
   });
 }

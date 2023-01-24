@@ -13,7 +13,7 @@ const ReviewVideoList = observer(({ session }: Props) => {
   ));
 
   if (renderedReviewVideos.length === 0) {
-    return <em>No videos in this session</em>;
+    return null;
   }
 
   return <>{renderedReviewVideos}</>;

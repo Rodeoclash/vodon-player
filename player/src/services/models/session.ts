@@ -1,14 +1,25 @@
 import { computed } from "mobx";
 
-import { model, modelAction, Model, types, tProp, idProp } from "mobx-keystone";
+import {
+  model,
+  modelAction,
+  Model,
+  types,
+  tProp,
+  idProp,
+  prop,
+  Ref,
+} from "mobx-keystone";
 
 import Video from "./video";
+import { videoRef } from "./references";
 
 @model("VodonPlayer/Session")
 export default class Session extends Model({
   id: idProp,
   name: tProp(types.string),
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
+  selectedVideoRef: prop<Ref<Video> | null>(),
 }) {
   @modelAction
   setName(name: string) {
@@ -27,6 +38,13 @@ export default class Session extends Model({
     );
   }
 
+  @modelAction
+  selectVideo(video: Video) {
+    if (!this.videos.includes(video)) throw new Error("unknown video");
+
+    this.selectedVideoRef = video ? videoRef(video) : null;
+  }
+
   @computed
   get shortestVideoOffset() {
     return this.videos.reduce((acc, video) => {
@@ -36,6 +54,11 @@ export default class Session extends Model({
 
       return video.offset < acc ? video.offset : acc;
     }, Infinity);
+  }
+
+  @computed
+  get selectedVideo() {
+    return this.selectedVideoRef ? this.selectedVideoRef.current : null;
   }
 
   getVideoById(id: string) {

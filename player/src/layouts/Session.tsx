@@ -3,7 +3,7 @@ import { Outlet, NavLink } from "react-router-dom";
 export default function Session() {
   return (
     <div className="w-screen h-screen flex flex-col">
-      <header className="h-16 bg-stone-800 flex items-stretch">
+      <header className="h-16 flex items-stretch border-b border-stone-700">
         <nav className="basis-5/12 flex items-center gap-4 px-4">
           <NavLink className="navlink" to="/">
             Sessions

@@ -10,8 +10,13 @@ import Session from "./session";
 @model("VodonPlayer/Video")
 export default class Video extends Model({
   id: idProp,
+
+  // (usually) the name of the player in the video. Defaults to the filename.
   name: tProp(types.string).withSetter(),
 
+  // We want to prompt the user to do some actions after the video has been
+  // first added (like setting a custom name). This flag tracks if we have
+  // prompted the user to do this things.
   runFirstSetup: tProp(types.boolean, false).withSetter(),
 
   // Are we in progress with a copy to local storage?
@@ -26,7 +31,9 @@ export default class Video extends Model({
     null
   ).withSetter(),
 
-  // Have the video element been created for this video?
+  // Have the video element been created for this video? The creation of these
+  // elements is performed when we've attached the video to the root store
+  // TOOD: We may be able to remove this
   videoElementsCreated: tProp(
     types.maybeNull(types.boolean),
     null
@@ -72,6 +79,10 @@ export default class Video extends Model({
   setupVideoEl: HTMLVideoElement | null = null;
   reviewVideoEl: HTMLVideoElement | null = null;
 
+  getRefId() {
+    return this.id;
+  }
+
   onAttachedToRootStore() {
     // We reset this back to false as the elements will have to be created
     // again from scratch
@@ -110,7 +121,7 @@ export default class Video extends Model({
 
   @computed
   get calculatedOffset() {
-    const session = this.getSession();
+    const session = this.session;
 
     if (this.offset === null || session.shortestVideoOffset === Infinity) {
       return null;
@@ -133,7 +144,8 @@ export default class Video extends Model({
    * video is the "array" object in the session, not the session itself.
    * @returns Session
    */
-  getSession() {
+  @computed
+  get session() {
     return findParent<Session>(this, (p) => p instanceof Session)!;
   }
 }
