@@ -31,7 +31,9 @@ const Form = ({ video, innerRef, onSubmit }: Props) => {
         {(formik) => {
           return (
             <>
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name" className="label text-bright">
+                Name
+              </label>
               <input
                 autoFocus
                 className={"input"}

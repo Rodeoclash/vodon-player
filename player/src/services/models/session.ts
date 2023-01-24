@@ -66,6 +66,11 @@ export default class Session extends Model({
     return this.videos.length > 0;
   }
 
+  @computed
+  get notes() {
+    return this.videos.flatMap((video) => video.notes);
+  }
+
   getVideoById(id: string) {
     return this.videos.find((video) => video.id === id);
   }

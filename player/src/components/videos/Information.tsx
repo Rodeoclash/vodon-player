@@ -4,6 +4,9 @@ import Video from "services/models/video";
 import { secondsToHms } from "services/time";
 
 import Modal from "components/ui/Modal";
+import ModalHeader from "components/ui/ModalHeader";
+import ModalBody from "components/ui/ModalBody";
+import ModalControls from "components/ui/ModalControls";
 
 type Props = {
   video: Video;
@@ -48,34 +51,40 @@ const Information = observer(({ video }: Props) => {
         isOpen={informationOpen}
         onRequestClose={() => handleRequestClose()}
       >
-        <h2 className="header-2 mb-4">Video information</h2>
-        <dl>
-          <dt>Name</dt>
-          <dd>{video.name}</dd>
-          <dt>Type</dt>
-          <dd>{video.type}</dd>
-          <dt>Duration</dt>
-          <dd>{secondsToHms(video.duration)}</dd>
-          <dt>Offset</dt>
-          <dd>{secondsToHms(video.offset)}</dd>
-          <dt>Calculated offset</dt>
-          <dd>{video.calculatedOffset}</dd>
-          <dt>Width</dt>
-          <dd>{video.width}</dd>
-          <dt>Height</dt>
-          <dd>{video.height}</dd>
-          <dt>Framerate</dt>
-          <dd>{video.frameRate}</dd>
-        </dl>
-        <div className="flex items-center gap-4 mt-4">
-          <button
-            className="btn btn-primary"
-            onClick={() => handleRequestClose()}
-            type="submit"
-          >
-            Close
-          </button>
-        </div>
+        <ModalHeader>
+          <h2 className="header-2">Video information</h2>
+        </ModalHeader>
+        <ModalBody>
+          <dl>
+            <dt>Name</dt>
+            <dd>{video.name}</dd>
+            <dt>Type</dt>
+            <dd>{video.type}</dd>
+            <dt>Duration</dt>
+            <dd>{secondsToHms(video.duration)}</dd>
+            <dt>Offset</dt>
+            <dd>{secondsToHms(video.offset)}</dd>
+            <dt>Calculated offset</dt>
+            <dd>{video.calculatedOffset}</dd>
+            <dt>Width</dt>
+            <dd>{video.width}</dd>
+            <dt>Height</dt>
+            <dd>{video.height}</dd>
+            <dt>Framerate</dt>
+            <dd>{video.frameRate}</dd>
+          </dl>
+        </ModalBody>
+        <ModalControls>
+          <div className="flex items-center justify-end gap-4">
+            <button
+              className="btn btn-primary"
+              onClick={() => handleRequestClose()}
+              type="submit"
+            >
+              Close
+            </button>
+          </div>
+        </ModalControls>
       </Modal>
     </>
   );

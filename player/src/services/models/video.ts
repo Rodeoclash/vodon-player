@@ -6,18 +6,17 @@ import { liveQuery } from "dexie";
 import database from "services/database";
 
 import Session from "./session";
+import Note from "./note";
 
 @model("VodonPlayer/Video")
 export default class Video extends Model({
   id: idProp,
 
+  // The notes on the video
+  notes: tProp(types.array(types.model<Note>(() => Note)), () => []),
+
   // (usually) the name of the player in the video. Defaults to the filename.
   name: tProp(types.string).withSetter(),
-
-  // We want to prompt the user to do some actions after the video has been
-  // first added (like setting a custom name). This flag tracks if we have
-  // prompted the user to do this things.
-  runFirstSetup: tProp(types.boolean, false).withSetter(),
 
   // Are we in progress with a copy to local storage?
   copyToStorageInProgress: tProp(

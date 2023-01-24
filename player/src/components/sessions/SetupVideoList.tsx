@@ -13,7 +13,7 @@ const SetupVideoList = observer(({ session }: Props) => {
   ));
 
   if (renderedSetupVideos.length === 0) {
-    return <em>No videos in this session</em>;
+    return null;
   }
 
   return <>{renderedSetupVideos}</>;

@@ -15,10 +15,6 @@
     @apply text-xl;
   }
 
-  .button {
-    @apply px-4 py-2 rounded border border-zinc-700 hover:bg-zinc-700;
-  }
-
   .link {
     @apply underline text-sky-500;
   }
@@ -29,6 +25,10 @@
 
   .navlink.active {
     @apply border-b-2 border-b-sky-500 top-[1px] relative;
+  }
+
+  .paragraph {
+    @apply text-white/70;
   }
 
   .table {
@@ -43,28 +43,32 @@
     @apply border border-black/30 px-4 py-2;
   }
 
-  .videoControl {
-    @apply text-white/90 bg-gray-800 px-2 relative h-12 flex items-center;
-  }
-
   .text-bright {
     @apply text-white/90;
   }
 
   .input {
-    @apply block border border-slate-400 px-4 py-2 text-stone-900;
+    @apply my-2 text-white block border border-slate-400 px-4 py-2 w-full bg-zinc-700 border-0 outline-0;
   }
 
   .btn {
-    @apply px-4 py-2;
+    @apply px-4 py-2 border-0;
   }
 
   .btn-primary {
-    @apply bg-slate-400;
+    @apply bg-zinc-700;
+  }
+
+  .btn-primary:hover {
+    @apply bg-zinc-600;
   }
 
   .btn-secondary {
-    @apply px-4 py-2 border border-slate-400;
+    @apply border border-zinc-600;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-zinc-600;
   }
 }
 
