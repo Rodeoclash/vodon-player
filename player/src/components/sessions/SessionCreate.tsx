@@ -10,7 +10,7 @@ export default function SessionCreate() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    const session = new Session({ name: "Test" });
+    const session = new Session({ name: "Test", selectedVideoRef: null });
     store.addSession(session);
     navigate(`/sessions/${session.id}/setup`);
   };

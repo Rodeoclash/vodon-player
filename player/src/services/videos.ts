@@ -67,7 +67,7 @@ export const removeVideo = async (video: Video) => {
   await database.table("storageVideoFileHandles").delete(video.id);
 
   // Remove from session
-  video.getSession().removeVideo(video);
+  video.session.removeVideo(video);
 };
 
 export const requestLocalFileHandlePermission = async (
