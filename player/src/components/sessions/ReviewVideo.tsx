@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
+import { Link } from "react-router-dom";
 
 type Props = {
   session: Session;
@@ -41,9 +42,13 @@ const ReviewVideo = observer(({ session }: Props) => {
             />
           </svg>
         </div>
-        <h2 className="header-2 mb-2">No videos setup</h2>
+        <h2 className="header-2 mb-2">No videos!</h2>
         <p className="paragraph text-white/50">
-          Please setup some videos first
+          Please{" "}
+          <Link to={`/sessions/${session.id}/setup`} className="link">
+            setup your videos
+          </Link>{" "}
+          first
         </p>
       </div>
     );

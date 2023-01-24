@@ -61,6 +61,11 @@ export default class Session extends Model({
     return this.selectedVideoRef ? this.selectedVideoRef.current : null;
   }
 
+  @computed
+  get hasVideos() {
+    return this.videos.length > 0;
+  }
+
   getVideoById(id: string) {
     return this.videos.find((video) => video.id === id);
   }

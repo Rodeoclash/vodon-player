@@ -20,15 +20,15 @@
   }
 
   .link {
-    @apply underline text-green-600;
+    @apply underline text-sky-500;
   }
 
   .navlink {
-    @apply text-green-300;
+    @apply flex items-center justify-center border-r border-stone-700 px-4;
   }
 
   .navlink.active {
-    @apply text-green-600;
+    @apply border-b-2 border-b-sky-500 top-[1px] relative;
   }
 
   .table {
