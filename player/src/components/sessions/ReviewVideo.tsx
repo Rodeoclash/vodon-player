@@ -55,7 +55,28 @@ const ReviewVideo = observer(({ session }: Props) => {
   }
 
   if (selectedVideo === null) {
-    return <p>Please select a video</p>;
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="opacity-50">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-24 h-24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
+          </svg>
+        </div>
+
+        <p className="mt-4">Select a video from the panel</p>
+      </div>
+    );
   }
 
   return <div ref={containerEl} className="w-full" />;

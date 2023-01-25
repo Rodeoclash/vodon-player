@@ -11,7 +11,7 @@ type Props = {
 const Toolbar = ({ video }: Props) => {
   return (
     <>
-      <div className="h-12 bg-black/90 flex items-center px-4 gap-2">
+      <div className="flex items-center gap-2">
         <div className="flex-grow">
           <Edit video={video} />
         </div>

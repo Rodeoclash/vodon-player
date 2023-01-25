@@ -12,7 +12,7 @@ const ReviewSession = observer(() => {
   return (
     <div className="flex items-stretch w-full h-full">
       {session.hasVideos === true && (
-        <div className="w-2/12 border-r border-stone-700">
+        <div className="w-2/12 border-r border-stone-700 overflow-y-auto">
           <ReviewVideoList session={session} />
         </div>
       )}

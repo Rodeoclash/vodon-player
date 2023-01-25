@@ -32,7 +32,7 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
     if (selectedVideo !== null && selectedVideo.id === video.id) {
       return (
         <div className="flex items-center justify-center w-full italic text-white/50">
-          Video selected
+          Playing in main window
         </div>
       );
     }
