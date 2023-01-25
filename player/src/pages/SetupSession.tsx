@@ -15,8 +15,8 @@ export default function SetupSessions() {
           <Add session={data.session} />
         </div>
       </div>
-      <div className="w-2/12 border-l border-stone-700 p-4">
-        <h1 className="header-1 mb-4">Getting started</h1>
+      <div className="w-2/12 border-l border-stone-700 p-4 min-w-[28rem]">
+        <h2 className="header-2 mb-4">Getting started</h2>
         <p className="paragraph">
           Configure the following videos to be the same moment in time
         </p>

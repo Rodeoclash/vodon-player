@@ -62,7 +62,7 @@ const SetupListItem = observer(({ video }: Props) => {
         video.duration !== null &&
         video.offset !== null &&
         video.frameLength !== null && (
-          <div className="absolute bottom-4 left-4 right-4 z-10 bg-black/80 p-4">
+          <div className="absolute bottom-4 left-4 right-4 z-10 bg-black/80 p-6">
             <VideoNavigationControls
               currentTime={video.offset}
               duration={video.duration}
