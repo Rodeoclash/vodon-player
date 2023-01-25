@@ -74,7 +74,9 @@ const ReviewVideo = observer(({ session }: Props) => {
           </svg>
         </div>
 
-        <p className="mt-4">Select a video from the panel</p>
+        <p className="mt-4 text-bright max-w-prose">
+          Select a video from the panel to get started
+        </p>
       </div>
     );
   }

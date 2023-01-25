@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
+import useVideoControls from "services/hooks/useVideoControls";
 
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import Toolbar from "components/videos/Toolbar";
@@ -12,6 +13,7 @@ type Props = {
 const SetupListItem = observer(({ video }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(false);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
+  const [gotoTime, pause, play] = useVideoControls(video.setupVideoEl);
 
   const handleMouseEnter = React.useCallback(() => {
     setActive(true);
@@ -72,6 +74,9 @@ const SetupListItem = observer(({ video }: Props) => {
               seeking={video.setupVideoSeeking === true}
               videoEl={video.setupVideoEl}
               volume={video.volume}
+              onPause={() => pause()}
+              onPlay={() => play()}
+              onGotoTime={(time) => gotoTime(time)}
             />
           </div>
         )}

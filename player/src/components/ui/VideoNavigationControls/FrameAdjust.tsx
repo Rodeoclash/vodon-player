@@ -12,6 +12,7 @@ type Props = {
   keyboardShortcutsEnabled: boolean;
   videoEl: HTMLVideoElement;
   seeking: boolean;
+  onGotoTime: (newTime: number) => void;
 };
 
 const FRAME_ADVANCE_INTERVAL = 100;
@@ -22,16 +23,17 @@ const FrameAdjust = ({
   keyboardShortcutsEnabled,
   videoEl,
   seeking,
+  onGotoTime,
 }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
 
   const handleActivate = React.useCallback(() => {
     switch (direction) {
       case Direction.Forward:
-        videoEl.currentTime = videoEl.currentTime + frameLength * 1;
+        onGotoTime(videoEl.currentTime + frameLength * 1);
         break;
       case Direction.Back:
-        videoEl.currentTime = videoEl.currentTime + frameLength * -1;
+        onGotoTime(videoEl.currentTime + frameLength * -1);
         break;
     }
   }, [direction]);

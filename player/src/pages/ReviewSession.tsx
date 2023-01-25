@@ -19,7 +19,9 @@ const ReviewSession = observer(() => {
       <div className="flex-grow relative">
         <ReviewVideo session={session} />
       </div>
-      <div className="w-2/12 border-l border-stone-700">Notes</div>
+      <div className="w-2/12 border-l border-stone-700 overflow-y-auto">
+        Notes
+      </div>
     </div>
   );
 });
