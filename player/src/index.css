@@ -36,11 +36,11 @@
   }
 
   .th {
-    @apply bg-black/10 px-4 py-2 text-left border border-black/30;
+    @apply bg-zinc-700 px-4 py-2 text-left border border-stone-700;
   }
 
   .td {
-    @apply border border-black/30 px-4 py-2;
+    @apply border px-4 py-2 border-stone-700;
   }
 
   .text-bright {
@@ -69,6 +69,10 @@
 
   .btn-secondary:hover {
     @apply bg-zinc-600;
+  }
+
+  .videoSizer video {
+    @apply w-full h-full;
   }
 }
 

@@ -5,7 +5,7 @@ export default function Session() {
     <div className="w-screen h-screen flex flex-col">
       <header className="shrink-0 h-16 flex items-stretch border-b border-stone-700">
         <div className="flex items-center justify-center signika text-2xl border-r border-stone-700 px-4">
-          VODON Player
+          VODON
         </div>
         <nav className="flex items-stretch">
           <NavLink className="navlink" to="/">

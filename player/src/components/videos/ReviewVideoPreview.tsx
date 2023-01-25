@@ -43,7 +43,7 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
   return (
     <div
       style={style}
-      className="relative bg-stone-800 flex items-stretch justify-items-stretch"
+      className="relative bg-stone-800 flex items-stretch justify-items-stretch cursor-pointer"
       onClick={() => handleClick()}
     >
       <div className="absolute top-0 left-0 bg-black/70 px-2">

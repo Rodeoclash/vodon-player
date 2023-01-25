@@ -2,14 +2,25 @@ import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
 import { Link } from "react-router-dom";
+import VideoSizer from "components/ui/VideoSizer";
+import VideoNavigationControls from "components/ui/VideoNavigationControls";
 
 type Props = {
   session: Session;
 };
 
 const ReviewVideo = observer(({ session }: Props) => {
+  const [active, setActive] = React.useState<boolean | null>(false);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
   const selectedVideo = session.selectedVideo;
+
+  const handleMouseEnter = React.useCallback(() => {
+    setActive(true);
+  }, []);
+
+  const handleMouseLeave = React.useCallback(() => {
+    setActive(false);
+  }, []);
 
   React.useEffect(() => {
     if (
@@ -21,7 +32,7 @@ const ReviewVideo = observer(({ session }: Props) => {
     }
 
     containerEl.current.appendChild(selectedVideo.reviewVideoEl);
-  }, [selectedVideo]);
+  }, [selectedVideo && selectedVideo.reviewVideoEl]);
 
   if (session.videos.length === 0) {
     return (
@@ -81,7 +92,38 @@ const ReviewVideo = observer(({ session }: Props) => {
     );
   }
 
-  return <div ref={containerEl} className="w-full" />;
+  return (
+    <div
+      className="w-full h-full relative"
+      onMouseEnter={() => handleMouseEnter()}
+      onMouseLeave={() => handleMouseLeave()}
+    >
+      <VideoSizer aspectRatio="16:9">
+        <div ref={containerEl} className="w-full h-full" />
+      </VideoSizer>
+      {active === true &&
+        selectedVideo.setupVideoEl !== null &&
+        selectedVideo.duration !== null &&
+        selectedVideo.offset !== null &&
+        selectedVideo.frameLength !== null && (
+          <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
+            <VideoNavigationControls
+              currentTime={selectedVideo.offset}
+              duration={selectedVideo.duration}
+              frameLength={selectedVideo.frameLength}
+              keyboardShortcutsEnabled={true}
+              playing={selectedVideo.setupVideoPlaying === true}
+              seeking={selectedVideo.setupVideoSeeking === true}
+              videoEl={selectedVideo.setupVideoEl}
+              volume={selectedVideo.volume}
+              onPause={() => null}
+              onPlay={() => null}
+              onGotoTime={(time) => null}
+            />
+          </div>
+        )}
+    </div>
+  );
 });
 
 export default ReviewVideo;

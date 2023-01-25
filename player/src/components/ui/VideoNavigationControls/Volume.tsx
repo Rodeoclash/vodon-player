@@ -3,7 +3,6 @@
  */
 
 import * as React from "react";
-import throttle from "lodash.throttle";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 type Props = {
@@ -101,9 +100,7 @@ const Volume = ({ videoEl, volume }: Props) => {
       setContainerWidth(containerRef.current.offsetWidth);
     };
 
-    const throttledHandleResize = throttle(handleResize, 100);
-
-    window.addEventListener("resize", throttledHandleResize);
+    window.addEventListener("resize", handleResize);
 
     // Trigger straight away so that we have the default value
     handleResize();

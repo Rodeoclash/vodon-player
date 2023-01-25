@@ -55,24 +55,43 @@ const Information = observer(({ video }: Props) => {
           <h2 className="header-2">Video information</h2>
         </ModalHeader>
         <ModalBody>
-          <dl>
-            <dt>Name</dt>
-            <dd>{video.name}</dd>
-            <dt>Type</dt>
-            <dd>{video.type}</dd>
-            <dt>Duration</dt>
-            <dd>{secondsToHms(video.duration)}</dd>
-            <dt>Offset</dt>
-            <dd>{secondsToHms(video.offset)}</dd>
-            <dt>Calculated offset</dt>
-            <dd>{video.calculatedOffset}</dd>
-            <dt>Width</dt>
-            <dd>{video.width}</dd>
-            <dt>Height</dt>
-            <dd>{video.height}</dd>
-            <dt>Framerate</dt>
-            <dd>{video.frameRate}</dd>
-          </dl>
+          <table className="table">
+            <tbody>
+              <tr>
+                <th className="th">Name</th>
+                <td className="td">{video.name}</td>
+              </tr>
+              <tr>
+                <th className="th">Type</th>
+                <td className="td">{video.type}</td>
+              </tr>
+              <tr>
+                <th className="th">Duration</th>
+                <td className="td">{secondsToHms(video.duration)}</td>
+              </tr>
+              <tr>
+                <th className="th">Offset</th>
+                <td className="td">{secondsToHms(video.offset)}</td>
+              </tr>
+              <tr>
+                <th className="th">Calculated offset</th>
+                <td className="td">{video.calculatedOffset}</td>
+              </tr>
+              <tr>
+                <th className="th">Width</th>
+                <td className="td">{video.width}</td>
+              </tr>
+              <tr>
+                <th className="th">Height</th>
+                <td className="td">{video.height}</td>
+              </tr>
+              <tr>
+                <th className="th">Framerate</th>
+                <td className="td">{video.frameRate}</td>
+              </tr>
+            </tbody>
+          </table>
+          <dl></dl>
         </ModalBody>
         <ModalControls>
           <div className="flex items-center justify-end gap-4">

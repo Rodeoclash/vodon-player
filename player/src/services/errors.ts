@@ -32,3 +32,9 @@ export class InvalidVideo extends CustomError {
     super(message || "The video was invalid in some way");
   }
 }
+
+export class InvalidDomLayout extends CustomError {
+  public constructor(message?: string) {
+    super(message || "The dom was invalid in some way");
+  }
+}

@@ -12,14 +12,14 @@ const ReviewSession = observer(() => {
   return (
     <div className="flex items-stretch w-full h-full">
       {session.hasVideos === true && (
-        <div className="w-2/12 border-r border-stone-700 overflow-y-auto">
+        <div className="w-96 border-r border-stone-700 overflow-y-auto shrink-0">
           <ReviewVideoList session={session} />
         </div>
       )}
       <div className="flex-grow relative">
         <ReviewVideo session={session} />
       </div>
-      <div className="w-2/12 border-l border-stone-700 overflow-y-auto">
+      <div className="w-96 border-l border-stone-700 overflow-y-auto shrink-0 p-4">
         Notes
       </div>
     </div>
