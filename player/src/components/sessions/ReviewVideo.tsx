@@ -1,6 +1,10 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
+import useVideoControls from "services/hooks/useVideoControls";
+import { InvalidVideo } from "services/errors";
+import bus from "services/bus";
+
 import { Link } from "react-router-dom";
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
@@ -14,13 +18,36 @@ const ReviewVideo = observer(({ session }: Props) => {
   const containerEl = React.useRef<null | HTMLDivElement>(null);
   const selectedVideo = session.selectedVideo;
 
-  const handleMouseEnter = React.useCallback(() => {
-    setActive(true);
-  }, []);
+  if (!selectedVideo) {
+    throw new InvalidVideo(
+      "Review video was loaded but an element was not created for it yet"
+    );
+  }
 
-  const handleMouseLeave = React.useCallback(() => {
+  const [gotoTime, pause, play] = useVideoControls(selectedVideo.reviewVideoEl);
+
+  const handleMouseEnter = () => {
+    setActive(true);
+  };
+
+  const handleMouseLeave = () => {
     setActive(false);
-  }, []);
+  };
+
+  const handlePause = () => {
+    pause();
+    bus.emit("video.pause", selectedVideo);
+  };
+
+  const handlePlay = () => {
+    play();
+    bus.emit("video.play", selectedVideo);
+  };
+
+  const handleGotoTime = (newTime: number) => {
+    gotoTime(newTime);
+    bus.emit("video.gotoTime", selectedVideo, newTime);
+  };
 
   React.useEffect(() => {
     if (
@@ -31,6 +58,7 @@ const ReviewVideo = observer(({ session }: Props) => {
       return;
     }
 
+    selectedVideo.reviewVideoEl.volume = selectedVideo.volume;
     containerEl.current.appendChild(selectedVideo.reviewVideoEl);
   }, [selectedVideo && selectedVideo.reviewVideoEl]);
 
@@ -102,23 +130,23 @@ const ReviewVideo = observer(({ session }: Props) => {
         <div ref={containerEl} className="w-full h-full" />
       </VideoSizer>
       {active === true &&
-        selectedVideo.setupVideoEl !== null &&
+        selectedVideo.reviewVideoEl !== null &&
         selectedVideo.duration !== null &&
-        selectedVideo.offset !== null &&
+        selectedVideo.currentTime !== null &&
         selectedVideo.frameLength !== null && (
           <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
             <VideoNavigationControls
-              currentTime={selectedVideo.offset}
+              currentTime={selectedVideo.currentTime}
               duration={selectedVideo.duration}
               frameLength={selectedVideo.frameLength}
               keyboardShortcutsEnabled={true}
-              playing={selectedVideo.setupVideoPlaying === true}
-              seeking={selectedVideo.setupVideoSeeking === true}
-              videoEl={selectedVideo.setupVideoEl}
+              playing={selectedVideo.reviewVideoPlaying === true}
+              seeking={selectedVideo.reviewVideoSeeking === true}
+              videoEl={selectedVideo.reviewVideoEl}
               volume={selectedVideo.volume}
-              onPause={() => null}
-              onPlay={() => null}
-              onGotoTime={(time) => null}
+              onPause={() => handlePause()}
+              onPlay={() => handlePlay()}
+              onGotoTime={(time) => handleGotoTime(time)}
             />
           </div>
         )}

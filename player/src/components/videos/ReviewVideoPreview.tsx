@@ -23,6 +23,7 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
       return;
     }
 
+    video.reviewVideoEl.volume = 0;
     containerEl.current.appendChild(video.reviewVideoEl);
   }, [selectedVideo]);
 
@@ -43,7 +44,7 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
   return (
     <div
       style={style}
-      className="relative bg-stone-800 flex items-stretch justify-items-stretch cursor-pointer"
+      className="relative bg-stone-800 flex items-stretch justify-items-stretch cursor-pointer outline-sky-500 hover:outline hover:z-10"
       onClick={() => handleClick()}
     >
       <div className="absolute top-0 left-0 bg-black/70 px-2">

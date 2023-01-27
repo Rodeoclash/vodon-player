@@ -1,4 +1,5 @@
 import Video from "services/models/video";
+import bus from "services/bus";
 
 export const buildElement = async (
   video: Video,
@@ -9,6 +10,7 @@ export const buildElement = async (
   const url = URL.createObjectURL(file);
 
   el.volume = video.volume;
+  el.src = url;
 
   // Restore the videos time position from what was saved if it exists
   if (video.currentTime !== null) {
@@ -49,7 +51,36 @@ export const buildElement = async (
 
   el.requestVideoFrameCallback(handleVideoFrame);
 
-  el.src = url;
+  bus.on("video.pause", (originVideo: Video) => {
+    if (video.id === originVideo.id) {
+      return;
+    }
+
+    el.pause();
+  });
+
+  bus.on("video.play", (originVideo: Video) => {
+    if (video.id === originVideo.id) {
+      return;
+    }
+
+    el.play();
+  });
+
+  bus.on("video.gotoTime", (originVideo: Video, newTime: number) => {
+    if (
+      video.id === originVideo.id ||
+      video.calculatedOffset === null ||
+      originVideo.calculatedOffset === null
+    ) {
+      return;
+    }
+
+    const offsetFromIncomingVideo =
+      video.calculatedOffset - originVideo.calculatedOffset;
+
+    el.currentTime = newTime + offsetFromIncomingVideo;
+  });
 
   return el;
 };

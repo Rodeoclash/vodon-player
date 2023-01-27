@@ -14,14 +14,14 @@ import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 type Props = {
   currentTime: number;
   duration: number;
+  onGotoTime: (newTime: number) => void;
   seeking: boolean;
-  videoEl: HTMLVideoElement;
 };
 
 const HANDLE_SIZE = 16;
 const DRAG_TIMEOUT = 100;
 
-const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
+const Progress = ({ currentTime, duration, seeking, onGotoTime }: Props) => {
   const handleRef = React.useRef<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = React.useState<null | number>(
@@ -66,7 +66,7 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
       }
 
       const perc = data.x / containerWidth;
-      videoEl.currentTime = perc * duration;
+      onGotoTime(perc * duration);
     },
     [containerWidth, seeking]
   );
@@ -93,7 +93,7 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
       const bounds = target.getBoundingClientRect();
       const localX = event.clientX - bounds.left;
       const perc = localX / containerWidth;
-      videoEl.currentTime = perc * duration;
+      onGotoTime(perc * duration);
 
       setMouseDownSlider(true);
     },
@@ -101,11 +101,11 @@ const Progress = ({ currentTime, duration, videoEl, seeking }: Props) => {
   );
 
   const handleClickStart = React.useCallback(() => {
-    videoEl.currentTime = 0;
+    onGotoTime(0);
   }, []);
 
   const handleClickEnd = React.useCallback(() => {
-    videoEl.currentTime = duration - 0.01; // for some reason, we can't set exactly the end time
+    onGotoTime(duration - 0.01); // for some reason, we can't set exactly the end time
   }, [duration]);
 
   /**

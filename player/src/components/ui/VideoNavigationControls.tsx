@@ -160,8 +160,8 @@ const VideoNavigationControls = ({
         <Progress
           currentTime={currentTime}
           duration={duration}
+          onGotoTime={onGotoTime}
           seeking={seeking}
-          videoEl={videoEl}
         />
       </div>
     </div>
