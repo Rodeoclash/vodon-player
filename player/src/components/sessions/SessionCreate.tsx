@@ -16,7 +16,7 @@ export default function SessionCreate() {
   };
 
   return (
-    <button className="button" onClick={() => handleClick()}>
+    <button className="btn btn-primary" onClick={() => handleClick()}>
       Create new session
     </button>
   );

@@ -1,3 +1,5 @@
+import { frozen } from "mobx-keystone";
+
 import { MissingLocalFileHandle } from "services/errors";
 import { copyToStorage, removeFromStorage } from "services/video_storage";
 import database from "services/database";
@@ -19,9 +21,26 @@ export const createVideoInSession = async (
 ): Promise<Video> => {
   const file = await fileHandle.getFile();
 
+  // Parse video information and store it
+  const result = await readMediaData(file);
+  const videoTrack = result.media.track.find(
+    (track) => track["@type"] === "Video"
+  ) as any;
+
+  if (videoTrack === undefined) {
+    throw new InvalidVideo(
+      "Could not find a video track in the supplied video"
+    );
+  }
+
   const video = new Video({
     name: file.name,
     type: file.type,
+    height: parseInt(videoTrack.Height),
+    width: parseInt(videoTrack.Width),
+    frameRate: parseFloat(videoTrack.FrameRate),
+    duration: parseFloat(videoTrack.Duration),
+    videoData: frozen(videoTrack),
   });
 
   // Join the video to the session it was being created under
@@ -35,23 +54,6 @@ export const createVideoInSession = async (
 
   // Trigger storing the file
   await storeFile(video);
-
-  // Parse video information and store it
-  const result = await readMediaData(file);
-  const videoTrack = result.media.track.find(
-    (track) => track["@type"] === "Video"
-  ) as any;
-
-  if (videoTrack === undefined) {
-    throw new InvalidVideo(
-      "Could not find a video track in the supplied video"
-    );
-  }
-
-  video.setHeight(parseInt(videoTrack.Height));
-  video.setWidth(parseInt(videoTrack.Width));
-  video.setFrameRate(parseFloat(videoTrack.FrameRate));
-  video.setDuration(parseFloat(videoTrack.Duration));
 
   return video;
 };

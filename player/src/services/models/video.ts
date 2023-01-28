@@ -1,5 +1,13 @@
-import { computed } from "mobx";
-import { model, tProp, Model, types, idProp, findParent } from "mobx-keystone";
+import { computed, action } from "mobx";
+import {
+  model,
+  tProp,
+  Model,
+  types,
+  idProp,
+  findParent,
+  frozen,
+} from "mobx-keystone";
 import { buildElement as buildSetupElement } from "services/videos/setup_videos";
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
 import { liveQuery } from "dexie";
@@ -52,13 +60,16 @@ export default class Video extends Model({
   currentTime: tProp(types.number, 0).withSetter(),
 
   // Original width of the video
-  width: tProp(types.maybeNull(types.number), null).withSetter(),
+  width: tProp(types.number).withSetter(),
 
   // Original height of the video
-  height: tProp(types.maybeNull(types.number), null).withSetter(),
+  height: tProp(types.number).withSetter(),
 
   // Framerate of the video
-  frameRate: tProp(types.maybeNull(types.number), null).withSetter(),
+  frameRate: tProp(types.number).withSetter(),
+
+  // Data about the video returned from mediainfo.js
+  videoData: tProp(types.frozen(types.unchecked<any>())),
 
   // Is the setup video currently playing?
   setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
@@ -146,5 +157,10 @@ export default class Video extends Model({
   @computed
   get session() {
     return findParent<Session>(this, (p) => p instanceof Session)!;
+  }
+
+  @action
+  setFrozenProp(data: object) {
+    this.videoData = frozen(data);
   }
 }
