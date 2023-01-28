@@ -1,4 +1,5 @@
 import * as React from "react";
+import { FRAME_ADVANCE_INTERVAL } from "services/settings";
 
 export enum Direction {
   Forward,
@@ -10,8 +11,6 @@ type Props = {
   onClick: () => void;
   seeking: boolean;
 };
-
-const FRAME_ADVANCE_INTERVAL = 100;
 
 const FrameAdjust = ({ direction, onClick, seeking }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
@@ -30,8 +29,6 @@ const FrameAdjust = ({ direction, onClick, seeking }: Props) => {
   };
 
   React.useEffect(() => {
-    // Abort setting up the interval if we're not active or a seek is already
-    // in progress (which overwhelms the video)
     if (active === false || active === null || seeking === true) {
       return;
     }

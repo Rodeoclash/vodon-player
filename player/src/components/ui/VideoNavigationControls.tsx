@@ -1,6 +1,8 @@
 import * as React from "react";
 import { secondsToHms } from "services/time";
 import { useHotkeys } from "react-hotkeys-hook";
+import { FRAME_ADVANCE_INTERVAL } from "services/settings";
+import { UnknownDirection } from "services/errors";
 
 import FrameAdjust from "./VideoNavigationControls/FrameAdjust";
 import Progress from "./VideoNavigationControls/Progress";
@@ -39,6 +41,9 @@ const VideoNavigationControls = ({
   visible,
   volume,
 }: Props) => {
+  const [frameNavigationHeld, setFrameNavigationHeld] =
+    React.useState<Direction | null>(null);
+
   // Toggle playing of the video on and off depending on the current state
   const handleTogglePlay = () => {
     if (playing === true) {
@@ -75,8 +80,8 @@ const VideoNavigationControls = ({
       if (keyboardShortcutsEnabled === false) {
         return;
       }
-      //handleBackFrame();
-      //setActive(true);
+      handleBackFrame();
+      setFrameNavigationHeld(Direction.Back);
     },
     {
       keydown: true,
@@ -87,10 +92,7 @@ const VideoNavigationControls = ({
   useHotkeys(
     "a,arrowLeft",
     () => {
-      if (keyboardShortcutsEnabled === false) {
-        return;
-      }
-      //setActive(false);
+      setFrameNavigationHeld(null);
     },
     {
       keyup: true,
@@ -104,8 +106,8 @@ const VideoNavigationControls = ({
       if (keyboardShortcutsEnabled === false) {
         return;
       }
-      //handleForwardFrame();
-      //setActive(true);
+      handleForwardFrame();
+      setFrameNavigationHeld(Direction.Forward);
     },
     {
       keydown: true,
@@ -116,16 +118,38 @@ const VideoNavigationControls = ({
   useHotkeys(
     "d,arrowRight",
     () => {
-      if (keyboardShortcutsEnabled === false) {
-        return;
-      }
-      //setActive(false);
+      setFrameNavigationHeld(null);
     },
     {
       keyup: true,
     },
     [keyboardShortcutsEnabled]
   );
+
+  React.useEffect(() => {
+    if (seeking === true || frameNavigationHeld === null) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      switch (frameNavigationHeld) {
+        case Direction.Back:
+          handleBackFrame();
+          break;
+        case Direction.Forward:
+          handleForwardFrame();
+          break;
+        default:
+          throw new UnknownDirection(
+            `A direction was passed to navigate by frame but we didn't understand it`
+          );
+      }
+    }, FRAME_ADVANCE_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [frameNavigationHeld, seeking]);
 
   if (visible === false) {
     return null;

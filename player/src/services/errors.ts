@@ -38,3 +38,12 @@ export class InvalidDomLayout extends CustomError {
     super(message || "The dom was invalid in some way");
   }
 }
+
+export class UnknownDirection extends CustomError {
+  public constructor(message?: string) {
+    super(
+      message ||
+        "An invalid direction was passed and we didn't know what to do with it"
+    );
+  }
+}
