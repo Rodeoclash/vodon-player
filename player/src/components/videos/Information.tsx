@@ -26,6 +26,17 @@ const Information = observer(({ video }: Props) => {
     setInformationOpen(false);
   }, [video]);
 
+  const renderedTableContents = Object.entries(video.videoData.data).map(
+    ([key, value]) => {
+      return (
+        <tr key={key}>
+          <th className="th">{key}</th>
+          <td className="td">{JSON.stringify(value)}</td>
+        </tr>
+      );
+    }
+  );
+
   return (
     <>
       <button
@@ -56,40 +67,7 @@ const Information = observer(({ video }: Props) => {
         </ModalHeader>
         <ModalBody>
           <table className="table">
-            <tbody>
-              <tr>
-                <th className="th">Name</th>
-                <td className="td">{video.name}</td>
-              </tr>
-              <tr>
-                <th className="th">Type</th>
-                <td className="td">{video.type}</td>
-              </tr>
-              <tr>
-                <th className="th">Duration</th>
-                <td className="td">{secondsToHms(video.duration)}</td>
-              </tr>
-              <tr>
-                <th className="th">Offset</th>
-                <td className="td">{secondsToHms(video.offset)}</td>
-              </tr>
-              <tr>
-                <th className="th">Calculated offset</th>
-                <td className="td">{video.calculatedOffset}</td>
-              </tr>
-              <tr>
-                <th className="th">Width</th>
-                <td className="td">{video.width}</td>
-              </tr>
-              <tr>
-                <th className="th">Height</th>
-                <td className="td">{video.height}</td>
-              </tr>
-              <tr>
-                <th className="th">Framerate</th>
-                <td className="td">{video.frameRate}</td>
-              </tr>
-            </tbody>
+            <tbody>{renderedTableContents}</tbody>
           </table>
           <dl></dl>
         </ModalBody>

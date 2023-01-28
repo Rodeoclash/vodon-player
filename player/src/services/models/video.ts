@@ -150,7 +150,6 @@ export default class Video extends Model({
 
   @computed
   get frameRate(): number {
-    console.log(this.videoData.data);
     return this.videoData.data.FrameRate;
   }
 
