@@ -49,9 +49,6 @@ export default class Video extends Model({
   // Mime type of the original video file
   type: tProp(types.maybeNull(types.string), null).withSetter(),
 
-  // The duration of the video
-  duration: tProp(types.maybeNull(types.number), null).withSetter(),
-
   // The time offset of this video to bring it into alignment with the others
   // in the session.
   offset: tProp(types.number, 0).withSetter(),
@@ -59,16 +56,8 @@ export default class Video extends Model({
   // The current time of the review video
   currentTime: tProp(types.number, 0).withSetter(),
 
-  // Original width of the video
-  width: tProp(types.number).withSetter(),
-
-  // Original height of the video
-  height: tProp(types.number).withSetter(),
-
-  // Framerate of the video
-  frameRate: tProp(types.number).withSetter(),
-
-  // Data about the video returned from mediainfo.js
+  // Data about the video returned from mediainfo.js, this is reached into
+  // to collect data about the video file itself (framerate, height etc)
   videoData: tProp(types.frozen(types.unchecked<any>())),
 
   // Is the setup video currently playing?
@@ -157,6 +146,27 @@ export default class Video extends Model({
   @computed
   get session() {
     return findParent<Session>(this, (p) => p instanceof Session)!;
+  }
+
+  @computed
+  get frameRate(): number {
+    console.log(this.videoData.data);
+    return this.videoData.data.FrameRate;
+  }
+
+  @computed
+  get height(): number {
+    return parseInt(this.videoData.data.Height, 10);
+  }
+
+  @computed
+  get width(): number {
+    return parseInt(this.videoData.data.Width, 10);
+  }
+
+  @computed
+  get duration(): number {
+    return parseFloat(this.videoData.data.Duration);
   }
 
   @action

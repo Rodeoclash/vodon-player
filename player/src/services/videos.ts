@@ -36,10 +36,6 @@ export const createVideoInSession = async (
   const video = new Video({
     name: file.name,
     type: file.type,
-    height: parseInt(videoTrack.Height),
-    width: parseInt(videoTrack.Width),
-    frameRate: parseFloat(videoTrack.FrameRate),
-    duration: parseFloat(videoTrack.Duration),
     videoData: frozen(videoTrack),
   });
 
