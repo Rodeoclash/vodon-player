@@ -6,14 +6,14 @@ import * as React from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 type Props = {
-  videoEl: HTMLVideoElement;
+  onChangeVolume: (newVolume: number) => void;
   volume: number;
 };
 
 const HANDLE_SIZE = 16;
 const DRAG_TIMEOUT = 100;
 
-const Volume = ({ videoEl, volume }: Props) => {
+const Volume = ({ volume, onChangeVolume }: Props) => {
   const handleRef = React.useRef<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = React.useState<null | number>(
@@ -51,7 +51,7 @@ const Volume = ({ videoEl, volume }: Props) => {
       }
 
       const perc = data.x / containerWidth;
-      videoEl.volume = perc;
+      onChangeVolume(perc);
     },
     [containerWidth]
   );
@@ -74,17 +74,17 @@ const Volume = ({ videoEl, volume }: Props) => {
       const bounds = target.getBoundingClientRect();
       const localX = event.clientX - bounds.left;
       const perc = localX / containerWidth;
-      videoEl.volume = perc;
+      onChangeVolume(perc);
     },
     [containerWidth, dragInProgress]
   );
 
   const handleClickStart = React.useCallback(() => {
-    videoEl.volume = 0;
+    onChangeVolume(0);
   }, []);
 
   const handleClickEnd = React.useCallback(() => {
-    videoEl.volume = 1;
+    onChangeVolume(1);
   }, []);
 
   /**

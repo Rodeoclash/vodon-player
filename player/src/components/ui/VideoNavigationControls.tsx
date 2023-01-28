@@ -13,13 +13,14 @@ type Props = {
   duration: number;
   frameLength: number;
   keyboardShortcutsEnabled: boolean;
+  onChangeVolume: (newVolume: number) => void;
+  onGotoTime: (newTime: number) => void;
+  onPause: () => void;
+  onPlay: () => void;
   playing: boolean;
   seeking: boolean;
   videoEl: HTMLVideoElement;
   volume: number;
-  onPause: () => void;
-  onPlay: () => void;
-  onGotoTime: (newTime: number) => void;
 };
 
 const VideoNavigationControls = ({
@@ -27,13 +28,14 @@ const VideoNavigationControls = ({
   duration,
   frameLength,
   keyboardShortcutsEnabled,
+  onChangeVolume,
+  onGotoTime,
+  onPause,
+  onPlay,
   playing,
   seeking,
   videoEl,
   volume,
-  onPause,
-  onPlay,
-  onGotoTime,
 }: Props) => {
   const handleTogglePlay = React.useCallback(() => {
     if (playing === true) {
@@ -138,7 +140,7 @@ const VideoNavigationControls = ({
           </svg>
 
           <div className="w-32">
-            <Volume videoEl={videoEl} volume={volume} />
+            <Volume volume={volume} onChangeVolume={onChangeVolume} />
           </div>
           <svg
             xmlns="http://www.w3.org/2000/svg"

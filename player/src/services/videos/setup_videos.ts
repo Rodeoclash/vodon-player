@@ -10,11 +10,7 @@ export const buildElement = async (
 
   el.volume = video.volume;
   el.src = url;
-
-  // Restore the videos time position from what was saved if it exists
-  if (video.offset !== null) {
-    el.currentTime = video.offset;
-  }
+  el.currentTime = video.offset;
 
   el.addEventListener("play", async () => {
     video.setSetupVideoPlaying(true);

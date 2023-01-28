@@ -1,34 +1,39 @@
 import * as React from "react";
 
 const useVideoControls = (videoEl: HTMLVideoElement | null) => {
-  const gotoTime = React.useCallback(
-    (newTime: number) => {
-      if (videoEl === null) {
-        return;
-      }
+  const gotoTime = (newTime: number) => {
+    if (videoEl === null) {
+      return;
+    }
 
-      videoEl.currentTime = newTime;
-    },
-    [videoEl]
-  );
+    videoEl.currentTime = newTime;
+  };
 
-  const pause = React.useCallback(() => {
+  const pause = () => {
     if (videoEl === null) {
       return;
     }
 
     videoEl.pause();
-  }, [videoEl]);
+  };
 
-  const play = React.useCallback(() => {
+  const play = () => {
     if (videoEl === null) {
       return;
     }
 
     videoEl.play();
-  }, [videoEl]);
+  };
 
-  return [gotoTime, pause, play] as const;
+  const setVolume = (newVolume: number) => {
+    if (videoEl === null) {
+      return;
+    }
+
+    videoEl.volume = newVolume;
+  };
+
+  return [gotoTime, pause, play, setVolume] as const;
 };
 
 export default useVideoControls;

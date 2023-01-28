@@ -46,10 +46,10 @@ export default class Video extends Model({
 
   // The time offset of this video to bring it into alignment with the others
   // in the session.
-  offset: tProp(types.maybeNull(types.number), null).withSetter(),
+  offset: tProp(types.number, 0).withSetter(),
 
   // The current time of the review video
-  currentTime: tProp(types.maybeNull(types.number), null).withSetter(),
+  currentTime: tProp(types.number, 0).withSetter(),
 
   // Original width of the video
   width: tProp(types.maybeNull(types.number), null).withSetter(),

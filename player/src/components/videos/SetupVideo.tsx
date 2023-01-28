@@ -13,7 +13,9 @@ type Props = {
 const SetupListItem = observer(({ video }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(false);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
-  const [gotoTime, pause, play] = useVideoControls(video.setupVideoEl);
+  const [gotoTime, pause, play, setVolume] = useVideoControls(
+    video.setupVideoEl
+  );
 
   const handleMouseEnter = React.useCallback(() => {
     setActive(true);
@@ -22,6 +24,11 @@ const SetupListItem = observer(({ video }: Props) => {
   const handleMouseLeave = React.useCallback(() => {
     setActive(false);
   }, []);
+
+  const handleChangeVolume = (newVolume: number) => {
+    video.setVolume(newVolume);
+    setVolume(newVolume);
+  };
 
   // Once the local file handle is present, append it to the player
   React.useEffect(() => {
@@ -62,7 +69,6 @@ const SetupListItem = observer(({ video }: Props) => {
       {active === true &&
         video.setupVideoEl !== null &&
         video.duration !== null &&
-        video.offset !== null &&
         video.frameLength !== null && (
           <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
             <VideoNavigationControls
@@ -70,13 +76,14 @@ const SetupListItem = observer(({ video }: Props) => {
               duration={video.duration}
               frameLength={video.frameLength}
               keyboardShortcutsEnabled={!!active}
+              onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
+              onGotoTime={(time) => gotoTime(time)}
+              onPause={() => pause()}
+              onPlay={() => play()}
               playing={video.setupVideoPlaying === true}
               seeking={video.setupVideoSeeking === true}
               videoEl={video.setupVideoEl}
               volume={video.volume}
-              onPause={() => pause()}
-              onPlay={() => play()}
-              onGotoTime={(time) => gotoTime(time)}
             />
           </div>
         )}

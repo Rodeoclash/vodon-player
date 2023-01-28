@@ -24,7 +24,9 @@ const ReviewVideo = observer(({ session }: Props) => {
     );
   }
 
-  const [gotoTime, pause, play] = useVideoControls(selectedVideo.reviewVideoEl);
+  const [gotoTime, pause, play, setVolume] = useVideoControls(
+    selectedVideo.reviewVideoEl
+  );
 
   const handleMouseEnter = () => {
     setActive(true);
@@ -47,6 +49,15 @@ const ReviewVideo = observer(({ session }: Props) => {
   const handleGotoTime = (newTime: number) => {
     gotoTime(newTime);
     bus.emit("video.gotoTime", selectedVideo, newTime);
+  };
+
+  const handleChangeVolume = (newVolume: number) => {
+    if (selectedVideo.reviewVideoEl === null) {
+      return;
+    }
+
+    selectedVideo.setVolume(newVolume);
+    setVolume(newVolume);
   };
 
   React.useEffect(() => {
@@ -132,7 +143,6 @@ const ReviewVideo = observer(({ session }: Props) => {
       {active === true &&
         selectedVideo.reviewVideoEl !== null &&
         selectedVideo.duration !== null &&
-        selectedVideo.currentTime !== null &&
         selectedVideo.frameLength !== null && (
           <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
             <VideoNavigationControls
@@ -140,13 +150,14 @@ const ReviewVideo = observer(({ session }: Props) => {
               duration={selectedVideo.duration}
               frameLength={selectedVideo.frameLength}
               keyboardShortcutsEnabled={true}
+              onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
+              onGotoTime={(time) => handleGotoTime(time)}
+              onPause={() => handlePause()}
+              onPlay={() => handlePlay()}
               playing={selectedVideo.reviewVideoPlaying === true}
               seeking={selectedVideo.reviewVideoSeeking === true}
               videoEl={selectedVideo.reviewVideoEl}
               volume={selectedVideo.volume}
-              onPause={() => handlePause()}
-              onPlay={() => handlePlay()}
-              onGotoTime={(time) => handleGotoTime(time)}
             />
           </div>
         )}
