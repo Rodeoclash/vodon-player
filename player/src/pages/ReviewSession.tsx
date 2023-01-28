@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useRouteLoaderData } from "react-router-dom";
 
-import ReviewVideo from "components/sessions/ReviewVideo";
+import ReviewVideo from "components/videos/ReviewVideo";
 import ReviewVideoList from "components/sessions/ReviewVideoList";
 import { Link } from "react-router-dom";
 
