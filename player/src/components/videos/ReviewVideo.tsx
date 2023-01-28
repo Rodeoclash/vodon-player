@@ -14,7 +14,7 @@ type Props = {
 };
 
 const ReviewVideo = observer(({ video }: Props) => {
-  const [active, setActive] = React.useState<boolean | null>(false);
+  const [lastActiveAt, setLastActiveAt] = React.useState<number | null>(null);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
 
   const [gotoTime, pause, play, setVolume] = useVideoControls(
@@ -22,11 +22,15 @@ const ReviewVideo = observer(({ video }: Props) => {
   );
 
   const handleMouseEnter = () => {
-    setActive(true);
+    setLastActiveAt(Date.now());
   };
 
   const handleMouseLeave = () => {
-    setActive(false);
+    setLastActiveAt(null);
+  };
+
+  const handleMouseMove = () => {
+    setLastActiveAt(Date.now());
   };
 
   const handlePause = () => {
@@ -53,6 +57,7 @@ const ReviewVideo = observer(({ video }: Props) => {
     setVolume(newVolume);
   };
 
+  // Mount the video when it is selected
   React.useEffect(() => {
     if (
       video === null ||
@@ -66,17 +71,28 @@ const ReviewVideo = observer(({ video }: Props) => {
     containerEl.current.appendChild(video.reviewVideoEl);
   }, [video.videoElementsCreated, video]);
 
+  // Hide controls after inactivity
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLastActiveAt(null);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [lastActiveAt]);
+
   return (
     <div
       className="w-full h-full relative"
       onMouseEnter={() => handleMouseEnter()}
       onMouseLeave={() => handleMouseLeave()}
+      onMouseMove={() => handleMouseMove()}
     >
       <VideoSizer aspectRatio="16:9">
         <div ref={containerEl} className="w-full h-full" />
       </VideoSizer>
-      {active === true &&
-        video.reviewVideoEl !== null &&
+      {video.reviewVideoEl !== null &&
         video.duration !== null &&
         video.frameLength !== null && (
           <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
@@ -92,6 +108,7 @@ const ReviewVideo = observer(({ video }: Props) => {
               playing={video.reviewVideoPlaying === true}
               seeking={video.reviewVideoSeeking === true}
               videoEl={video.reviewVideoEl}
+              visible={lastActiveAt !== null}
               volume={video.volume}
             />
           </div>

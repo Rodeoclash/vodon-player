@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 
 export enum Direction {
   Forward,
@@ -8,39 +7,18 @@ export enum Direction {
 
 type Props = {
   direction: Direction;
-  frameLength: number;
-  keyboardShortcutsEnabled: boolean;
-  videoEl: HTMLVideoElement;
+  onClick: () => void;
   seeking: boolean;
-  onGotoTime: (newTime: number) => void;
 };
 
 const FRAME_ADVANCE_INTERVAL = 100;
 
-const FrameAdjust = ({
-  direction,
-  frameLength,
-  keyboardShortcutsEnabled,
-  videoEl,
-  seeking,
-  onGotoTime,
-}: Props) => {
+const FrameAdjust = ({ direction, onClick, seeking }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
-
-  const handleActivate = React.useCallback(() => {
-    switch (direction) {
-      case Direction.Forward:
-        onGotoTime(videoEl.currentTime + frameLength * 1);
-        break;
-      case Direction.Back:
-        onGotoTime(videoEl.currentTime + frameLength * -1);
-        break;
-    }
-  }, [direction]);
 
   const handleMouseDown = React.useCallback(() => {
     setActive(true);
-    handleActivate();
+    onClick();
   }, []);
 
   const handleMouseUp = React.useCallback(() => {
@@ -51,70 +29,6 @@ const FrameAdjust = ({
     setActive(false);
   }, []);
 
-  useHotkeys(
-    "a,arrowLeft",
-    () => {
-      if (
-        keyboardShortcutsEnabled === false ||
-        direction === Direction.Forward
-      ) {
-        return;
-      }
-      handleActivate();
-      setActive(true);
-    },
-    {
-      keydown: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
-  useHotkeys(
-    "a,arrowLeft",
-    () => {
-      if (
-        keyboardShortcutsEnabled === false ||
-        direction === Direction.Forward
-      ) {
-        return;
-      }
-      setActive(false);
-    },
-    {
-      keyup: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
-  useHotkeys(
-    "d,arrowRight",
-    () => {
-      if (keyboardShortcutsEnabled === false || direction === Direction.Back) {
-        return;
-      }
-      handleActivate();
-      setActive(true);
-    },
-    {
-      keydown: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
-  useHotkeys(
-    "d,arrowRight",
-    () => {
-      if (keyboardShortcutsEnabled === false || direction === Direction.Back) {
-        return;
-      }
-      setActive(false);
-    },
-    {
-      keyup: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
   React.useEffect(() => {
     // Abort setting up the interval if we're not active or a seek is already
     // in progress (which overwhelms the video)
@@ -123,19 +37,13 @@ const FrameAdjust = ({
     }
 
     const interval = setInterval(() => {
-      handleActivate();
+      onClick();
     }, FRAME_ADVANCE_INTERVAL);
 
     return () => {
       clearInterval(interval);
     };
   }, [active, seeking]);
-
-  React.useEffect(() => {
-    if (keyboardShortcutsEnabled === false && active === true) {
-      setActive(false);
-    }
-  }, [keyboardShortcutsEnabled, active]);
 
   const renderedLeftArrow = (
     <svg

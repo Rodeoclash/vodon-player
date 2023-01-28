@@ -20,6 +20,7 @@ type Props = {
   playing: boolean;
   seeking: boolean;
   videoEl: HTMLVideoElement;
+  visible: boolean;
   volume: number;
 };
 
@@ -35,15 +36,27 @@ const VideoNavigationControls = ({
   playing,
   seeking,
   videoEl,
+  visible,
   volume,
 }: Props) => {
-  const handleTogglePlay = React.useCallback(() => {
+  // Toggle playing of the video on and off depending on the current state
+  const handleTogglePlay = () => {
     if (playing === true) {
       onPause();
     } else {
       onPlay();
     }
-  }, [playing]);
+  };
+
+  // go back one frame, used by frame control buttons and keyboard shortcuts
+  const handleBackFrame = () => {
+    onGotoTime(videoEl.currentTime + frameLength * -1);
+  };
+
+  // go forward one frame, used by frame control buttons and keyboard shortcuts
+  const handleForwardFrame = () => {
+    onGotoTime(videoEl.currentTime + frameLength * 1);
+  };
 
   useHotkeys(
     "space",
@@ -56,6 +69,68 @@ const VideoNavigationControls = ({
     [keyboardShortcutsEnabled, playing]
   );
 
+  useHotkeys(
+    "a,arrowLeft",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      //handleBackFrame();
+      //setActive(true);
+    },
+    {
+      keydown: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "a,arrowLeft",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      //setActive(false);
+    },
+    {
+      keyup: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "d,arrowRight",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      //handleForwardFrame();
+      //setActive(true);
+    },
+    {
+      keydown: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "d,arrowRight",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      //setActive(false);
+    },
+    {
+      keyup: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  if (visible === false) {
+    return null;
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -67,11 +142,8 @@ const VideoNavigationControls = ({
           <div className="flex items-center justify-center">
             <FrameAdjust
               direction={Direction.Back}
-              frameLength={frameLength}
-              keyboardShortcutsEnabled={keyboardShortcutsEnabled}
               seeking={seeking}
-              videoEl={videoEl}
-              onGotoTime={onGotoTime}
+              onClick={() => handleBackFrame()}
             />
           </div>
           <div
@@ -115,11 +187,8 @@ const VideoNavigationControls = ({
           <div className="flex items-center justify-center">
             <FrameAdjust
               direction={Direction.Forward}
-              frameLength={frameLength}
-              keyboardShortcutsEnabled={keyboardShortcutsEnabled}
               seeking={seeking}
-              videoEl={videoEl}
-              onGotoTime={onGotoTime}
+              onClick={() => handleForwardFrame()}
             />
           </div>
         </div>
