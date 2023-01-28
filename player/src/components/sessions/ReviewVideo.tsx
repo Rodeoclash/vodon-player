@@ -71,7 +71,7 @@ const ReviewVideo = observer(({ session }: Props) => {
 
     selectedVideo.reviewVideoEl.volume = selectedVideo.volume;
     containerEl.current.appendChild(selectedVideo.reviewVideoEl);
-  }, [selectedVideo && selectedVideo.reviewVideoEl]);
+  }, [selectedVideo?.videoElementsCreated, selectedVideo]);
 
   if (session.videos.length === 0) {
     return (

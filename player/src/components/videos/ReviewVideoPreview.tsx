@@ -25,7 +25,7 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
 
     video.reviewVideoEl.volume = 0;
     containerEl.current.appendChild(video.reviewVideoEl);
-  }, [selectedVideo]);
+  }, [video.videoElementsCreated, selectedVideo]);
 
   const style = { aspectRatio: `${video.width}/${video.height}` };
 
