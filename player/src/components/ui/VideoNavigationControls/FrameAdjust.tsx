@@ -16,18 +16,18 @@ const FRAME_ADVANCE_INTERVAL = 100;
 const FrameAdjust = ({ direction, onClick, seeking }: Props) => {
   const [active, setActive] = React.useState<boolean | null>(null);
 
-  const handleMouseDown = React.useCallback(() => {
+  const handleMouseDown = () => {
     setActive(true);
     onClick();
-  }, []);
+  };
 
-  const handleMouseUp = React.useCallback(() => {
+  const handleMouseUp = () => {
     setActive(false);
-  }, []);
+  };
 
-  const handleMouseLeave = React.useCallback(() => {
+  const handleMouseLeave = () => {
     setActive(false);
-  }, []);
+  };
 
   React.useEffect(() => {
     // Abort setting up the interval if we're not active or a seek is already

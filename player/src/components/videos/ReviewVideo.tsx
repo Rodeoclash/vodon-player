@@ -14,7 +14,17 @@ type Props = {
 };
 
 const ReviewVideo = observer(({ video }: Props) => {
+  // track the last time activity occured inside the review video, used to
+  // show hide controls.
   const [lastActiveAt, setLastActiveAt] = React.useState<number | null>(null);
+
+  // track when the user is actually interacting with a control area on the
+  // screen, this is used to prevent the controls from being removed when
+  // the user is interacting with them.
+  const [controlsHovered, setControlsHovered] = React.useState<boolean | null>(
+    null
+  );
+
   const containerEl = React.useRef<null | HTMLDivElement>(null);
 
   const [gotoTime, pause, play, setVolume] = useVideoControls(
@@ -95,7 +105,11 @@ const ReviewVideo = observer(({ video }: Props) => {
       {video.reviewVideoEl !== null &&
         video.duration !== null &&
         video.frameLength !== null && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
+          <div
+            className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4"
+            onMouseEnter={() => setControlsHovered(true)}
+            onMouseLeave={() => setControlsHovered(false)}
+          >
             <VideoNavigationControls
               currentTime={video.currentTime}
               duration={video.duration}
@@ -108,7 +122,7 @@ const ReviewVideo = observer(({ video }: Props) => {
               playing={video.reviewVideoPlaying === true}
               seeking={video.reviewVideoSeeking === true}
               videoEl={video.reviewVideoEl}
-              visible={lastActiveAt !== null}
+              visible={lastActiveAt !== null || controlsHovered === true}
               volume={video.volume}
             />
           </div>
