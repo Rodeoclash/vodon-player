@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.7",
+    "@tiptap/react": "^2.0.0-beta.209",
+    "@tiptap/starter-kit": "^2.0.0-beta.209",
     "@types/react-modal": "^3.13.1",
     "@types/wicg-file-system-access": "^2020.9.5",
     "classnames": "^2.3.2",
@@ -29,6 +31,7 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.6.1",
     "ts-custom-error": "^3.3.1",
+    "uuid": "^9.0.0",
     "vite-tsconfig-paths": "^4.0.3",
     "workbox-precaching": "^6.5.4"
   },
@@ -36,6 +39,7 @@
     "@types/lodash.throttle": "^4.1.7",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
+    "@types/uuid": "^9.0.0",
     "@vitejs/plugin-react": "^3.0.0",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.20",
