@@ -29,3 +29,15 @@ Then you can connect to it at `http://localhost:3000`
 ## Future features
 
 While the Vodon Player is open source, it is intended to be backed by a closed source service called Vodon Cloud. Vodon Cloud will automatically back up the local state of the app and save the videos used in the review into remote storage. This will make it easier to share reviews with others as they will be able to visit a URL and automatically download the review plus stream the videos used in it (and automatically download the videos to their local machine)
+
+## Todo:
+
+1. Add multiple videos at once
+2. Drag and drop to add video (including multiple)
+3. Notes on videos (should us a rich text system)
+4. Drawing on videos (should be assigned to notes first)
+5. Fullscreen
+6. Switch player POV via number keys
+7. Skip forward / back n number of seconds using w, s
+8. Settings page to configure things like skip distance
+9. Roster / players assignable to videos
