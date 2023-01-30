@@ -129,6 +129,13 @@ export default class Video extends Model({
   }
 
   @computed
+  get sortedBookmarks() {
+    return [...this.bookmarks].sort((a, b) => {
+      return a.videoTimestamp - b.videoTimestamp;
+    });
+  }
+
+  @computed
   get calculatedOffset() {
     const session = this.session;
 

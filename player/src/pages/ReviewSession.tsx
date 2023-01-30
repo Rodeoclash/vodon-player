@@ -3,7 +3,7 @@ import { useRouteLoaderData } from "react-router-dom";
 
 import { Link } from "react-router-dom";
 
-import AddBookmark from "components/videos/AddNote";
+import AddBookmark from "components/videos/AddBookmark";
 import BookmarkList from "components/videos/BookmarkList";
 import ReviewVideo from "components/videos/ReviewVideo";
 import ReviewVideoList from "components/sessions/ReviewVideoList";
@@ -85,7 +85,7 @@ const ReviewSession = observer(() => {
       <div className="flex-grow relative">{renderedCenterPanel}</div>
       {selectedVideo && (
         <div className="w-96 border-l border-stone-700 overflow-y-auto shrink-0 flex flex-col">
-          <div className="flex-grow overflow-y-auto p-4">
+          <div className="flex-grow overflow-y-auto">
             <BookmarkList video={selectedVideo} />
           </div>
           <div className="border-t border-stone-700 p-4">

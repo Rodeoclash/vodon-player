@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const List = observer(() => {
   const store = React.useContext(RootStoreContext);
 
-  const renderedSessions = store.sessions.map((session) => (
+  const renderedSessions = store.sortedSessions.map((session) => (
     <tr key={session.id}>
       <td className="td">
         <Link className="link" to={`/sessions/${session.id}/review`}>

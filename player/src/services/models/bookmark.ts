@@ -9,6 +9,7 @@ import Video from "./video";
 export default class Bookmark extends Model({
   id: idProp,
   createdAt: tProp(types.number, Date.now()),
+  videoTimestamp: tProp(types.number),
   pages: tProp(
     types.array(types.model<BookmarkPage>(() => BookmarkPage)),
     () => []
@@ -17,5 +18,15 @@ export default class Bookmark extends Model({
   @computed
   get video() {
     return findParent<Video>(this, (p) => p instanceof Video)!;
+  }
+
+  @computed
+  get pageCount() {
+    return this.pages.length;
+  }
+
+  @computed
+  get hasPages() {
+    return this.pageCount > 0;
   }
 }

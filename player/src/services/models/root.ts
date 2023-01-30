@@ -1,16 +1,18 @@
 import React from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { MissingRequiredAPIs } from "services/errors";
 
 import {
-  model,
-  tProp,
-  Model,
-  types,
-  registerRootStore,
-  modelAction,
-  getSnapshot,
   fromSnapshot,
+  getSnapshot,
+  model,
+  Model,
+  modelAction,
+  registerRootStore,
+  setGlobalConfig,
+  tProp,
+  types,
 } from "mobx-keystone";
 
 import { reaction, computed } from "mobx";
@@ -19,6 +21,12 @@ import Session from "./session";
 import Video from "./video";
 
 const localStorageKey = "vodon-player-data";
+
+setGlobalConfig({
+  // use uuidv4 to generate client side unique ids that can be saved to the
+  // server later (once we have the backend integration ready)
+  modelIdGenerator: uuidv4,
+});
 
 const getInitalState = () => {
   if (typeof Storage === "undefined") {
@@ -69,6 +77,13 @@ export class RootStore extends Model({
   @computed
   get sessionsCount() {
     return this.sessions.length;
+  }
+
+  @computed
+  get sortedSessions() {
+    return [...this.sessions].sort((a, b) => {
+      return a.createdAt - b.createdAt;
+    });
   }
 }
 

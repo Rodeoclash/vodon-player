@@ -1,6 +1,6 @@
-import React from "react";
 import { observer } from "mobx-react-lite";
 
+import Show from "components/bookmarks/Show";
 import Video from "services/models/video";
 
 type Props = {
@@ -8,8 +8,8 @@ type Props = {
 };
 
 const SessionList = observer(({ video }: Props) => {
-  const renderedBookmarks = video.bookmarks.map((bookmark) => (
-    <li key={bookmark.id}>{bookmark.id}</li>
+  const renderedBookmarks = video.sortedBookmarks.map((bookmark) => (
+    <Show key={bookmark.id} bookmark={bookmark} />
   ));
 
   if (renderedBookmarks.length === 0) {
