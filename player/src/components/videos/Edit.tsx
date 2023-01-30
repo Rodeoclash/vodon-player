@@ -39,6 +39,10 @@ const Edit = observer(({ video }: Props) => {
     setEditVideoOpen(false);
   }, []);
 
+  const initialValues = {
+    name: video.name,
+  };
+
   return (
     <>
       <button
@@ -60,7 +64,7 @@ const Edit = observer(({ video }: Props) => {
         <ModalBody>
           <Form
             innerRef={formRef}
-            video={video}
+            initialValues={initialValues}
             onSubmit={(values) => handleSubmit(values)}
           />
         </ModalBody>

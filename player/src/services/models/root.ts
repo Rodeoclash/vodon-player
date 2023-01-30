@@ -13,7 +13,7 @@ import {
   fromSnapshot,
 } from "mobx-keystone";
 
-import { reaction } from "mobx";
+import { reaction, computed } from "mobx";
 
 import Session from "./session";
 import Video from "./video";
@@ -64,6 +64,11 @@ export class RootStore extends Model({
   @modelAction
   addSession(session: Session) {
     this.sessions.push(session);
+  }
+
+  @computed
+  get sessionsCount() {
+    return this.sessions.length;
   }
 }
 

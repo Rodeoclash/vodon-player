@@ -36,7 +36,7 @@
   }
 
   .th {
-    @apply bg-zinc-700 px-4 py-2 text-left border border-stone-700;
+    @apply bg-zinc-800 px-4 py-2 text-left border border-stone-700;
   }
 
   .td {
@@ -44,6 +44,10 @@
   }
 
   .text-bright {
+    @apply text-white/90;
+  }
+
+  .label {
     @apply text-white/90;
   }
 

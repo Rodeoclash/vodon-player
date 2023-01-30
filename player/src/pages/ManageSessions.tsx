@@ -1,13 +1,13 @@
-import SessionList from "components/sessions/SessionList";
-import SessionCreate from "components/sessions/SessionCreate";
+import List from "components/sessions/List";
+import Create from "components/sessions/Create";
 
 export default function ManageSessions() {
   return (
     <>
       <h1 className="header-1">Manage Sessions</h1>
-      <SessionList />
+      <List />
       <div className="mt-4">
-        <SessionCreate />
+        <Create />
       </div>
     </>
   );

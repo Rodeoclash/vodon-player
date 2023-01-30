@@ -1,12 +1,12 @@
-import { computed, action } from "mobx";
+import { computed } from "mobx";
 import {
-  model,
-  tProp,
-  Model,
-  types,
-  idProp,
   findParent,
-  frozen,
+  idProp,
+  model,
+  Model,
+  modelAction,
+  tProp,
+  types,
 } from "mobx-keystone";
 import { buildElement as buildSetupElement } from "services/videos/setup_videos";
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
@@ -14,17 +14,22 @@ import { liveQuery } from "dexie";
 import database from "services/database";
 
 import Session from "./session";
-import Note from "./note";
+import Bookmark from "./bookmark";
 
 @model("VodonPlayer/Video")
 export default class Video extends Model({
   id: idProp,
 
   // The notes on the video
-  notes: tProp(types.array(types.model<Note>(() => Note)), () => []),
+  bookmarks: tProp(
+    types.array(types.model<Bookmark>(() => Bookmark)),
+    () => []
+  ),
 
   // (usually) the name of the player in the video. Defaults to the filename.
   name: tProp(types.string).withSetter(),
+
+  createdAt: tProp(types.number, Date.now()),
 
   // Are we in progress with a copy to local storage?
   copyToStorageInProgress: tProp(
@@ -118,6 +123,11 @@ export default class Video extends Model({
     });
   }
 
+  @modelAction
+  addBookmark(bookmark: Bookmark) {
+    return this.bookmarks.push(bookmark);
+  }
+
   @computed
   get calculatedOffset() {
     const session = this.session;
@@ -166,10 +176,5 @@ export default class Video extends Model({
   @computed
   get duration(): number {
     return parseFloat(this.videoData.data.Duration);
-  }
-
-  @action
-  setFrozenProp(data: object) {
-    this.videoData = frozen(data);
   }
 }

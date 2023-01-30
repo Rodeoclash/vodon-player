@@ -1,4 +1,5 @@
 import React from "react";
+import Video from "services/models/video";
 import { FormikProps, FormikValues } from "formik";
 
 import { Formik } from "formik";
@@ -31,14 +32,14 @@ const Form = ({ initialValues, innerRef, onSubmit }: Props) => {
   return (
     <>
       <Formik
-        initialValues={initialValues}
+        initialValues={{ ...defaultValues, ...initialValues }}
         innerRef={innerRef}
         onSubmit={(values) => onSubmit(values)}
       >
         {(formik) => {
           return (
             <>
-              <label htmlFor="name" className="label text-bright">
+              <label htmlFor="name" className="label">
                 Name
               </label>
               <input

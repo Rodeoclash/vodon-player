@@ -4,35 +4,35 @@ import { RootStoreContext } from "services/models/root";
 
 import { Link } from "react-router-dom";
 
-const SessionList = observer(() => {
+const List = observer(() => {
   const store = React.useContext(RootStoreContext);
 
-  const sessions = store.sessions.map((session) => (
+  const renderedSessions = store.sessions.map((session) => (
     <tr key={session.id}>
-      <td>
+      <td className="td">
         <Link className="link" to={`/sessions/${session.id}/review`}>
-          {session.id}
+          {session.name}
         </Link>
       </td>
-      <td>0</td>
+      <td className="td text-bright">{session.videoCount}</td>
     </tr>
   ));
 
-  if (sessions.length === 0) {
+  if (renderedSessions.length === 0) {
     return <em>No sessions created yet</em>;
   }
 
   return (
-    <table>
+    <table className="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>No. videos</th>
+          <th className="th">Name</th>
+          <th className="th">Number of videos</th>
         </tr>
       </thead>
-      <tbody>{sessions}</tbody>
+      <tbody>{renderedSessions}</tbody>
     </table>
   );
 });
 
-export default SessionList;
+export default List;

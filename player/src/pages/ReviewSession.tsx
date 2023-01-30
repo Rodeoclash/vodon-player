@@ -1,9 +1,12 @@
 import { observer } from "mobx-react-lite";
 import { useRouteLoaderData } from "react-router-dom";
 
+import { Link } from "react-router-dom";
+
+import AddBookmark from "components/videos/AddNote";
+import BookmarkList from "components/videos/BookmarkList";
 import ReviewVideo from "components/videos/ReviewVideo";
 import ReviewVideoList from "components/sessions/ReviewVideoList";
-import { Link } from "react-router-dom";
 
 import type { SessionLoaderData } from "services/routes";
 
@@ -31,13 +34,12 @@ const ReviewSession = observer(() => {
               />
             </svg>
           </div>
-          <h2 className="header-2 mb-2">No videos!</h2>
+          <h2 className="header-2 mb-2">{session.name} has no videos!</h2>
           <p className="paragraph text-white/50">
-            Please{" "}
             <Link to={`/sessions/${session.id}/setup`} className="link">
-              setup your videos
+              Setup your videos
             </Link>{" "}
-            first
+            to get started
           </p>
         </div>
       );
@@ -81,9 +83,16 @@ const ReviewSession = observer(() => {
         </div>
       )}
       <div className="flex-grow relative">{renderedCenterPanel}</div>
-      <div className="w-96 border-l border-stone-700 overflow-y-auto shrink-0 p-4">
-        Notes
-      </div>
+      {selectedVideo && (
+        <div className="w-96 border-l border-stone-700 overflow-y-auto shrink-0 flex flex-col">
+          <div className="flex-grow overflow-y-auto p-4">
+            <BookmarkList video={selectedVideo} />
+          </div>
+          <div className="border-t border-stone-700 p-4">
+            <AddBookmark video={selectedVideo} />
+          </div>
+        </div>
+      )}
     </div>
   );
 });

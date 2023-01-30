@@ -18,6 +18,7 @@ import { videoRef } from "./references";
 export default class Session extends Model({
   id: idProp,
   name: tProp(types.string),
+  createdAt: tProp(types.number, Date.now()),
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
   selectedVideoRef: prop<Ref<Video> | null>(),
 }) {
@@ -28,7 +29,7 @@ export default class Session extends Model({
 
   @modelAction
   addVideo(video: Video) {
-    this.videos.push(video);
+    return this.videos.push(video);
   }
 
   @modelAction
@@ -62,13 +63,18 @@ export default class Session extends Model({
   }
 
   @computed
-  get hasVideos() {
-    return this.videos.length > 0;
+  get videoCount() {
+    return this.videos.length;
   }
 
   @computed
-  get notes() {
-    return this.videos.flatMap((video) => video.notes);
+  get hasVideos() {
+    return this.videoCount > 0;
+  }
+
+  @computed
+  get bookmarks() {
+    return this.videos.flatMap((video) => video.bookmarks);
   }
 
   getVideoById(id: string) {
