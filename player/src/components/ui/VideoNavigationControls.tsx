@@ -141,7 +141,7 @@ const VideoNavigationControls = ({
           break;
         default:
           throw new UnknownDirection(
-            `A direction was passed to navigate by frame but we didn't understand it`
+            `A direction was passed to navigate by frame but we didn't understand it (was: ${frameNavigationHeld})`
           );
       }
     }, FRAME_ADVANCE_INTERVAL);
