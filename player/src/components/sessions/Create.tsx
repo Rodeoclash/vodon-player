@@ -45,7 +45,7 @@ const Create = observer(() => {
   };
 
   const initialValues = {
-    name: `Session #${store.sessionsCount}`,
+    name: `Session #${store.sessionsCount + 1}`,
   };
 
   return (

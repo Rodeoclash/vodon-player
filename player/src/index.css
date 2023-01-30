@@ -36,11 +36,11 @@
   }
 
   .th {
-    @apply bg-zinc-800 px-4 py-2 text-left border border-stone-700;
+    @apply text-white/90 bg-zinc-800 px-4 py-2 text-left border border-stone-700;
   }
 
   .td {
-    @apply border px-4 py-2 border-stone-700;
+    @apply text-white/90 border px-4 py-2 border-stone-700;
   }
 
   .text-bright {
