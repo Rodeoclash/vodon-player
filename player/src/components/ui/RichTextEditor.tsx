@@ -3,14 +3,16 @@ import StarterKit from "@tiptap/starter-kit";
 import { JSONContent } from "@tiptap/react";
 
 type Props = {
+  content: JSONContent;
   onUpdate: (content: JSONContent) => void;
 };
 
-const Editor = ({ onUpdate }: Props) => {
+const RichTextEditor = ({ content, onUpdate }: Props) => {
   const editor = useEditor({
-    autofocus: true,
+    autofocus: "end",
+    editable: true,
     extensions: [StarterKit],
-    content: "<p>Test World!</p>",
+    content,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getJSON());
     },
@@ -23,4 +25,4 @@ const Editor = ({ onUpdate }: Props) => {
   );
 };
 
-export default Editor;
+export default RichTextEditor;

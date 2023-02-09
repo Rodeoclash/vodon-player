@@ -11,24 +11,31 @@ const Header = observer(({ bookmark }: Props) => {
     bookmark.session.selectBookmark(bookmark);
   };
 
+  const renderedPages = bookmark.sortedBookmarkPages.map(
+    (bookmarkPage, index) => {
+      return (
+        <li key={bookmarkPage.id} className="flex items-stretch">
+          <a
+            href="#"
+            className="px-4 border-l border-stone-700 flex items-center"
+          >
+            {index + 1}
+          </a>
+        </li>
+      );
+    }
+  );
+
   return (
-    <header className="flex items-stretch border-b border-stone-700">
+    <header className="flex items-stretch border-b border-stone-700 h-10">
       <div
         className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700"
         onClick={() => handleClick()}
       >
         {secondsToHms(bookmark.videoTimestamp)}
       </div>
-      <ol className="flex-grow p-2 flex items-stretch justify-end">
-        <li className="px-2">
-          <a href="#">1</a>
-        </li>
-        <li className="px-2">
-          <a href="#">2</a>
-        </li>
-        <li className="px-2">
-          <a href="#">3</a>
-        </li>
+      <ol className="flex-grow flex items-stretch justify-end">
+        {renderedPages}
       </ol>
       <button className="border-l border-stone-700 px-2">
         <svg

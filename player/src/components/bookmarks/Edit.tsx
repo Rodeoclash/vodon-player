@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import Bookmark from "services/models/bookmark";
-import Editor from "components/ui/Editor";
+import RichTextEditor from "components/ui/RichTextEditor";
 import { JSONContent } from "@tiptap/react";
 
 type Props = {
@@ -8,18 +8,23 @@ type Props = {
 };
 
 const Edit = observer(({ bookmark }: Props) => {
+  const selectedBookmarkPage = bookmark.selectedBookmarkPage;
+
   const handleClick = () => {
     bookmark.setEditingInProgress(false);
   };
 
   const handleContentUpdate = (content: JSONContent) => {
-    console.log(content);
+    selectedBookmarkPage.setContent(content);
   };
 
   return (
     <>
       <div>
-        <Editor onUpdate={(content) => handleContentUpdate(content)} />
+        <RichTextEditor
+          content={selectedBookmarkPage.content.data}
+          onUpdate={(content) => handleContentUpdate(content)}
+        />
       </div>
       <div className="p-4 pt-0">
         <button
