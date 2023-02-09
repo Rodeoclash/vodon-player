@@ -10,7 +10,7 @@ type Props = {
 };
 
 const BookmarkList = observer(({ video }: Props) => {
-  const renderedBookmarks = video.bookmarks.map((bookmark) => {
+  const renderedBookmarks = video.sortedBookmarks.map((bookmark) => {
     if (bookmark.editingInProgress === true) {
       return (
         <Container key={bookmark.id} bookmark={bookmark}>

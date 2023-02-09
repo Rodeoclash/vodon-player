@@ -128,14 +128,12 @@ export default class Video extends Model({
     return this.bookmarks.push(bookmark);
   }
 
-  /*
   @computed
   get sortedBookmarks() {
     return [...this.bookmarks].sort((a, b) => {
       return a.videoTimestamp - b.videoTimestamp;
     });
   }
-  */
 
   @computed
   get calculatedOffset() {

@@ -10,7 +10,8 @@ type Props = {
 
 const Container = observer(({ children, bookmark }: Props) => {
   const classes = classNames({
-    "outline outline-2 outline-sky-500": bookmark.selected,
+    "border-b border-stone-700": true,
+    "bg-stone-800": bookmark.selected,
   });
 
   return (

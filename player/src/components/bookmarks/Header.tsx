@@ -13,34 +13,40 @@ const Header = observer(({ bookmark }: Props) => {
   };
 
   return (
-    <header>
-      <div className="flex items-center border-b border-r border-stone-700">
-        <div
-          className="flex-shrink p-2 bg-stone-700 text-sm cursor-pointer"
-          onClick={() => handleClick()}
+    <header className="flex items-stretch border-b border-stone-700">
+      <div
+        className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700"
+        onClick={() => handleClick()}
+      >
+        {secondsToHms(bookmark.videoTimestamp)}
+      </div>
+      <ol className="flex-grow p-2 flex items-stretch justify-end">
+        <li className="px-2">
+          <a href="#">1</a>
+        </li>
+        <li className="px-2">
+          <a href="#">2</a>
+        </li>
+        <li className="px-2">
+          <a href="#">3</a>
+        </li>
+      </ol>
+      <button className="border-l border-stone-700 px-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
         >
-          {secondsToHms(bookmark.videoTimestamp)}
-        </div>
-      </div>
-      <div className="flex items-center border-b border-stone-700">
-        <div className="flex-grow p-2">TODO: Page numbers</div>
-        <button className="border-l border-stone-700 p-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+      </button>
     </header>
   );
 });

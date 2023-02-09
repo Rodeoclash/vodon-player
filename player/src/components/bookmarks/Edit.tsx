@@ -13,7 +13,7 @@ const Edit = observer(({ bookmark }: Props) => {
   return (
     <>
       <div className="p-4">Edit content</div>
-      <div className="p-4">
+      <div className="p-4 pt-0">
         <button
           className="btn btn-secondary block w-full"
           onClick={() => handleClick()}
