@@ -166,22 +166,22 @@ export default class Video extends Model({
   }
 
   @computed
-  get frameRate(): number {
+  get frameRate() {
     return this.videoData.data.FrameRate;
   }
 
   @computed
-  get height(): number {
+  get height() {
     return parseInt(this.videoData.data.Height, 10);
   }
 
   @computed
-  get width(): number {
+  get width() {
     return parseInt(this.videoData.data.Width, 10);
   }
 
   @computed
-  get duration(): number {
+  get duration() {
     return parseFloat(this.videoData.data.Duration);
   }
 }
