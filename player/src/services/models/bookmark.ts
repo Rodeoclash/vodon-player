@@ -45,8 +45,7 @@ export default class Bookmark extends Model({
    */
   @modelAction
   createBookmarkPage() {
-    const content = { ...this.selectedBookmarkPage.content };
-    const bookmarkPage = createBookmarkPage(content);
+    const bookmarkPage = createBookmarkPage();
     this.bookmarkPages.push(bookmarkPage);
     this.selectBookmarkPage(bookmarkPage);
   }
