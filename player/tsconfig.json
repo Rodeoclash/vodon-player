@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noImplicitAny": true,
     "experimentalDecorators": true,
     "baseUrl": "./src",
     "target": "ESNext",
