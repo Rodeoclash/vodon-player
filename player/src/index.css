@@ -20,11 +20,19 @@
   }
 
   .navlink {
-    @apply flex items-center justify-center border-r border-stone-700 px-4;
+    @apply flex items-center justify-center border-r border-stone-700 px-4 cursor-pointer;
+  }
+
+  .navlink:hover {
+    @apply border-b-2 border-b-sky-700 top-[1px] relative;
   }
 
   .navlink.active {
     @apply border-b-2 border-b-sky-500 top-[1px] relative;
+  }
+
+  .navlink.active:hover {
+    @apply border-b-sky-500;
   }
 
   .paragraph {

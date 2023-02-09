@@ -25,6 +25,11 @@ export default class BookmarkPage extends Model({
     this.content = frozen(content);
   }
 
+  @modelAction
+  select() {
+    this.bookmark.selectBookmarkPage(this);
+  }
+
   @computed
   get bookmark() {
     return findParent<Bookmark>(this, (p) => p instanceof Bookmark)!;
@@ -38,5 +43,10 @@ export default class BookmarkPage extends Model({
   @computed
   get session() {
     return this.video.session;
+  }
+
+  @computed
+  get active() {
+    return this.bookmark.selectedBookmarkPage.id === this.id;
   }
 }

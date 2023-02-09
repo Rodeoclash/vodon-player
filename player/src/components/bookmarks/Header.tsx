@@ -1,43 +1,36 @@
 import { observer } from "mobx-react-lite";
 import { secondsToHms } from "services/time";
 import Bookmark from "services/models/bookmark";
+import Pagination from "./Pagination";
 
 type Props = {
   bookmark: Bookmark;
 };
 
 const Header = observer(({ bookmark }: Props) => {
-  const handleClick = () => {
+  const handleClickTimecode = () => {
     bookmark.session.selectBookmark(bookmark);
   };
 
-  const renderedPages = bookmark.sortedBookmarkPages.map(
-    (bookmarkPage, index) => {
-      return (
-        <li key={bookmarkPage.id} className="flex items-stretch">
-          <a
-            href="#"
-            className="px-4 border-l border-stone-700 flex items-center"
-          >
-            {index + 1}
-          </a>
-        </li>
-      );
-    }
-  );
+  const handleClickAddBookmarkPage = () => {
+    bookmark.createBookmarkPage();
+  };
 
   return (
     <header className="flex items-stretch border-b border-stone-700 h-10">
       <div
         className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700"
-        onClick={() => handleClick()}
+        onClick={() => handleClickTimecode()}
       >
         {secondsToHms(bookmark.videoTimestamp)}
       </div>
       <ol className="flex-grow flex items-stretch justify-end">
-        {renderedPages}
+        <Pagination bookmark={bookmark} />
       </ol>
-      <button className="border-l border-stone-700 px-2">
+      <button
+        className="border-l border-stone-700 px-2"
+        onClick={() => handleClickAddBookmarkPage()}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

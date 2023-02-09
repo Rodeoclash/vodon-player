@@ -14,6 +14,7 @@ import { RecordNotFound } from "services/errors";
 import BookmarkPage from "./bookmark_page";
 import Video from "./video";
 import { bookmarkPageRef } from "./references";
+import { createBookmarkPage } from "services/bookmark_pages";
 
 @model("VodonPlayer/Bookmark")
 export default class Bookmark extends Model({
@@ -35,6 +36,19 @@ export default class Bookmark extends Model({
       );
 
     this.selectedBookmarkPageRef = bookmarkPageRef(bookmarkPage);
+  }
+
+  /**
+   * Creates a new bookmark page under this bookmark. Will automatically
+   * duplicate the contents of the currently selected bookmark then
+   * switch to the bookmark page.
+   */
+  @modelAction
+  createBookmarkPage() {
+    const content = { ...this.selectedBookmarkPage.content };
+    const bookmarkPage = createBookmarkPage(content);
+    this.bookmarkPages.push(bookmarkPage);
+    this.selectBookmarkPage(bookmarkPage);
   }
 
   @computed
