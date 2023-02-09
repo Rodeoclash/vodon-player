@@ -7,7 +7,6 @@ type Props = {
 
 const Show = observer(({ bookmark }: Props) => {
   const handleClick = () => {
-    console.log("=== editing");
     bookmark.setEditingInProgress(true);
   };
 

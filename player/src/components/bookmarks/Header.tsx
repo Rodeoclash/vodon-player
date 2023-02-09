@@ -8,7 +8,6 @@ type Props = {
 
 const Header = observer(({ bookmark }: Props) => {
   const handleClick = () => {
-    console.log("=== selecting", bookmark.id);
     bookmark.session.selectBookmark(bookmark);
   };
 
