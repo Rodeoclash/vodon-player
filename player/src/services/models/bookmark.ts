@@ -10,7 +10,8 @@ export default class Bookmark extends Model({
   id: idProp,
   createdAt: tProp(types.number, Date.now()),
   videoTimestamp: tProp(types.number),
-  pages: tProp(
+  editingInProgress: tProp(types.boolean, false).withSetter(),
+  bookmarkPages: tProp(
     types.array(types.model<BookmarkPage>(() => BookmarkPage)),
     () => []
   ),
@@ -21,12 +22,22 @@ export default class Bookmark extends Model({
   }
 
   @computed
-  get pageCount() {
-    return this.pages.length;
+  get session() {
+    return this.video.session;
   }
 
   @computed
-  get hasPages() {
-    return this.pageCount > 0;
+  get bookmarkPageCount() {
+    return this.bookmarkPages.length;
+  }
+
+  @computed
+  get hasBookmarkPages() {
+    return this.bookmarkPageCount > 0;
+  }
+
+  @computed
+  get selected(): boolean {
+    return this.session.selectedBookmark?.id === this.id;
   }
 }

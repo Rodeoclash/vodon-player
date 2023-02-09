@@ -11,8 +11,11 @@ import {
   Ref,
 } from "mobx-keystone";
 
+import { RecordNotFound } from "services/errors";
+
 import Video from "./video";
-import { videoRef } from "./references";
+import Bookmark from "./bookmark";
+import { videoRef, bookmarkRef } from "./references";
 
 @model("VodonPlayer/Session")
 export default class Session extends Model({
@@ -21,6 +24,7 @@ export default class Session extends Model({
   createdAt: tProp(types.number, Date.now()),
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
   selectedVideoRef: prop<Ref<Video> | null>(),
+  selectedBookmarkRef: prop<Ref<Bookmark> | null>(),
 }) {
   @modelAction
   setName(name: string) {
@@ -39,11 +43,37 @@ export default class Session extends Model({
     );
   }
 
+  /**
+   * Selects this video in the session. Selecting the video means switching to
+   * it in the main window.
+   * @param video The video to be selected
+   */
   @modelAction
   selectVideo(video: Video) {
-    if (!this.videos.includes(video)) throw new Error("unknown video");
+    if (!this.videos.includes(video))
+      throw new RecordNotFound(
+        "Tried to select video but it did not belong to this session"
+      );
 
-    this.selectedVideoRef = video ? videoRef(video) : null;
+    this.selectedVideoRef = videoRef(video);
+  }
+
+  /**
+   * Selects a bookmark page in this session, will automatically change the
+   * selected video as well. Useful for when we want to select a bookmark on
+   * the timeline that belongs to a different video.
+   *
+   * @param bookmarkPage The bookmark page we want to select
+   */
+  @modelAction
+  selectBookmark(bookmark: Bookmark) {
+    if (!this.bookmarks.includes(bookmark))
+      throw new RecordNotFound(
+        "Tried to select bookmark but it did not belong to this session"
+      );
+
+    this.selectedBookmarkRef = bookmarkRef(bookmark);
+    this.selectedVideoRef = videoRef(bookmark.video);
   }
 
   @computed
@@ -63,6 +93,11 @@ export default class Session extends Model({
   }
 
   @computed
+  get selectedBookmark() {
+    return this.selectedBookmarkRef ? this.selectedBookmarkRef.current : null;
+  }
+
+  @computed
   get videoCount() {
     return this.videos.length;
   }
@@ -75,6 +110,11 @@ export default class Session extends Model({
   @computed
   get bookmarks() {
     return this.videos.flatMap((video) => video.bookmarks);
+  }
+
+  @computed
+  get bookmarkPages() {
+    return this.bookmarks.flatMap((bookmark) => bookmark.bookmarkPages);
   }
 
   getVideoById(id: string) {

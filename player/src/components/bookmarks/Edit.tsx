@@ -5,25 +5,24 @@ type Props = {
   bookmark: Bookmark;
 };
 
-const Show = observer(({ bookmark }: Props) => {
+const Edit = observer(({ bookmark }: Props) => {
   const handleClick = () => {
-    console.log("=== editing");
-    bookmark.setEditingInProgress(true);
+    bookmark.setEditingInProgress(false);
   };
 
   return (
     <>
-      <div className="p-4">Show content</div>
+      <div className="p-4">Edit content</div>
       <div className="p-4">
         <button
           className="btn btn-secondary block w-full"
           onClick={() => handleClick()}
         >
-          Edit
+          Done
         </button>
       </div>
     </>
   );
 });
 
-export default Show;
+export default Edit;

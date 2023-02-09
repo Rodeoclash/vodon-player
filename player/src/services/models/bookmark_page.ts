@@ -11,7 +11,17 @@ export default class BookmarkPage extends Model({
   content: tProp(types.frozen(types.unchecked<any>())),
 }) {
   @computed
-  get video() {
+  get bookmark() {
     return findParent<Bookmark>(this, (p) => p instanceof Bookmark)!;
+  }
+
+  @computed
+  get video() {
+    return this.bookmark.video;
+  }
+
+  @computed
+  get session() {
+    return this.video.session;
   }
 }

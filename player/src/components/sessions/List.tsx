@@ -38,7 +38,7 @@ const List = observer(() => {
       <thead>
         <tr>
           <th className="th">Name</th>
-          <th className="th">Number of videos</th>
+          <th className="th">Number of viewpoints</th>
           <th className="th">Created</th>
         </tr>
       </thead>
