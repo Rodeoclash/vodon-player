@@ -128,6 +128,16 @@ export default class Video extends Model({
     return this.bookmarks.push(bookmark);
   }
 
+  /**
+   * Get this position of this video in the session, according to the other videos
+   */
+  @computed
+  get index() {
+    return this.session.videos.findIndex((video) => {
+      return video.id === this.id;
+    });
+  }
+
   @computed
   get sortedBookmarks() {
     return [...this.bookmarks].sort((a, b) => {

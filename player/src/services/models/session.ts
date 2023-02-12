@@ -117,6 +117,20 @@ export default class Session extends Model({
     return this.bookmarks.flatMap((bookmark) => bookmark.bookmarkPages);
   }
 
+  /**
+   * The videos in the session as a map based on their indexed. Used for easy
+   * lookups when switching by the number hotkeys.
+   */
+  @computed
+  get indexedVideos(): { [index: number]: Video } {
+    return this.videos.reduce((acc, video) => {
+      return {
+        ...acc,
+        [video.index.toString()]: video,
+      };
+    }, {});
+  }
+
   getVideoById(id: string) {
     return this.videos.find((video) => video.id === id);
   }

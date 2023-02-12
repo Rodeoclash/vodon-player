@@ -48,7 +48,9 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
       onClick={() => handleClick()}
     >
       <div className="absolute top-0 left-0 bg-black/70 px-2">
-        <h3>{video.name}</h3>
+        <h3>
+          {video.index + 1}. {video.name}
+        </h3>
       </div>
       {renderedContent}
     </div>
