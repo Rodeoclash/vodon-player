@@ -7,15 +7,13 @@ type Props = {
 };
 
 const Show = observer(({ bookmark }: Props) => {
-  const selectedBookmarkPage = bookmark.selectedBookmarkPage;
-
   const handleClick = () => {
     bookmark.setEditingInProgress(true);
   };
 
   return (
     <>
-      <RichTextViewer content={selectedBookmarkPage.content.data} />
+      <RichTextViewer content={bookmark.selectedBookmarkPage.content.data} />
       <div className="p-4 pt-0">
         <button
           className="btn btn-secondary block w-full"

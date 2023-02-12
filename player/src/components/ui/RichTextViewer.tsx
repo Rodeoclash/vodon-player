@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { JSONContent } from "@tiptap/react";
@@ -13,6 +14,14 @@ const Editor = ({ content }: Props) => {
     extensions: [StarterKit],
     content,
   });
+
+  React.useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    editor.commands.setContent(content);
+  }, [content]);
 
   return (
     <div className="bg-stone-900 p-4">

@@ -9,6 +9,10 @@ type Props = {
 
 const Pagination = observer(({ bookmark }: Props) => {
   const handleClick = (bookmarkPage: BookmarkPage) => {
+    if (bookmark.editingInProgress === true) {
+      return;
+    }
+
     bookmarkPage.select();
   };
 
@@ -17,6 +21,7 @@ const Pagination = observer(({ bookmark }: Props) => {
       const classes = classNames({
         "navlink border-l border-stone-700": true,
         ["active"]: bookmarkPage.active === true,
+        "cursor-not-allowed": bookmark.editingInProgress === true,
       });
 
       return (

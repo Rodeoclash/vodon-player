@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { secondsToHms } from "services/time";
 import Bookmark from "services/models/bookmark";
 import Pagination from "./Pagination";
+import AddPage from "./AddPage";
 
 type Props = {
   bookmark: Bookmark;
@@ -10,10 +11,6 @@ type Props = {
 const Header = observer(({ bookmark }: Props) => {
   const handleClickTimecode = () => {
     bookmark.session.selectBookmark(bookmark);
-  };
-
-  const handleClickAddBookmarkPage = () => {
-    bookmark.createBookmarkPage();
   };
 
   return (
@@ -27,25 +24,7 @@ const Header = observer(({ bookmark }: Props) => {
       <ol className="flex-grow flex items-stretch justify-end">
         <Pagination bookmark={bookmark} />
       </ol>
-      <button
-        className="border-l border-stone-700 px-2"
-        onClick={() => handleClickAddBookmarkPage()}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
-      </button>
+      <AddPage bookmark={bookmark} />
     </header>
   );
 });
