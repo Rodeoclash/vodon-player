@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.7",
+    "@heroicons/react": "^2.0.15",
     "@tiptap/react": "^2.0.0-beta.209",
     "@tiptap/starter-kit": "^2.0.0-beta.209",
     "@types/react-modal": "^3.13.1",
