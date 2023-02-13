@@ -105,8 +105,10 @@ const ReviewVideo = observer(({ video }: Props) => {
       onMouseMove={() => handleMouseMove()}
     >
       {lastActiveAt !== null && (
-        <div className="absolute top-0 left-0 right-0 z-10 bg-zinc-900/80 p-4 text-center text-2xl">
-          {video.name}
+        <div className="absolute top-0 left-0 right-0 z-10 flex justify-center pointer-events-none">
+          <div className="bg-zinc-900/80 py-4 px-6 text-center text-2xl">
+            {video.name}
+          </div>
         </div>
       )}
       <VideoSizer aspectRatio={`${video.width}:${video.height}`}>

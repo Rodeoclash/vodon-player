@@ -26,6 +26,8 @@ export default class Session extends Model({
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
   selectedVideoRef: prop<Ref<Video> | null>(),
   selectedBookmarkRef: prop<Ref<Bookmark> | null>(),
+  showReviewVideoPanel: tProp(types.boolean, true),
+  showBookmarksPanel: tProp(types.boolean, true),
 }) {
   @modelAction
   setName(name: string) {
@@ -86,6 +88,16 @@ export default class Session extends Model({
     ) {
       this.selectedVideo.reviewVideoEl.currentTime = bookmark.videoTimestamp;
     }
+  }
+
+  @modelAction
+  toggleReviewVideoPanel() {
+    this.showReviewVideoPanel = !this.showReviewVideoPanel;
+  }
+
+  @modelAction
+  toggleBookmarksPanel() {
+    this.showBookmarksPanel = !this.showBookmarksPanel;
   }
 
   @computed

@@ -4,6 +4,7 @@ import bus from "services/bus";
 import consola from "consola";
 
 import { Link } from "react-router-dom";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 import AddBookmark from "components/videos/AddBookmark";
 import BookmarkList from "components/videos/BookmarkList";
@@ -16,6 +17,14 @@ import React from "react";
 const ReviewSession = observer(() => {
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
   const selectedVideo = session.selectedVideo;
+
+  const handleToggleReviewVideosPanel = () => {
+    session.toggleReviewVideoPanel();
+  };
+
+  const handleToggleBookmarksPanel = () => {
+    session.toggleBookmarksPanel();
+  };
 
   // When loading the page, trigger a video realignment as the offsets may have
   // been adjusted in the setup page.
@@ -91,13 +100,35 @@ const ReviewSession = observer(() => {
 
   return (
     <div className="flex items-stretch w-full h-full">
-      {session.hasVideos === true && (
+      {session.hasVideos === true && session.showReviewVideoPanel === true && (
         <div className="w-96 border-r border-stone-700 overflow-y-auto shrink-0">
           <ReviewVideoList session={session} />
         </div>
       )}
-      <div className="flex-grow relative">{renderedCenterPanel}</div>
-      {selectedVideo && (
+      <div className="flex-grow relative relative">
+        <button
+          className="absolute top-0 left-0 w-10 h-10 bg-stone-800 z-10 flex items-center justify-center p-2"
+          onClick={() => handleToggleReviewVideosPanel()}
+        >
+          {session.showReviewVideoPanel ? (
+            <ChevronLeftIcon />
+          ) : (
+            <ChevronRightIcon />
+          )}
+        </button>
+        {renderedCenterPanel}
+        <button
+          className="absolute top-0 right-0 w-10 h-10 bg-stone-800 z-10 flex items-center justify-center p-2"
+          onClick={() => handleToggleBookmarksPanel()}
+        >
+          {session.showBookmarksPanel ? (
+            <ChevronRightIcon />
+          ) : (
+            <ChevronLeftIcon />
+          )}
+        </button>
+      </div>
+      {selectedVideo !== null && session.showBookmarksPanel === true && (
         <div className="w-96 border-l border-stone-700 overflow-y-auto shrink-0 flex flex-col">
           <div className="flex-grow overflow-y-auto">
             <BookmarkList video={selectedVideo} />
