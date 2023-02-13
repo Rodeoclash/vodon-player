@@ -2,12 +2,11 @@ import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
-import { InvalidVideo } from "services/errors";
 import bus from "services/bus";
 
-import { Link } from "react-router-dom";
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
+import consolaGlobalInstance from "consola";
 
 type Props = {
   video: Video;
@@ -92,6 +91,12 @@ const ReviewVideo = observer(({ video }: Props) => {
     };
   }, [lastActiveAt]);
 
+  // When the video is changed, set the activity of it to now so that the name
+  // and controls appear briefly.
+  React.useEffect(() => {
+    setLastActiveAt(Date.now());
+  }, [video]);
+
   return (
     <div
       className="w-full h-full relative"
@@ -99,7 +104,12 @@ const ReviewVideo = observer(({ video }: Props) => {
       onMouseLeave={() => handleMouseLeave()}
       onMouseMove={() => handleMouseMove()}
     >
-      <VideoSizer aspectRatio="16:9">
+      {lastActiveAt !== null && (
+        <div className="absolute top-0 left-0 right-0 z-10 bg-zinc-900/80 p-4 text-center text-2xl">
+          {video.name}
+        </div>
+      )}
+      <VideoSizer aspectRatio={`${video.width}:${video.height}`}>
         <div ref={containerEl} className="w-full h-full" />
       </VideoSizer>
       {video.reviewVideoEl !== null &&

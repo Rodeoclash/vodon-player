@@ -27,7 +27,11 @@ const BookmarkList = observer(({ video }: Props) => {
   });
 
   if (renderedBookmarks.length === 0) {
-    return <em>No bookmarks created yet</em>;
+    return (
+      <div className="w-full h-full flex items-center justify-center p-4 text-center">
+        <em className="text-white/30">No bookmarks created on this video</em>
+      </div>
+    );
   }
 
   return <>{renderedBookmarks}</>;

@@ -1,4 +1,5 @@
 import { computed } from "mobx";
+import consola from "consola";
 
 import {
   model,
@@ -55,6 +56,8 @@ export default class Session extends Model({
         "Tried to select video but it did not belong to this session"
       );
 
+    consola.info(`Selecting video: ${video.name}`);
+
     this.selectedVideoRef = videoRef(video);
   }
 
@@ -72,8 +75,17 @@ export default class Session extends Model({
         "Tried to select bookmark but it did not belong to this session"
       );
 
+    consola.info(`Selecting bookmark: ${bookmark.videoTimestamp}`);
+
     this.selectedBookmarkRef = bookmarkRef(bookmark);
     this.selectedVideoRef = videoRef(bookmark.video);
+
+    if (
+      this.selectedVideo !== null &&
+      this.selectedVideo.reviewVideoEl !== null
+    ) {
+      this.selectedVideo.reviewVideoEl.currentTime = bookmark.videoTimestamp;
+    }
   }
 
   @computed

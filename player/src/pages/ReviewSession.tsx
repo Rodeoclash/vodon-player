@@ -1,5 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useRouteLoaderData } from "react-router-dom";
+import bus from "services/bus";
+import consola from "consola";
 
 import { Link } from "react-router-dom";
 
@@ -9,10 +11,22 @@ import ReviewVideo from "components/videos/ReviewVideo";
 import ReviewVideoList from "components/sessions/ReviewVideoList";
 
 import type { SessionLoaderData } from "services/routes";
+import React from "react";
 
 const ReviewSession = observer(() => {
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
   const selectedVideo = session.selectedVideo;
+
+  // When loading the page, trigger a video realignment as the offsets may have
+  // been adjusted in the setup page.
+  React.useEffect(() => {
+    if (selectedVideo !== null) {
+      consola.info(
+        "Detected review page loaded, trigger video time synchronisation"
+      );
+      bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
+    }
+  }, []);
 
   const renderedCenterPanel = (() => {
     if (session.videos.length === 0) {
