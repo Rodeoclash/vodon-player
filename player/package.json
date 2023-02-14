@@ -11,6 +11,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.7",
     "@heroicons/react": "^2.0.15",
+    "@popperjs/core": "^2.11.6",
     "@tiptap/react": "^2.0.0-beta.209",
     "@tiptap/starter-kit": "^2.0.0-beta.209",
     "@types/react-modal": "^3.13.1",
@@ -32,6 +33,7 @@
     "react-draggable": "^4.4.5",
     "react-hotkeys-hook": "^4.3.2",
     "react-modal": "^3.16.1",
+    "react-popper": "^2.3.0",
     "react-router-dom": "^6.6.1",
     "ts-custom-error": "^3.3.1",
     "uuid": "^9.0.0",
