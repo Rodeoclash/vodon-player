@@ -10,6 +10,7 @@ import AddBookmark from "components/videos/AddBookmark";
 import BookmarkList from "components/videos/BookmarkList";
 import ReviewVideo from "components/videos/ReviewVideo";
 import ReviewVideoList from "components/sessions/ReviewVideoList";
+import Tooltip from "components/ui/Tooltip";
 
 import type { SessionLoaderData } from "services/routes";
 import React from "react";
@@ -107,25 +108,45 @@ const ReviewSession = observer(() => {
       )}
       <div className="flex-grow relative relative">
         <button
-          className="absolute top-0 left-0 w-10 h-10 bg-stone-800 z-10 flex items-center justify-center p-2"
+          className="absolute top-0 left-0 z-10"
           onClick={() => handleToggleReviewVideosPanel()}
         >
-          {session.showReviewVideoPanel ? (
-            <ChevronLeftIcon />
-          ) : (
-            <ChevronRightIcon />
-          )}
+          <Tooltip
+            content={
+              session.showReviewVideoPanel === true
+                ? "Close view panel"
+                : "Open video panel"
+            }
+          >
+            <div className="w-12 h-12 p-2 bg-stone-800">
+              {session.showReviewVideoPanel === true ? (
+                <ChevronLeftIcon />
+              ) : (
+                <ChevronRightIcon />
+              )}
+            </div>
+          </Tooltip>
         </button>
         {renderedCenterPanel}
         <button
-          className="absolute top-0 right-0 w-10 h-10 bg-stone-800 z-10 flex items-center justify-center p-2"
+          className="absolute top-0 right-0 z-10"
           onClick={() => handleToggleBookmarksPanel()}
         >
-          {session.showBookmarksPanel ? (
-            <ChevronRightIcon />
-          ) : (
-            <ChevronLeftIcon />
-          )}
+          <Tooltip
+            content={
+              session.showBookmarksPanel === true
+                ? "Close bookmarks panel"
+                : "Open bookmarks panel"
+            }
+          >
+            <div className="w-12 h-12 p-2 bg-stone-800">
+              {session.showBookmarksPanel === true ? (
+                <ChevronRightIcon />
+              ) : (
+                <ChevronLeftIcon />
+              )}
+            </div>
+          </Tooltip>
         </button>
       </div>
       {selectedVideo !== null && session.showBookmarksPanel === true && (
