@@ -107,7 +107,8 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         </div>
       )}
       <VideoSizer
-        aspectRatio={`${video.width}:${video.height}`}
+        originalWidth={video.width}
+        originalHeight={video.height}
         onMount={() => handleDimensionsMounted()}
       >
         {({ width, height }) => {

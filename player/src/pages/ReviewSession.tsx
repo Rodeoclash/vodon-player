@@ -51,6 +51,9 @@ const ReviewSession = observer(() => {
         fullscreenTargetRef.current.requestFullscreen();
       } else if (document.exitFullscreen) {
         document.exitFullscreen();
+
+        // Ensures the video dimensions are recalculated
+        window.dispatchEvent(new Event("resize"));
       }
     },
     []

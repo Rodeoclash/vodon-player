@@ -1,6 +1,5 @@
 import * as React from "react";
 import { getRatioDimensions } from "services/layout";
-import { InvalidDomLayout } from "services/errors";
 
 type Dimensions = {
   width: number;
@@ -9,12 +8,18 @@ type Dimensions = {
 };
 
 type Props = {
-  aspectRatio: string;
+  originalWidth: number;
+  originalHeight: number;
   children(dimensions: Dimensions): React.ReactNode;
   onMount: (dimensions: Dimensions) => void;
 };
 
-const VideoSizer = ({ aspectRatio, children, onMount }: Props) => {
+const VideoSizer = ({
+  originalWidth,
+  originalHeight,
+  children,
+  onMount,
+}: Props) => {
   const ref = React.useRef<HTMLDivElement | null>(null);
   const [dimensions, setDimensions] = React.useState<Dimensions | null>(null);
 
@@ -24,7 +29,11 @@ const VideoSizer = ({ aspectRatio, children, onMount }: Props) => {
         return;
       }
 
-      const widthHeight = getRatioDimensions(aspectRatio, ref.current);
+      const widthHeight = getRatioDimensions(
+        originalWidth,
+        originalHeight,
+        ref.current
+      );
       const dimensions = {
         width: widthHeight[0],
         height: widthHeight[1],
