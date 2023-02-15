@@ -1,12 +1,7 @@
 import * as React from "react";
-import { secondsToHms } from "services/time";
 import { useHotkeys } from "react-hotkeys-hook";
 import { FRAME_ADVANCE_INTERVAL } from "services/settings";
 import { UnknownDirection } from "services/errors";
-
-import FrameAdjust from "./VideoNavigationControls/FrameAdjust";
-import Progress from "./VideoNavigationControls/Progress";
-import Volume from "./VideoNavigationControls/Volume";
 
 import { Direction } from "./VideoNavigationControls/FrameAdjust";
 

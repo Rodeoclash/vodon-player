@@ -1,10 +1,12 @@
-import * as React from "react";
+import consola from "consola";
 
 const useVideoControls = (videoEl: HTMLVideoElement | null) => {
   const gotoTime = (newTime: number) => {
     if (videoEl === null) {
       return;
     }
+
+    consola.info(`Setting video time to: ${newTime}`);
 
     videoEl.currentTime = newTime;
   };
@@ -14,6 +16,8 @@ const useVideoControls = (videoEl: HTMLVideoElement | null) => {
       return;
     }
 
+    consola.info("Pausing video");
+
     videoEl.pause();
   };
 
@@ -22,6 +26,8 @@ const useVideoControls = (videoEl: HTMLVideoElement | null) => {
       return;
     }
 
+    consola.info("Playing video");
+
     videoEl.play();
   };
 
@@ -29,6 +35,8 @@ const useVideoControls = (videoEl: HTMLVideoElement | null) => {
     if (videoEl === null) {
       return;
     }
+
+    consola.info(`Setting video volume to: ${newVolume}`);
 
     videoEl.volume = newVolume;
   };

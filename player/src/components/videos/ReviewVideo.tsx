@@ -7,6 +7,7 @@ import bus from "services/bus";
 import Drawing from "components/ui/Drawing";
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
+import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
 import { TldrawApp } from "@tldraw/tldraw";
 
 type Props = {
@@ -144,9 +145,13 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       {video.reviewVideoEl !== null &&
         video.duration !== null &&
         hideOverlays === false &&
-        mouseActive === true &&
+        (mouseActive === true || controlsHovered === true) &&
         video.frameLength !== null && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
+          <div
+            className="absolute bottom-0 left-0 right-0 z-30 bg-zinc-900/80 p-4"
+            onMouseEnter={() => setControlsHovered(true)}
+            onMouseLeave={() => setControlsHovered(false)}
+          >
             <VideoNavigationControls
               currentTime={video.currentTime}
               duration={video.duration}
@@ -162,6 +167,18 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
             />
           </div>
         )}
+      {video.reviewVideoEl !== null && video.frameLength !== null && (
+        <VideoNavigationKeyboardShortcuts
+          frameLength={video.frameLength}
+          keyboardShortcutsEnabled={true}
+          onGotoTime={(time) => handleGotoTime(time)}
+          onPause={() => handlePause()}
+          onPlay={() => handlePlay()}
+          playing={video.reviewVideoPlaying === true}
+          seeking={video.reviewVideoPlaying === true}
+          videoEl={video.reviewVideoEl}
+        />
+      )}
     </div>
   );
 });
