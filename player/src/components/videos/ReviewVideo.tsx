@@ -24,7 +24,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   );
 
   // Track when the mouse is over the video to show the controls
-  const [mouseActive, setMouseActive] = React.useState<boolean | null>(true);
+  const [mouseActive, setMouseActive] = React.useState<boolean | null>(false);
 
   // track when the user is actually interacting with a control area on the
   // screen, this is used to prevent the controls from being removed when
@@ -50,7 +50,15 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   };
 
   const handleMouseLeave = () => {
-    setMouseActive(true);
+    setMouseActive(false);
+  };
+
+  const handleControlsEnter = () => {
+    setControlsHovered(true);
+  };
+
+  const handleControlsLeave = () => {
+    setControlsHovered(false);
   };
 
   const handlePause = () => {
@@ -147,8 +155,8 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         video.frameLength !== null && (
           <div
             className="absolute bottom-0 left-0 right-0 z-20 bg-zinc-900/80 p-4"
-            onMouseEnter={() => setControlsHovered(true)}
-            onMouseLeave={() => setControlsHovered(false)}
+            onMouseEnter={() => handleControlsEnter()}
+            onMouseLeave={() => handleControlsLeave()}
           >
             <VideoNavigationControls
               currentTime={video.currentTime}
@@ -182,8 +190,8 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         (mouseActive === true || controlsHovered === true) && (
           <div
             className="absolute left-0 top-0 bottom-0 z-20 flex justify-center items-center pointer-events-none"
-            onMouseEnter={() => setControlsHovered(true)}
-            onMouseLeave={() => setControlsHovered(false)}
+            onMouseEnter={() => handleControlsEnter()}
+            onMouseLeave={() => handleControlsLeave()}
           >
             <div className="bg-stone-800 p-2 pointer-events-auto">
               <DrawingControls app={tlDrawInstance} />
