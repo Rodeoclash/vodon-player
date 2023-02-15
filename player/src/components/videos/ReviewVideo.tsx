@@ -4,23 +4,35 @@ import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 import bus from "services/bus";
 
+import Drawing from "components/ui/Drawing";
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
-import consolaGlobalInstance from "consola";
+import { TldrawApp } from "@tldraw/tldraw";
 
 type Props = {
+  hideOverlays: boolean;
   video: Video;
 };
 
-const ReviewVideo = observer(({ video }: Props) => {
-  // track the last time activity occured inside the review video, used to
-  // show hide controls.
-  const [lastActiveAt, setLastActiveAt] = React.useState<number | null>(null);
+const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
+  // Track when the mouse is over the video to show the controls
+  const [dimensionsReady, setDimensionsReady] = React.useState<boolean | null>(
+    null
+  );
+
+  // Track when the mouse is over the video to show the controls
+  const [mouseActive, setMouseActive] = React.useState<boolean | null>(null);
 
   // track when the user is actually interacting with a control area on the
   // screen, this is used to prevent the controls from being removed when
   // the user is interacting with them.
   const [controlsHovered, setControlsHovered] = React.useState<boolean | null>(
+    null
+  );
+
+  // Holds the mounted of instance of the TLDraw app. This is passed down to
+  // the drawing controls widget.
+  const [tlDrawInstance, setTlDrawInstance] = React.useState<TldrawApp | null>(
     null
   );
 
@@ -31,15 +43,11 @@ const ReviewVideo = observer(({ video }: Props) => {
   );
 
   const handleMouseEnter = () => {
-    setLastActiveAt(Date.now());
+    setMouseActive(true);
   };
 
   const handleMouseLeave = () => {
-    setLastActiveAt(null);
-  };
-
-  const handleMouseMove = () => {
-    setLastActiveAt(Date.now());
+    setMouseActive(false);
   };
 
   const handlePause = () => {
@@ -66,6 +74,14 @@ const ReviewVideo = observer(({ video }: Props) => {
     setVolume(newVolume);
   };
 
+  const handleTLDrawMounted = (app: TldrawApp) => {
+    setTlDrawInstance(app);
+  };
+
+  const handleDimensionsMounted = () => {
+    setDimensionsReady(true);
+  };
+
   // Mount the video when it is selected
   React.useEffect(() => {
     if (
@@ -78,44 +94,56 @@ const ReviewVideo = observer(({ video }: Props) => {
 
     video.reviewVideoEl.volume = video.volume;
     containerEl.current.appendChild(video.reviewVideoEl);
-  }, [video.videoElementsCreated, video]);
-
-  // Hide controls after inactivity
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLastActiveAt(null);
-    }, 1000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [lastActiveAt]);
-
-  // When the video is changed, set the activity of it to now so that the name
-  // and controls appear briefly.
-  React.useEffect(() => {
-    setLastActiveAt(Date.now());
-  }, [video]);
+  }, [video.videoElementsCreated, video, dimensionsReady]);
 
   return (
-    <div
-      className="w-full h-full relative"
-      onMouseEnter={() => handleMouseEnter()}
-      onMouseLeave={() => handleMouseLeave()}
-      onMouseMove={() => handleMouseMove()}
-    >
-      {lastActiveAt !== null && (
-        <div className="absolute top-0 left-0 right-0 z-10 flex justify-center pointer-events-none">
+    <div className="w-full h-full relative">
+      {mouseActive === true && hideOverlays === false && (
+        <div className="absolute top-0 left-0 right-0 z-20 flex justify-center pointer-events-none">
           <div className="bg-zinc-900/80 py-4 px-6 text-center text-2xl">
             {video.name}
           </div>
         </div>
       )}
-      <VideoSizer aspectRatio={`${video.width}:${video.height}`}>
-        <div ref={containerEl} className="w-full h-full" />
+      <VideoSizer
+        aspectRatio={`${video.width}:${video.height}`}
+        onMount={() => handleDimensionsMounted()}
+      >
+        {({ width, height }) => {
+          const dimensionsStyle = {
+            width: `${width}px`,
+            height: `${height}px`,
+          };
+
+          const drawingStyle = {
+            display:
+              mouseActive === true && hideOverlays === false ? "block" : "none",
+          };
+
+          return (
+            <div
+              style={dimensionsStyle}
+              className="relative"
+              onMouseEnter={() => handleMouseEnter()}
+              onMouseLeave={() => handleMouseLeave()}
+            >
+              <div className="absolute inset-0 z-20" style={drawingStyle}>
+                <Drawing
+                  scale={1}
+                  onMount={(app) => handleTLDrawMounted(app)}
+                />
+              </div>
+              <div
+                className="absolute inset-0 z-10 reviewVideo"
+                ref={containerEl}
+              />
+            </div>
+          );
+        }}
       </VideoSizer>
       {video.reviewVideoEl !== null &&
         video.duration !== null &&
+        hideOverlays === false &&
         video.frameLength !== null && (
           <div
             className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4"
@@ -134,7 +162,7 @@ const ReviewVideo = observer(({ video }: Props) => {
               playing={video.reviewVideoPlaying === true}
               seeking={video.reviewVideoSeeking === true}
               videoEl={video.reviewVideoEl}
-              visible={lastActiveAt !== null || controlsHovered === true}
+              visible={mouseActive === true || controlsHovered === true}
               volume={video.volume}
             />
           </div>

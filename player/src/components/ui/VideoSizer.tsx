@@ -2,13 +2,21 @@ import * as React from "react";
 import { getRatioDimensions } from "services/layout";
 import { InvalidDomLayout } from "services/errors";
 
-type Props = {
-  aspectRatio: string;
-  children: React.ReactNode;
+type Dimensions = {
+  width: number;
+  height: number;
+  scale: number;
 };
 
-const VideoSizer = ({ aspectRatio, children }: Props) => {
+type Props = {
+  aspectRatio: string;
+  children(dimensions: Dimensions): React.ReactNode;
+  onMount: (dimensions: Dimensions) => void;
+};
+
+const VideoSizer = ({ aspectRatio, children, onMount }: Props) => {
   const ref = React.useRef<HTMLDivElement | null>(null);
+  const [dimensions, setDimensions] = React.useState<Dimensions | null>(null);
 
   React.useLayoutEffect(() => {
     const handleResize = () => {
@@ -16,24 +24,15 @@ const VideoSizer = ({ aspectRatio, children }: Props) => {
         return;
       }
 
-      const dimensions = getRatioDimensions(aspectRatio, ref.current);
+      const widthHeight = getRatioDimensions(aspectRatio, ref.current);
+      const dimensions = {
+        width: widthHeight[0],
+        height: widthHeight[1],
+        scale: 1,
+      };
 
-      if (ref.current.childNodes.length > 1) {
-        throw new InvalidDomLayout(
-          "Expected only a single element to be present under `VideoSizer`"
-        );
-      }
-
-      const child = ref.current.childNodes[0];
-
-      if (!(child instanceof HTMLElement)) {
-        throw new InvalidDomLayout(
-          "Expect HTMLElement to be nested under `VideoSizer`"
-        );
-      }
-
-      child.style.width = dimensions[0].toString();
-      child.style.height = dimensions[1].toString();
+      setDimensions(dimensions);
+      onMount(dimensions);
     };
 
     window.addEventListener("resize", handleResize);
@@ -46,8 +45,8 @@ const VideoSizer = ({ aspectRatio, children }: Props) => {
   }, []);
 
   return (
-    <div ref={ref} className="w-full h-full videoSizer">
-      {children}
+    <div ref={ref} className="w-full h-full flex items-center justify-center">
+      {dimensions && children(dimensions)}
     </div>
   );
 };

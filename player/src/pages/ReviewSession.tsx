@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useRouteLoaderData } from "react-router-dom";
 import bus from "services/bus";
 import consola from "consola";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { Link } from "react-router-dom";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -16,6 +17,8 @@ import type { SessionLoaderData } from "services/routes";
 import React from "react";
 
 const ReviewSession = observer(() => {
+  const [hideOverlays, setHideOverlays] = React.useState<boolean>(false);
+
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
   const selectedVideo = session.selectedVideo;
 
@@ -26,6 +29,18 @@ const ReviewSession = observer(() => {
   const handleToggleBookmarksPanel = () => {
     session.toggleBookmarksPanel();
   };
+
+  const handleEnableOverlays = () => {
+    setHideOverlays(false);
+  };
+
+  useHotkeys(
+    "h",
+    () => {
+      setHideOverlays(!hideOverlays);
+    },
+    [hideOverlays]
+  );
 
   // When loading the page, trigger a video realignment as the offsets may have
   // been adjusted in the setup page.
@@ -96,7 +111,21 @@ const ReviewSession = observer(() => {
       );
     }
 
-    return <ReviewVideo video={selectedVideo} />;
+    return (
+      <div className="w-full h-full relative">
+        <ReviewVideo video={selectedVideo} hideOverlays={hideOverlays} />
+        {hideOverlays === true && (
+          <div className="absolute bottom-0 left-0 z-20">
+            <button
+              className="bg-red-700 p-1 text-sm"
+              onClick={() => handleEnableOverlays()}
+            >
+              REENABLE OVERLAYS
+            </button>
+          </div>
+        )}
+      </div>
+    );
   })();
 
   return (

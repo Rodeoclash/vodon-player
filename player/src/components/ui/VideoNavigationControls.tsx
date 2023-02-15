@@ -151,6 +151,11 @@ const VideoNavigationControls = ({
     };
   }, [frameNavigationHeld, seeking]);
 
+  // We want to control visibility of what gets rendered in the component so
+  // that things like keyboard shortcuts continue to work even when the
+  // controls themselves aren't visible. This does seem like a bit of an anti
+  // pattern so it might make sense to split up the keyboard controls and video
+  // control components.
   if (visible === false) {
     return null;
   }

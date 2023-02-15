@@ -83,7 +83,8 @@
     @apply bg-zinc-600;
   }
 
-  .videoSizer video {
+  /* Sizing for the injected video */
+  .reviewVideo video {
     @apply w-full h-full;
   }
 }
@@ -96,4 +97,12 @@ body {
 
 .signika {
   font-family: "Signika", sans-serif;
+}
+
+/*
+  Removes the background of TLDraw so it can overlay the drawing directly on to
+  the video.
+*/
+.tl-container {
+  background-color: transparent !important;
 }
