@@ -108,7 +108,11 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   }, [video.videoElementsCreated, video, dimensionsReady]);
 
   return (
-    <div className="w-full h-full relative">
+    <div
+      className="w-full h-full relative"
+      onMouseEnter={() => handleMouseEnter()}
+      onMouseLeave={() => handleMouseLeave()}
+    >
       {mouseActive === true && hideOverlays === false && (
         <div className="absolute top-0 left-0 right-0 z-20 flex justify-center pointer-events-none">
           <div className="bg-zinc-900/80 py-4 px-6 text-center text-2xl">
@@ -128,12 +132,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
           };
 
           return (
-            <div
-              style={dimensionsStyle}
-              className="relative"
-              onMouseEnter={() => handleMouseEnter()}
-              onMouseLeave={() => handleMouseLeave()}
-            >
+            <div style={dimensionsStyle} className="relative">
               <div className="absolute inset-0 z-20">
                 <Drawing
                   scale={scale}
