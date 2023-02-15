@@ -173,7 +173,7 @@ const ReviewSession = observer(() => {
       <div ref={fullscreenTargetRef} className="w-full h-full relative">
         <ReviewVideo video={selectedVideo} hideOverlays={hideOverlays} />
         {hideOverlays === true && (
-          <div className="absolute bottom-0 left-0 z-20">
+          <div className="absolute bottom-0 left-0 z-10">
             <button
               className="bg-red-700 p-1 text-sm"
               onClick={() => handleEnableOverlays()}
@@ -208,7 +208,7 @@ const ReviewSession = observer(() => {
           <ReviewVideoList session={session} />
         </div>
       )}
-      <div className="flex-grow relative relative" style={videoStyle}>
+      <div className="flex-grow relative" style={videoStyle}>
         <button
           className="absolute top-0 left-0 z-30"
           onClick={() => handleToggleReviewVideosPanel()}

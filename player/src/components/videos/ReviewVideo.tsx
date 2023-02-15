@@ -23,7 +23,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   );
 
   // Track when the mouse is over the video to show the controls
-  const [mouseActive, setMouseActive] = React.useState<boolean | null>(null);
+  const [mouseActive, setMouseActive] = React.useState<boolean | null>(true);
 
   // track when the user is actually interacting with a control area on the
   // screen, this is used to prevent the controls from being removed when
@@ -49,7 +49,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   };
 
   const handleMouseLeave = () => {
-    setMouseActive(false);
+    setMouseActive(true);
   };
 
   const handlePause = () => {
@@ -145,7 +145,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         (mouseActive === true || controlsHovered === true) &&
         video.frameLength !== null && (
           <div
-            className="absolute bottom-0 left-0 right-0 z-30 bg-zinc-900/80 p-4"
+            className="absolute bottom-0 left-0 right-0 z-20 bg-zinc-900/80 p-4"
             onMouseEnter={() => setControlsHovered(true)}
             onMouseLeave={() => setControlsHovered(false)}
           >
@@ -180,12 +180,13 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         hideOverlays === false &&
         (mouseActive === true || controlsHovered === true) && (
           <div
-            className="absolute left-0 top-0 z-30 bg-zinc-900/80 p-4"
+            className="absolute left-0 top-0 bottom-0 z-20 flex justify-center items-center pointer-events-none"
             onMouseEnter={() => setControlsHovered(true)}
             onMouseLeave={() => setControlsHovered(false)}
           >
-            HERE
-            <DrawingControls app={tlDrawInstance} />
+            <div className="bg-stone-800 p-2 pointer-events-auto">
+              <DrawingControls app={tlDrawInstance} />
+            </div>
           </div>
         )}
     </div>
