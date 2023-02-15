@@ -17,6 +17,8 @@ import type { SessionLoaderData } from "services/routes";
 import React from "react";
 
 const ReviewSession = observer(() => {
+  const fullscreenTargetRef = React.useRef<HTMLDivElement>(null);
+
   const [hideOverlays, setHideOverlays] = React.useState<boolean>(false);
 
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
@@ -40,6 +42,18 @@ const ReviewSession = observer(() => {
       setHideOverlays(!hideOverlays);
     },
     [hideOverlays]
+  );
+
+  useHotkeys(
+    "f",
+    () => {
+      if (!document.fullscreenElement && fullscreenTargetRef.current !== null) {
+        fullscreenTargetRef.current.requestFullscreen();
+      } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    },
+    []
   );
 
   // When loading the page, trigger a video realignment as the offsets may have
@@ -112,7 +126,7 @@ const ReviewSession = observer(() => {
     }
 
     return (
-      <div className="w-full h-full relative">
+      <div ref={fullscreenTargetRef} className="w-full h-full relative">
         <ReviewVideo video={selectedVideo} hideOverlays={hideOverlays} />
         {hideOverlays === true && (
           <div className="absolute bottom-0 left-0 z-20">
