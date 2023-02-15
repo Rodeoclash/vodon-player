@@ -144,17 +144,13 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       {video.reviewVideoEl !== null &&
         video.duration !== null &&
         hideOverlays === false &&
+        mouseActive === true &&
         video.frameLength !== null && (
-          <div
-            className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4"
-            onMouseEnter={() => setControlsHovered(true)}
-            onMouseLeave={() => setControlsHovered(false)}
-          >
+          <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
             <VideoNavigationControls
               currentTime={video.currentTime}
               duration={video.duration}
               frameLength={video.frameLength}
-              keyboardShortcutsEnabled={true}
               onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
               onGotoTime={(time) => handleGotoTime(time)}
               onPause={() => handlePause()}
@@ -162,7 +158,6 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
               playing={video.reviewVideoPlaying === true}
               seeking={video.reviewVideoSeeking === true}
               videoEl={video.reviewVideoEl}
-              visible={mouseActive === true || controlsHovered === true}
               volume={video.volume}
             />
           </div>

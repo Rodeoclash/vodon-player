@@ -4,6 +4,7 @@ import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
+import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
 import Toolbar from "components/videos/Toolbar";
 
 type Props = {
@@ -68,13 +69,13 @@ const SetupListItem = observer(({ video }: Props) => {
       <div ref={containerEl} />
       {video.setupVideoEl !== null &&
         video.duration !== null &&
+        active === true &&
         video.frameLength !== null && (
           <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
             <VideoNavigationControls
               currentTime={video.offset}
               duration={video.duration}
               frameLength={video.frameLength}
-              keyboardShortcutsEnabled={!!active}
               onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
               onGotoTime={(time) => gotoTime(time)}
               onPause={() => pause()}
@@ -82,10 +83,23 @@ const SetupListItem = observer(({ video }: Props) => {
               playing={video.setupVideoPlaying === true}
               seeking={video.setupVideoSeeking === true}
               videoEl={video.setupVideoEl}
-              visible={active === true}
               volume={video.volume}
             />
           </div>
+        )}
+      {video.setupVideoEl !== null &&
+        video.duration !== null &&
+        video.frameLength !== null && (
+          <VideoNavigationKeyboardShortcuts
+            frameLength={video.frameLength}
+            keyboardShortcutsEnabled={active === true}
+            onGotoTime={(time) => gotoTime(time)}
+            onPause={() => pause()}
+            onPlay={() => play()}
+            playing={video.setupVideoPlaying === true}
+            seeking={video.setupVideoSeeking === true}
+            videoEl={video.setupVideoEl}
+          />
         )}
     </div>
   );

@@ -14,7 +14,6 @@ type Props = {
   currentTime: number;
   duration: number;
   frameLength: number;
-  keyboardShortcutsEnabled: boolean;
   onChangeVolume: (newVolume: number) => void;
   onGotoTime: (newTime: number) => void;
   onPause: () => void;
@@ -22,7 +21,6 @@ type Props = {
   playing: boolean;
   seeking: boolean;
   videoEl: HTMLVideoElement;
-  visible: boolean;
   volume: number;
 };
 
@@ -30,7 +28,6 @@ const VideoNavigationControls = ({
   currentTime,
   duration,
   frameLength,
-  keyboardShortcutsEnabled,
   onChangeVolume,
   onGotoTime,
   onPause,
@@ -38,13 +35,13 @@ const VideoNavigationControls = ({
   playing,
   seeking,
   videoEl,
-  visible,
   volume,
 }: Props) => {
   const [frameNavigationHeld, setFrameNavigationHeld] =
     React.useState<Direction | null>(null);
 
   // Toggle playing of the video on and off depending on the current state
+  // TODO: Push logic to parent
   const handleTogglePlay = () => {
     if (playing === true) {
       onPause();
@@ -54,77 +51,16 @@ const VideoNavigationControls = ({
   };
 
   // go back one frame, used by frame control buttons and keyboard shortcuts
+  // TODO: Push logic to parent
   const handleBackFrame = () => {
     onGotoTime(videoEl.currentTime + frameLength * -1);
   };
 
   // go forward one frame, used by frame control buttons and keyboard shortcuts
+  // TODO: Push logic to parent
   const handleForwardFrame = () => {
     onGotoTime(videoEl.currentTime + frameLength * 1);
   };
-
-  useHotkeys(
-    "space",
-    () => {
-      if (keyboardShortcutsEnabled === false) {
-        return;
-      }
-      handleTogglePlay();
-    },
-    [keyboardShortcutsEnabled, playing]
-  );
-
-  useHotkeys(
-    "a,arrowLeft",
-    () => {
-      if (keyboardShortcutsEnabled === false) {
-        return;
-      }
-      handleBackFrame();
-      setFrameNavigationHeld(Direction.Back);
-    },
-    {
-      keydown: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
-  useHotkeys(
-    "a,arrowLeft",
-    () => {
-      setFrameNavigationHeld(null);
-    },
-    {
-      keyup: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
-  useHotkeys(
-    "d,arrowRight",
-    () => {
-      if (keyboardShortcutsEnabled === false) {
-        return;
-      }
-      handleForwardFrame();
-      setFrameNavigationHeld(Direction.Forward);
-    },
-    {
-      keydown: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
-
-  useHotkeys(
-    "d,arrowRight",
-    () => {
-      setFrameNavigationHeld(null);
-    },
-    {
-      keyup: true,
-    },
-    [keyboardShortcutsEnabled]
-  );
 
   React.useEffect(() => {
     if (seeking === true || frameNavigationHeld === null) {
@@ -150,15 +86,6 @@ const VideoNavigationControls = ({
       clearInterval(interval);
     };
   }, [frameNavigationHeld, seeking]);
-
-  // We want to control visibility of what gets rendered in the component so
-  // that things like keyboard shortcuts continue to work even when the
-  // controls themselves aren't visible. This does seem like a bit of an anti
-  // pattern so it might make sense to split up the keyboard controls and video
-  // control components.
-  if (visible === false) {
-    return null;
-  }
 
   return (
     <div>
