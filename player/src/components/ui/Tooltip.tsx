@@ -4,9 +4,16 @@ import { usePopper } from "react-popper";
 type Props = {
   children: React.ReactNode;
   content: React.ReactNode;
+  className?: string;
+  offset?: [number, number];
 };
 
-const Tooltip = ({ children, content }: Props) => {
+const Tooltip = ({
+  children,
+  content,
+  className = "",
+  offset = [0, 10],
+}: Props) => {
   const [hover, setHover] = React.useState<boolean | null>(null);
 
   const [referenceElement, setReferenceElement] =
@@ -20,7 +27,7 @@ const Tooltip = ({ children, content }: Props) => {
     placement: "top",
     modifiers: [
       { name: "arrow", options: { element: arrowElement } },
-      { name: "offset", options: { offset: [0, 10] } },
+      { name: "offset", options: { offset } },
     ],
   });
 
@@ -39,6 +46,7 @@ const Tooltip = ({ children, content }: Props) => {
         onMouseEnter={() => handleMouseEnter()}
         onMouseLeave={() => handleMouseLeave()}
         onClick={() => handleMouseLeave()}
+        className={className}
       >
         {children}
       </div>
@@ -50,7 +58,7 @@ const Tooltip = ({ children, content }: Props) => {
           style={styles.popper}
           {...attributes.popper}
         >
-          <div className="p-2 bg-stone-800 w-60 text-sm text-center border border-stone-700">
+          <div className="p-2 bg-stone-800 text-sm border border-stone-700 whitespace-pre">
             {content}
           </div>
           <div ref={setArrowElement} style={styles.arrow} />

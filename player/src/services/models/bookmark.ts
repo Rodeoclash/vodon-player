@@ -1,3 +1,4 @@
+import consola from "consola";
 import { computed } from "mobx";
 import {
   model,
@@ -45,6 +46,7 @@ export default class Bookmark extends Model({
    */
   @modelAction
   createBookmarkPage() {
+    consola.info("Creating new bookmark page");
     const bookmarkPage = createBookmarkPage();
     this.bookmarkPages.push(bookmarkPage);
     this.selectBookmarkPage(bookmarkPage);

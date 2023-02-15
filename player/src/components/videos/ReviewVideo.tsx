@@ -5,6 +5,7 @@ import useVideoControls from "services/hooks/useVideoControls";
 import bus from "services/bus";
 
 import Drawing from "components/ui/Drawing";
+import DrawingControls from "components/ui/Drawing/DrawingControls";
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
@@ -175,6 +176,18 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
           videoEl={video.reviewVideoEl}
         />
       )}
+      {tlDrawInstance !== null &&
+        hideOverlays === false &&
+        (mouseActive === true || controlsHovered === true) && (
+          <div
+            className="absolute left-0 top-0 z-30 bg-zinc-900/80 p-4"
+            onMouseEnter={() => setControlsHovered(true)}
+            onMouseLeave={() => setControlsHovered(false)}
+          >
+            HERE
+            <DrawingControls app={tlDrawInstance} />
+          </div>
+        )}
     </div>
   );
 });
