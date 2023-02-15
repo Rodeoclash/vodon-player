@@ -29,15 +29,16 @@ const VideoSizer = ({
         return;
       }
 
-      const widthHeight = getRatioDimensions(
+      const [width, height, scale] = getRatioDimensions(
         originalWidth,
         originalHeight,
         ref.current
       );
+
       const dimensions = {
-        width: widthHeight[0],
-        height: widthHeight[1],
-        scale: 1,
+        width,
+        height,
+        scale,
       };
 
       setDimensions(dimensions);

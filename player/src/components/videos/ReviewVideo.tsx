@@ -111,7 +111,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         originalHeight={video.height}
         onMount={() => handleDimensionsMounted()}
       >
-        {({ width, height }) => {
+        {({ width, height, scale }) => {
           const dimensionsStyle = {
             width: `${width}px`,
             height: `${height}px`,
@@ -126,7 +126,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
             >
               <div className="absolute inset-0 z-20">
                 <Drawing
-                  scale={1}
+                  scale={scale}
                   onMount={(app) => handleTLDrawMounted(app)}
                 />
               </div>

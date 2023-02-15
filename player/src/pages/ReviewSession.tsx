@@ -16,20 +16,31 @@ import Tooltip from "components/ui/Tooltip";
 import type { SessionLoaderData } from "services/routes";
 import React from "react";
 
+const sidePanelWidth = 384;
+
 const ReviewSession = observer(() => {
   const fullscreenTargetRef = React.useRef<HTMLDivElement>(null);
 
   const [hideOverlays, setHideOverlays] = React.useState<boolean>(false);
+  const [availableVideoWidth, setAvailableVideoWidth] = React.useState<
+    number | null
+  >(null);
 
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
   const selectedVideo = session.selectedVideo;
 
   const handleToggleReviewVideosPanel = () => {
     session.toggleReviewVideoPanel();
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 0);
   };
 
   const handleToggleBookmarksPanel = () => {
     session.toggleBookmarksPanel();
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 0);
   };
 
   const handleEnableOverlays = () => {
@@ -51,8 +62,6 @@ const ReviewSession = observer(() => {
         fullscreenTargetRef.current.requestFullscreen();
       } else if (document.exitFullscreen) {
         document.exitFullscreen();
-
-        // Ensures the video dimensions are recalculated
         window.dispatchEvent(new Event("resize"));
       }
     },
@@ -68,6 +77,38 @@ const ReviewSession = observer(() => {
       );
       bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
     }
+  }, []);
+
+  React.useLayoutEffect(() => {
+    const handleResize = () => {
+      const reviewVideoPanelWidth = (() => {
+        if (session.showReviewVideoPanel === false) {
+          return 0;
+        }
+
+        return sidePanelWidth;
+      })();
+
+      const bookmarkPanelWidth = (() => {
+        if (session.showBookmarksPanel === false) {
+          return 0;
+        }
+
+        return sidePanelWidth;
+      })();
+
+      setAvailableVideoWidth(
+        window.screen.width - reviewVideoPanelWidth - bookmarkPanelWidth
+      );
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const renderedCenterPanel = (() => {
@@ -145,14 +186,29 @@ const ReviewSession = observer(() => {
     );
   })();
 
+  const reviewVideoListStyle = {
+    width: sidePanelWidth,
+  };
+
+  const videoStyle = {
+    maxWidth: `${availableVideoWidth}px`,
+  };
+
+  const bookmarkPanelStyle = {
+    width: sidePanelWidth,
+  };
+
   return (
     <div className="flex items-stretch w-full h-full">
       {session.hasVideos === true && session.showReviewVideoPanel === true && (
-        <div className="w-96 border-r border-stone-700 overflow-y-auto shrink-0">
+        <div
+          className="border-r border-stone-700 overflow-y-auto shrink-0"
+          style={reviewVideoListStyle}
+        >
           <ReviewVideoList session={session} />
         </div>
       )}
-      <div className="flex-grow relative relative">
+      <div className="flex-grow relative relative" style={videoStyle}>
         <button
           className="absolute top-0 left-0 z-30"
           onClick={() => handleToggleReviewVideosPanel()}
@@ -196,7 +252,10 @@ const ReviewSession = observer(() => {
         </button>
       </div>
       {selectedVideo !== null && session.showBookmarksPanel === true && (
-        <div className="w-96 border-l border-stone-700 overflow-y-auto shrink-0 flex flex-col">
+        <div
+          className="border-l border-stone-700 overflow-y-auto shrink-0 flex flex-col"
+          style={bookmarkPanelStyle}
+        >
           <div className="flex-grow overflow-y-auto">
             <BookmarkList video={selectedVideo} />
           </div>

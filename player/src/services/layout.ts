@@ -2,16 +2,19 @@ export function getRatioDimensions(
   width: number,
   height: number,
   element: HTMLElement
-): [number, number] {
+): [number, number, number] {
   const ratioWidthHeight = width / height;
   const ratioHeightWidth = height / width;
 
   const containerWidth = element.offsetWidth;
   const containerHeight = element.offsetHeight;
+  const scaledHeight = containerHeight * ratioWidthHeight;
 
-  if (containerHeight * ratioWidthHeight <= containerWidth) {
-    return [containerHeight * ratioWidthHeight, containerHeight];
+  if (scaledHeight <= containerWidth) {
+    const scale = scaledHeight / width;
+    return [scaledHeight, containerHeight, scale];
   }
 
-  return [containerWidth, containerWidth * ratioHeightWidth];
+  const scale = containerWidth / width;
+  return [containerWidth, containerWidth * ratioHeightWidth, scale];
 }

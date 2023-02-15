@@ -7,7 +7,7 @@ type Props = {
   scale: number;
 };
 
-const Drawing = ({ onMount }: Props) => {
+const Drawing = ({ onMount, scale }: Props) => {
   const tlDrawRef = React.useRef<TldrawApp | null>(null);
 
   const handleMount = (app: TldrawApp) => {
