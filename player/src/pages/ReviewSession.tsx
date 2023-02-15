@@ -151,7 +151,7 @@ const ReviewSession = observer(() => {
       )}
       <div className="flex-grow relative relative">
         <button
-          className="absolute top-0 left-0 z-10"
+          className="absolute top-0 left-0 z-30"
           onClick={() => handleToggleReviewVideosPanel()}
         >
           <Tooltip
@@ -172,7 +172,7 @@ const ReviewSession = observer(() => {
         </button>
         {renderedCenterPanel}
         <button
-          className="absolute top-0 right-0 z-10"
+          className="absolute top-0 right-0 z-30"
           onClick={() => handleToggleBookmarksPanel()}
         >
           <Tooltip

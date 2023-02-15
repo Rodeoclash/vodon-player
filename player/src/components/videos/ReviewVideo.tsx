@@ -116,11 +116,6 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
             height: `${height}px`,
           };
 
-          const drawingStyle = {
-            display:
-              mouseActive === true && hideOverlays === false ? "block" : "none",
-          };
-
           return (
             <div
               style={dimensionsStyle}
@@ -128,7 +123,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
               onMouseEnter={() => handleMouseEnter()}
               onMouseLeave={() => handleMouseLeave()}
             >
-              <div className="absolute inset-0 z-20" style={drawingStyle}>
+              <div className="absolute inset-0 z-20">
                 <Drawing
                   scale={1}
                   onMount={(app) => handleTLDrawMounted(app)}
