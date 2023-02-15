@@ -6,6 +6,7 @@ import bus from "services/bus";
 
 import Drawing from "components/ui/Drawing";
 import DrawingControls from "components/ui/Drawing/DrawingControls";
+import DrawingControlsKeyboardShortcuts from "components/ui/Drawing/DrawingControlsKeyboardShortcuts";
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
@@ -189,6 +190,9 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
             </div>
           </div>
         )}
+      {tlDrawInstance !== null && (
+        <DrawingControlsKeyboardShortcuts app={tlDrawInstance} />
+      )}
     </div>
   );
 });

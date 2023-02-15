@@ -41,7 +41,6 @@ const VideoNavigationControls = ({
     React.useState<Direction | null>(null);
 
   // Toggle playing of the video on and off depending on the current state
-  // TODO: Push logic to parent
   const handleTogglePlay = () => {
     if (playing === true) {
       onPause();
@@ -51,13 +50,11 @@ const VideoNavigationControls = ({
   };
 
   // go back one frame, used by frame control buttons and keyboard shortcuts
-  // TODO: Push logic to parent
   const handleBackFrame = () => {
     onGotoTime(videoEl.currentTime + frameLength * -1);
   };
 
   // go forward one frame, used by frame control buttons and keyboard shortcuts
-  // TODO: Push logic to parent
   const handleForwardFrame = () => {
     onGotoTime(videoEl.currentTime + frameLength * 1);
   };

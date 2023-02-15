@@ -9,7 +9,6 @@ import {
   RectangleStackIcon,
   CircleStackIcon,
 } from "@heroicons/react/24/solid";
-import { useHotkeys } from "react-hotkeys-hook";
 import classNames from "classnames";
 
 type Props = {
@@ -53,54 +52,6 @@ const DrawingControls = ({ app }: Props) => {
     consola.info("Using tool: ellipse");
     selectTool(TDShapeType.Ellipse);
   };
-
-  useHotkeys(
-    "t",
-    () => {
-      handlePickSelect();
-    },
-    [app]
-  );
-
-  useHotkeys(
-    "p",
-    () => {
-      handlePickDraw();
-    },
-    [app]
-  );
-
-  useHotkeys(
-    "r",
-    () => {
-      handlePickArrow();
-    },
-    [app]
-  );
-
-  useHotkeys(
-    "l",
-    () => {
-      handlePickArrow();
-    },
-    [app]
-  );
-
-  useHotkeys(
-    "b",
-    () => {
-      handlePickRectangle();
-    },
-    [app]
-  );
-
-  useHotkeys(
-    "c",
-    () => {
-      handlePickEllipse();
-    },
-    [app]
-  );
 
   const baseClasses = {
     "block bg-stone-700 p-2": true,
