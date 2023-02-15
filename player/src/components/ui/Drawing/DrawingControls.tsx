@@ -11,6 +11,8 @@ import {
 } from "@heroicons/react/24/solid";
 import classNames from "classnames";
 
+import DrawingColourSelector from "./DrawingColourSelector";
+
 type Props = {
   app: TldrawApp;
 };
@@ -87,6 +89,10 @@ const DrawingControls = ({ app }: Props) => {
     ["bg-stone-500"]: activeTool === TDShapeType.Ellipse,
   });
 
+  const colourSwatchClasses = classNames({
+    ...baseClasses,
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <Tooltip content="Select tool (t)">
@@ -122,6 +128,10 @@ const DrawingControls = ({ app }: Props) => {
           <CircleStackIcon className="w-8 h-8" />
         </button>
       </Tooltip>
+      <hr />
+      <div className={colourSwatchClasses}>
+        <DrawingColourSelector app={app} />
+      </div>
     </div>
   );
 };
