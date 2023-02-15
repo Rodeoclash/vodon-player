@@ -4,6 +4,8 @@ import { useOnClickOutside } from "usehooks-ts";
 
 import { TldrawApp, ColorStyle } from "@tldraw/tldraw";
 
+import Tooltip from "components/ui/Tooltip";
+
 type PropsType = {
   app: TldrawApp;
 };
@@ -83,12 +85,14 @@ const DrawingColourSelector = ({ app }: PropsType) => {
 
   return (
     <div ref={outsideClickRef}>
-      <div
-        className="w-8 h-8"
-        style={currentSwatchStyle}
-        onClick={() => handleClickSwatch()}
-        ref={setReferenceElement}
-      />
+      <Tooltip content="Tool colour">
+        <div
+          className="w-8 h-8"
+          style={currentSwatchStyle}
+          onClick={() => handleClickSwatch()}
+          ref={setReferenceElement}
+        />
+      </Tooltip>
       {isOpen === true && (
         <div
           ref={setPopperElement}
