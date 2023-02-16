@@ -11,7 +11,10 @@ export const buildElement = async (
 
   el.volume = video.volume;
   el.src = url;
-  el.currentTime = video.currentTime;
+
+  // The + 0.01 is required to prevent the video restoring on the *previous*
+  // frame when loading from storage!
+  el.currentTime = video.currentTime + 0.01;
 
   el.addEventListener("play", async () => {
     video.setReviewVideoPlaying(true);
