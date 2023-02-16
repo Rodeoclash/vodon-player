@@ -16,6 +16,7 @@
     "@tldraw/tldraw": "^1.28.0",
     "@types/react-modal": "^3.13.1",
     "@types/wicg-file-system-access": "^2020.9.5",
+    "@vercel/analytics": "^0.1.9",
     "classnames": "^2.3.2",
     "consola": "^2.15.3",
     "dexie": "^3.2.2",
