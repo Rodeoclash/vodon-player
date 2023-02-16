@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 import bus from "services/bus";
+import { TldrawApp, TDDocument } from "@tldraw/tldraw";
 
 import Drawing from "components/ui/Drawing";
 import DrawingControls from "components/ui/Drawing/DrawingControls";
@@ -10,7 +11,6 @@ import DrawingControlsKeyboardShortcuts from "components/ui/Drawing/DrawingContr
 import VideoSizer from "components/ui/VideoSizer";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
-import { TldrawApp } from "@tldraw/tldraw";
 
 type Props = {
   hideOverlays: boolean;
@@ -18,6 +18,9 @@ type Props = {
 };
 
 const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
+  const selectedBookmarkPage =
+    video.session.selectedBookmark?.selectedBookmarkPage;
+
   // Track when the mouse is over the video to show the controls
   const [dimensionsReady, setDimensionsReady] = React.useState<boolean | null>(
     null
@@ -93,6 +96,16 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
     setDimensionsReady(true);
   };
 
+  /**
+   * Persists the current drawing if we're are on a bookmark page.
+   * @param document
+   */
+  const handlePersistDrawing = (document: TDDocument) => {
+    if (selectedBookmarkPage) {
+      selectedBookmarkPage.setDrawing(document);
+    }
+  };
+
   // Mount the video when it is selected
   React.useEffect(() => {
     if (
@@ -106,6 +119,21 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
     video.reviewVideoEl.volume = video.volume;
     containerEl.current.appendChild(video.reviewVideoEl);
   }, [video.videoElementsCreated, video, dimensionsReady]);
+
+  // Loading the drawing when the active bookmark page changes
+  React.useEffect(() => {
+    if (
+      selectedBookmarkPage === undefined ||
+      tlDrawInstance === null ||
+      selectedBookmarkPage.drawing.data === null
+    ) {
+      return;
+    }
+
+    tlDrawInstance.loadDocument(
+      structuredClone(selectedBookmarkPage.drawing.data)
+    );
+  }, [selectedBookmarkPage, tlDrawInstance]);
 
   return (
     <div
@@ -137,6 +165,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
                 <Drawing
                   scale={scale}
                   onMount={(app) => handleTLDrawMounted(app)}
+                  onPersist={(document) => handlePersistDrawing(document)}
                 />
               </div>
               <div

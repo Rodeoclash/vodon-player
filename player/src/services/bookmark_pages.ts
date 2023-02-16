@@ -6,5 +6,6 @@ import { JSONContent } from "@tiptap/react";
 export const createBookmarkPage = (content?: JSONContent) => {
   return new BookmarkPage({
     content: frozen(content || blankDocument),
+    drawing: frozen(null),
   });
 };

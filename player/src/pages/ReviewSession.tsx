@@ -5,7 +5,12 @@ import consola from "consola";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Link } from "react-router-dom";
-import { TbChevronLeft, TbChevronRight } from "react-icons/tb";
+import {
+  TbChevronLeft,
+  TbChevronRight,
+  TbArrowLeft,
+  TbVideoOff,
+} from "react-icons/tb";
 
 import AddBookmark from "components/videos/AddBookmark";
 import BookmarkList from "components/videos/BookmarkList";
@@ -82,7 +87,7 @@ const ReviewSession = observer(() => {
   React.useLayoutEffect(() => {
     const handleResize = () => {
       const reviewVideoPanelWidth = (() => {
-        if (session.showReviewVideoPanel === false) {
+        if (selectedVideo === null || session.showReviewVideoPanel === false) {
           return 0;
         }
 
@@ -90,7 +95,7 @@ const ReviewSession = observer(() => {
       })();
 
       const bookmarkPanelWidth = (() => {
-        if (session.showBookmarksPanel === false) {
+        if (selectedVideo === null || session.showBookmarksPanel === false) {
           return 0;
         }
 
@@ -109,27 +114,14 @@ const ReviewSession = observer(() => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [selectedVideo]);
 
   const renderedCenterPanel = (() => {
     if (session.videos.length === 0) {
       return (
         <div className="w-full h-full flex flex-col items-center justify-center">
           <div className="opacity-50">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-24 h-24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 01-2.25-2.25V9m12.841 9.091L16.5 19.5m-1.409-1.409c.407-.407.659-.97.659-1.591v-9a2.25 2.25 0 00-2.25-2.25h-9c-.621 0-1.184.252-1.591.659m12.182 12.182L2.909 5.909M1.5 4.5l1.409 1.409"
-              />
-            </svg>
+            <TbVideoOff size={150} />
           </div>
           <h2 className="header-2 mb-2">{session.name} has no videos!</h2>
           <p className="paragraph text-white/50">
@@ -146,20 +138,7 @@ const ReviewSession = observer(() => {
       return (
         <div className="w-full h-full flex flex-col items-center justify-center">
           <div className="opacity-50">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-24 h-24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-              />
-            </svg>
+            <TbArrowLeft size={150} />
           </div>
 
           <p className="mt-4 text-bright max-w-prose">
@@ -209,47 +188,51 @@ const ReviewSession = observer(() => {
         </div>
       )}
       <div className="flex-grow relative" style={videoStyle}>
-        <button
-          className="absolute top-0 left-0 z-30"
-          onClick={() => handleToggleReviewVideosPanel()}
-        >
-          <Tooltip
-            content={
-              session.showReviewVideoPanel === true
-                ? "Close view panel"
-                : "Open video panel"
-            }
+        {selectedVideo !== null && (
+          <button
+            className="absolute top-0 left-0 z-30"
+            onClick={() => handleToggleReviewVideosPanel()}
           >
-            <div className="w-12 h-12 p-2 bg-stone-800 flex items-center justify-center">
-              {session.showReviewVideoPanel === true ? (
-                <TbChevronLeft />
-              ) : (
-                <TbChevronRight />
-              )}
-            </div>
-          </Tooltip>
-        </button>
+            <Tooltip
+              content={
+                session.showReviewVideoPanel === true
+                  ? "Close view panel"
+                  : "Open video panel"
+              }
+            >
+              <div className="w-12 h-12 p-2 bg-stone-800 flex items-center justify-center">
+                {session.showReviewVideoPanel === true ? (
+                  <TbChevronLeft />
+                ) : (
+                  <TbChevronRight />
+                )}
+              </div>
+            </Tooltip>
+          </button>
+        )}
         {renderedCenterPanel}
-        <button
-          className="absolute top-0 right-0 z-30"
-          onClick={() => handleToggleBookmarksPanel()}
-        >
-          <Tooltip
-            content={
-              session.showBookmarksPanel === true
-                ? "Close bookmarks panel"
-                : "Open bookmarks panel"
-            }
+        {selectedVideo !== null && (
+          <button
+            className="absolute top-0 right-0 z-30"
+            onClick={() => handleToggleBookmarksPanel()}
           >
-            <div className="w-12 h-12 p-2 bg-stone-800 flex items-center justify-center">
-              {session.showBookmarksPanel === true ? (
-                <TbChevronRight />
-              ) : (
-                <TbChevronLeft />
-              )}
-            </div>
-          </Tooltip>
-        </button>
+            <Tooltip
+              content={
+                session.showBookmarksPanel === true
+                  ? "Close bookmarks panel"
+                  : "Open bookmarks panel"
+              }
+            >
+              <div className="w-12 h-12 p-2 bg-stone-800 flex items-center justify-center">
+                {session.showBookmarksPanel === true ? (
+                  <TbChevronRight />
+                ) : (
+                  <TbChevronLeft />
+                )}
+              </div>
+            </Tooltip>
+          </button>
+        )}
       </div>
       {selectedVideo !== null && session.showBookmarksPanel === true && (
         <div

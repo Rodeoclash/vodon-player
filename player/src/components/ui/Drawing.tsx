@@ -1,13 +1,13 @@
-import consola from "consola";
 import * as React from "react";
-import { Tldraw, TldrawApp, ColorStyle } from "@tldraw/tldraw";
+import { Tldraw, TldrawApp, TDDocument } from "@tldraw/tldraw";
 
 type Props = {
   onMount: (app: TldrawApp) => void;
+  onPersist: (document: TDDocument) => void;
   scale: number;
 };
 
-const Drawing = ({ onMount, scale }: Props) => {
+const Drawing = ({ onMount, scale, onPersist }: Props) => {
   const tlDrawRef = React.useRef<TldrawApp | null>(null);
 
   const handleMount = (app: TldrawApp) => {
@@ -17,7 +17,7 @@ const Drawing = ({ onMount, scale }: Props) => {
   };
 
   const handlePersist = (app: TldrawApp) => {
-    //console.log('persist')
+    onPersist(app.document);
   };
 
   React.useEffect(() => {
