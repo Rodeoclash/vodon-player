@@ -48,12 +48,8 @@ const DrawingSelectDash = ({ app }: PropsType) => {
 
   const renderedDashes = dashesData.map(([key, [icon, label]]) => {
     return (
-      <Tooltip content={label}>
-        <button
-          key={key}
-          className="w-6 h-6"
-          onClick={() => handleDashPick(key)}
-        >
+      <Tooltip content={label} key={key}>
+        <button className="w-6 h-6" onClick={() => handleDashPick(key)}>
           {icon}
         </button>
       </Tooltip>

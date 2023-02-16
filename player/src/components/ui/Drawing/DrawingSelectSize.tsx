@@ -39,12 +39,8 @@ const DrawingSelectSize = ({ app }: PropsType) => {
 
   const renderedSizes = sizesData.map(([key, value]) => {
     return (
-      <Tooltip content={key}>
-        <button
-          key={key}
-          className="w-6 h-6"
-          onClick={() => handleDashPick(key)}
-        >
+      <Tooltip content={key} key={key}>
+        <button className="w-6 h-6" onClick={() => handleDashPick(key)}>
           {value}
         </button>
       </Tooltip>

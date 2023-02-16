@@ -51,9 +51,8 @@ const DrawingSelectColour = ({ app }: PropsType) => {
       backgroundColor: value,
     };
     return (
-      <Tooltip content={key}>
+      <Tooltip content={key} key={key}>
         <button
-          key={key}
           style={style}
           className="w-6 h-6"
           onClick={() => handleColourPick(key)}
