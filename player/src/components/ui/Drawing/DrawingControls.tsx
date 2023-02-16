@@ -1,16 +1,17 @@
 import consola from "consola";
 import { TldrawApp, TDToolType, TDShapeType } from "@tldraw/tldraw";
-import Tooltip from "components/ui/Tooltip";
-import {
-  CursorArrowRaysIcon,
-  PencilIcon,
-  ArrowUpRightIcon,
-  MinusIcon,
-  RectangleStackIcon,
-  CircleStackIcon,
-} from "@heroicons/react/24/solid";
 import classNames from "classnames";
 
+import {
+  TbClick,
+  TbPencil,
+  TbArrowUpRight,
+  TbScribble,
+  TbRectangleVertical,
+  TbCircle,
+} from "react-icons/tb";
+
+import Tooltip from "components/ui/Tooltip";
 import DrawingSelectColour from "./DrawingSelectColour";
 import DrawingSelectDash from "./DrawingSelectDash";
 
@@ -102,22 +103,22 @@ const DrawingControls = ({ app }: Props) => {
     <div className="flex flex-col gap-2">
       <Tooltip content="Select tool (t)">
         <button className={selectClasses} onClick={() => handlePickSelect()}>
-          <CursorArrowRaysIcon className="w-8 h-8" />
+          <TbClick />
         </button>
       </Tooltip>
       <Tooltip content="Pencil tool (p)">
         <button className={pencilClasses} onClick={() => handlePickDraw()}>
-          <PencilIcon className="w-8 h-8" />
+          <TbPencil />
         </button>
       </Tooltip>
       <Tooltip content="Arrow tool (r)">
         <button className={arrowClasses} onClick={() => handlePickArrow()}>
-          <ArrowUpRightIcon className="w-8 h-8" />
+          <TbArrowUpRight />
         </button>
       </Tooltip>
       <Tooltip content="Line tool (l)">
         <button className={lineClasses} onClick={() => handlePickLine()}>
-          <MinusIcon className="w-8 h-8" />
+          <TbScribble />
         </button>
       </Tooltip>
       <Tooltip content="Box tool (b)">
@@ -125,12 +126,12 @@ const DrawingControls = ({ app }: Props) => {
           className={rectangleClasses}
           onClick={() => handlePickRectangle()}
         >
-          <RectangleStackIcon className="w-8 h-8" />
+          <TbRectangleVertical />
         </button>
       </Tooltip>
       <Tooltip content="Circle tool (b)">
         <button className={ellipseClasses} onClick={() => handlePickEllipse()}>
-          <CircleStackIcon className="w-8 h-8" />
+          <TbCircle />
         </button>
       </Tooltip>
       <hr />

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { TldrawApp, DashStyle } from "@tldraw/tldraw";
 import {
-  Square2StackIcon,
-  GiftIcon,
-  VideoCameraIcon,
-  DocumentIcon,
-} from "@heroicons/react/24/solid";
+  TbScribble,
+  TbLineDashed,
+  TbLineDotted,
+  TbSquaresFilled,
+} from "react-icons/tb";
 
 import PopoutControl from "components/ui/Drawing/PopoutControl";
 import Tooltip from "components/ui/Tooltip";
@@ -15,10 +15,10 @@ type PropsType = {
 };
 
 const dashes = {
-  [DashStyle.Draw]: [<Square2StackIcon />, "Line"],
-  [DashStyle.Solid]: [<GiftIcon />, "Filled"],
-  [DashStyle.Dashed]: [<VideoCameraIcon />, "Dashed"],
-  [DashStyle.Dotted]: [<DocumentIcon />, "Dotted"],
+  [DashStyle.Draw]: [<TbScribble />, "Line"],
+  [DashStyle.Solid]: [<TbSquaresFilled />, "Filled"],
+  [DashStyle.Dashed]: [<TbLineDashed />, "Dashed"],
+  [DashStyle.Dotted]: [<TbLineDotted />, "Dotted"],
 };
 
 const DrawingSelectDash = ({ app }: PropsType) => {
@@ -72,7 +72,7 @@ const DrawingSelectDash = ({ app }: PropsType) => {
       onRequestClose={() => handleRequestClose()}
       popup={renderedPopup}
     >
-      <Tooltip content="Tool colour">
+      <Tooltip content="Line style">
         <div className="w-8 h-8" onClick={() => handleClickSwatch()}>
           {dashes[currentStyle.dash][0]}
         </div>

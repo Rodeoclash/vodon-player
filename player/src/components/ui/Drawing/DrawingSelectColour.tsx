@@ -78,7 +78,7 @@ const DrawingSelectColour = ({ app }: PropsType) => {
       onRequestClose={() => handleRequestClose()}
       popup={renderedPopup}
     >
-      <Tooltip content="Tool colour">
+      <Tooltip content="Line colour">
         <div
           className="w-8 h-8"
           style={currentSwatchStyle}

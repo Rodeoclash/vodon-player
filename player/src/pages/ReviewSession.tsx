@@ -5,7 +5,7 @@ import consola from "consola";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Link } from "react-router-dom";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { TbChevronLeft, TbChevronRight } from "react-icons/tb";
 
 import AddBookmark from "components/videos/AddBookmark";
 import BookmarkList from "components/videos/BookmarkList";
@@ -220,11 +220,11 @@ const ReviewSession = observer(() => {
                 : "Open video panel"
             }
           >
-            <div className="w-12 h-12 p-2 bg-stone-800">
+            <div className="w-12 h-12 p-2 bg-stone-800 flex items-center justify-center">
               {session.showReviewVideoPanel === true ? (
-                <ChevronLeftIcon />
+                <TbChevronLeft />
               ) : (
-                <ChevronRightIcon />
+                <TbChevronRight />
               )}
             </div>
           </Tooltip>
@@ -241,11 +241,11 @@ const ReviewSession = observer(() => {
                 : "Open bookmarks panel"
             }
           >
-            <div className="w-12 h-12 p-2 bg-stone-800">
+            <div className="w-12 h-12 p-2 bg-stone-800 flex items-center justify-center">
               {session.showBookmarksPanel === true ? (
-                <ChevronRightIcon />
+                <TbChevronRight />
               ) : (
-                <ChevronLeftIcon />
+                <TbChevronLeft />
               )}
             </div>
           </Tooltip>
