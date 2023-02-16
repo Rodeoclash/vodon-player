@@ -88,8 +88,7 @@ const VideoNavigationControls = ({
     <div>
       <div className="flex items-center justify-between">
         <div className="basis-1/3 text-bright">
-          {secondsToHms(Math.round(currentTime))} /{" "}
-          {secondsToHms(Math.round(duration))}
+          {secondsToHms(currentTime)} / {secondsToHms(duration)}
         </div>
         <div className="basis-1/3 flex items-center justify-center gap-4 flex-grow">
           <div className="flex items-center justify-center">
