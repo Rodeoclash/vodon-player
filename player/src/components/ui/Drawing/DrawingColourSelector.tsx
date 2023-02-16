@@ -1,9 +1,9 @@
 import * as React from "react";
 import { usePopper } from "react-popper";
 import { useOnClickOutside } from "usehooks-ts";
-
 import { TldrawApp, ColorStyle } from "@tldraw/tldraw";
 
+import PopoutControl from "components/ui/Drawing/PopoutControl";
 import Tooltip from "components/ui/Tooltip";
 
 type PropsType = {
@@ -27,25 +27,8 @@ const colors = {
 
 const DrawingColourSelector = ({ app }: PropsType) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const outsideClickRef = React.useRef<HTMLDivElement>(null);
 
   const currentStyle = app.useStore((s) => s.appState.currentStyle);
-
-  const [referenceElement, setReferenceElement] =
-    React.useState<HTMLDivElement | null>(null);
-  const [popperElement, setPopperElement] =
-    React.useState<HTMLDivElement | null>(null);
-  const [arrowElement, setArrowElement] = React.useState<HTMLDivElement | null>(
-    null
-  );
-
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: "right",
-    modifiers: [
-      { name: "arrow", options: { element: arrowElement } },
-      { name: "offset", options: { offset: [0, 20] } },
-    ],
-  });
 
   const handleColourPick = React.useCallback(
     (color: ColorStyle) => {
@@ -59,9 +42,9 @@ const DrawingColourSelector = ({ app }: PropsType) => {
     setIsOpen(!isOpen);
   };
 
-  useOnClickOutside(outsideClickRef, (event) => {
+  const handleRequestClose = () => {
     setIsOpen(false);
-  });
+  };
 
   const swatchesData = Object.entries(colors) as Array<[ColorStyle, string]>;
 
@@ -83,27 +66,26 @@ const DrawingColourSelector = ({ app }: PropsType) => {
     backgroundColor: colors[currentStyle.color],
   };
 
+  const renderedPopup = (
+    <div className="bg-stone-800 h-12 flex items-center gap-2 px-3">
+      {renderedSwatches}
+    </div>
+  );
+
   return (
-    <div ref={outsideClickRef}>
+    <PopoutControl
+      open={isOpen}
+      onRequestClose={() => handleRequestClose()}
+      popup={renderedPopup}
+    >
       <Tooltip content="Tool colour">
         <div
           className="w-8 h-8"
           style={currentSwatchStyle}
           onClick={() => handleClickSwatch()}
-          ref={setReferenceElement}
         />
       </Tooltip>
-      {isOpen === true && (
-        <div
-          ref={setPopperElement}
-          className="bg-stone-800 h-12 flex items-center gap-2 px-3"
-          style={styles.popper}
-          {...attributes.popper}
-        >
-          {renderedSwatches}
-        </div>
-      )}
-    </div>
+    </PopoutControl>
   );
 };
 
