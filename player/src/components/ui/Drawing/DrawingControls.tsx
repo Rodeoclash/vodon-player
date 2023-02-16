@@ -11,7 +11,8 @@ import {
 } from "@heroicons/react/24/solid";
 import classNames from "classnames";
 
-import DrawingColourSelector from "./DrawingColourSelector";
+import DrawingSelectColour from "./DrawingSelectColour";
+import DrawingSelectDash from "./DrawingSelectDash";
 
 type Props = {
   app: TldrawApp;
@@ -89,7 +90,11 @@ const DrawingControls = ({ app }: Props) => {
     ["bg-stone-500"]: activeTool === TDShapeType.Ellipse,
   });
 
-  const colourSwatchClasses = classNames({
+  const colourSwatchSelectClasses = classNames({
+    ...baseClasses,
+  });
+
+  const dashSelectClasses = classNames({
     ...baseClasses,
   });
 
@@ -129,8 +134,11 @@ const DrawingControls = ({ app }: Props) => {
         </button>
       </Tooltip>
       <hr />
-      <div className={colourSwatchClasses}>
-        <DrawingColourSelector app={app} />
+      <div className={colourSwatchSelectClasses}>
+        <DrawingSelectColour app={app} />
+      </div>
+      <div className={dashSelectClasses}>
+        <DrawingSelectDash app={app} />
       </div>
     </div>
   );

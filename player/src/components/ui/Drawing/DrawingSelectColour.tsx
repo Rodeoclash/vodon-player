@@ -1,6 +1,4 @@
 import * as React from "react";
-import { usePopper } from "react-popper";
-import { useOnClickOutside } from "usehooks-ts";
 import { TldrawApp, ColorStyle } from "@tldraw/tldraw";
 
 import PopoutControl from "components/ui/Drawing/PopoutControl";
@@ -25,7 +23,7 @@ const colors = {
   [ColorStyle.Yellow]: "#ffc936",
 };
 
-const DrawingColourSelector = ({ app }: PropsType) => {
+const DrawingSelectColour = ({ app }: PropsType) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const currentStyle = app.useStore((s) => s.appState.currentStyle);
@@ -53,12 +51,14 @@ const DrawingColourSelector = ({ app }: PropsType) => {
       backgroundColor: value,
     };
     return (
-      <button
-        key={key}
-        style={style}
-        className="w-6 h-6"
-        onClick={() => handleColourPick(key)}
-      />
+      <Tooltip content={key}>
+        <button
+          key={key}
+          style={style}
+          className="w-6 h-6"
+          onClick={() => handleColourPick(key)}
+        />
+      </Tooltip>
     );
   });
 
@@ -89,4 +89,4 @@ const DrawingColourSelector = ({ app }: PropsType) => {
   );
 };
 
-export default DrawingColourSelector;
+export default DrawingSelectColour;
