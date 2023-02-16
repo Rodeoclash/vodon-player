@@ -14,6 +14,7 @@ import {
 import Tooltip from "components/ui/Tooltip";
 import DrawingSelectColour from "./DrawingSelectColour";
 import DrawingSelectDash from "./DrawingSelectDash";
+import DrawingSelectSize from "./DrawingSelectSize";
 
 type Props = {
   app: TldrawApp;
@@ -99,6 +100,10 @@ const DrawingControls = ({ app }: Props) => {
     ...baseClasses,
   });
 
+  const sizeSelectClasses = classNames({
+    ...baseClasses,
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <Tooltip content="Select tool (t)">
@@ -140,6 +145,9 @@ const DrawingControls = ({ app }: Props) => {
       </div>
       <div className={dashSelectClasses}>
         <DrawingSelectDash app={app} />
+      </div>
+      <div className={sizeSelectClasses}>
+        <DrawingSelectSize app={app} />
       </div>
     </div>
   );
