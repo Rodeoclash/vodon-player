@@ -10,8 +10,14 @@ type Props = {
 const Edit = observer(({ bookmark }: Props) => {
   const selectedBookmarkPage = bookmark.selectedBookmarkPage;
 
-  const handleClick = () => {
+  const handleClickDone = () => {
     bookmark.setEditingInProgress(false);
+  };
+
+  const handleClickDelete = () => {
+    if (window.confirm("Are you sure you want to delete this bookmark page?")) {
+      selectedBookmarkPage.delete();
+    }
   };
 
   const handleContentUpdate = (content: JSONContent) => {
@@ -26,10 +32,16 @@ const Edit = observer(({ bookmark }: Props) => {
           onUpdate={(content) => handleContentUpdate(content)}
         />
       </div>
-      <div className="p-4 pt-0">
+      <div className="p-4 pt-0 flex items-center gap-4">
+        <button
+          className="btn btn-warning block w-full"
+          onClick={() => handleClickDelete()}
+        >
+          Delete
+        </button>
         <button
           className="btn btn-secondary block w-full"
-          onClick={() => handleClick()}
+          onClick={() => handleClickDone()}
         >
           Done
         </button>

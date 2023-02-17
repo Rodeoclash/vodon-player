@@ -37,7 +37,42 @@ export default class BookmarkPage extends Model({
 
   @modelAction
   select() {
+    consola.info(`Selecting bookmark page: ${this.id}`);
     this.bookmark.selectBookmarkPage(this);
+  }
+
+  /**
+   * Deletes a bookmark page. Requires special care around handling the
+   * removal of the bookmark itself / switching to another bookmark if the
+   * deleted bookmark is the currently selected one.
+   */
+  @modelAction
+  delete() {
+    consola.info(`Deleting bookmark page: ${this.id}`);
+
+    // If we're the only bookmark page in the bookmark, delete the entire bookmark.
+    if (this.bookmark.bookmarkPages.length === 1) {
+      this.bookmark.delete();
+
+      // If other bookmarks exist, we need to select a different one before we delete
+    } else {
+      // if we're the last bookmark in the list, select the previous bookmark by
+      // default
+      if (this.index === this.bookmark.bookmarkPageCount - 1) {
+        this.bookmark.selectBookmarkPage(
+          this.bookmark.bookmarkPages[this.index - 1]
+        );
+
+        // Otherwise select the next bookmark
+      } else {
+        this.bookmark.selectBookmarkPage(
+          this.bookmark.bookmarkPages[this.index + 1]
+        );
+      }
+
+      // Once we've moved off the bookmark, we can delete it
+      this.bookmark.deleteBookmarkPage(this);
+    }
   }
 
   @computed
@@ -58,5 +93,12 @@ export default class BookmarkPage extends Model({
   @computed
   get active() {
     return this.bookmark.selectedBookmarkPage.id === this.id;
+  }
+
+  @computed
+  get index() {
+    return this.bookmark.bookmarkPages.findIndex((bookmarkPage) => {
+      return bookmarkPage.id === this.id;
+    });
   }
 }

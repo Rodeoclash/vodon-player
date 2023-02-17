@@ -129,6 +129,18 @@ export default class Video extends Model({
   }
 
   /**
+   * Removes a bookmark from this video by filtering it out.
+   * @param bookmark The bookmark to remove
+   * @returns
+   */
+  @modelAction
+  removeBookmark(bookmark: Bookmark) {
+    return (this.bookmarks = this.bookmarks.filter((innerBookmark) => {
+      return innerBookmark.id !== bookmark.id;
+    }));
+  }
+
+  /**
    * Get this position of this video in the session, according to the other videos
    */
   @computed

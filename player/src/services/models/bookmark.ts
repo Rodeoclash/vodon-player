@@ -29,8 +29,19 @@ export default class Bookmark extends Model({
     () => []
   ),
 }) {
+  /**
+   * Delete this bookmark
+   */
+  @modelAction
+  delete() {
+    consola.info(`Deleting bookmark: ${this.videoTimestamp}`);
+    this.video.removeBookmark(this);
+  }
+
   @modelAction
   selectBookmarkPage(bookmarkPage: BookmarkPage) {
+    consola.info(`Selecting bookmark page: ${bookmarkPage.id}`);
+
     if (!this.bookmarkPages.includes(bookmarkPage))
       throw new RecordNotFound(
         "Tried to select video but it did not belong to this session"
@@ -46,10 +57,25 @@ export default class Bookmark extends Model({
    */
   @modelAction
   createBookmarkPage() {
-    consola.info("Creating new bookmark page");
+    consola.info("Creating new blank bookmark page");
     const bookmarkPage = createBookmarkPage();
     this.bookmarkPages.push(bookmarkPage);
     this.selectBookmarkPage(bookmarkPage);
+  }
+
+  /**
+   * Creates a new bookmark page under this bookmark. Will automatically
+   * duplicate the contents of the currently selected bookmark then
+   * switch to the bookmark page.
+   */
+  @modelAction
+  deleteBookmarkPage(bookmarkPage: BookmarkPage) {
+    consola.info(`Deleting bookmark page: ${bookmarkPage.id}`);
+    return (this.bookmarkPages = this.bookmarkPages.filter(
+      (innerBookmarkPage) => {
+        return innerBookmarkPage.id !== bookmarkPage.id;
+      }
+    ));
   }
 
   @computed

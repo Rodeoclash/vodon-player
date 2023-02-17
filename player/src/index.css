@@ -83,6 +83,14 @@
     @apply bg-zinc-600;
   }
 
+  .btn-warning {
+    @apply bg-red-700;
+  }
+
+  .btn-warning:hover {
+    @apply bg-red-600;
+  }
+
   /* Sizing for the injected video */
   .reviewVideo video {
     @apply w-full h-full;

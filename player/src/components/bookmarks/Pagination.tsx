@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
+import { TbX } from "react-icons/tb";
 import Bookmark from "services/models/bookmark";
 import BookmarkPage from "services/models/bookmark_page";
 
@@ -8,12 +9,16 @@ type Props = {
 };
 
 const Pagination = observer(({ bookmark }: Props) => {
-  const handleClick = (bookmarkPage: BookmarkPage) => {
+  const handleClickPageNumber = (bookmarkPage: BookmarkPage) => {
     if (bookmark.editingInProgress === true) {
       return;
     }
 
     bookmarkPage.select();
+  };
+
+  const handleClickDeletePage = (bookmarkPage: BookmarkPage) => {
+    bookmarkPage.delete();
   };
 
   const renderedPages = bookmark.sortedBookmarkPages.map(
@@ -25,8 +30,11 @@ const Pagination = observer(({ bookmark }: Props) => {
       });
 
       return (
-        <li key={bookmarkPage.id} className="flex items-stretch">
-          <a onClick={() => handleClick(bookmarkPage)} className={classes}>
+        <li key={bookmarkPage.id} className="flex items-stretch relative">
+          <a
+            onClick={() => handleClickPageNumber(bookmarkPage)}
+            className={classes}
+          >
             {index + 1}
           </a>
         </li>
