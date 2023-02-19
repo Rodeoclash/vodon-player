@@ -38,6 +38,7 @@ export default class BookmarkPage extends Model({
   @modelAction
   select() {
     consola.info(`Selecting bookmark page: ${this.id}`);
+    this.session.selectBookmark(this.bookmark);
     this.bookmark.selectBookmarkPage(this);
   }
 

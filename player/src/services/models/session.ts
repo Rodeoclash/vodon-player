@@ -31,7 +31,11 @@ export default class Session extends Model({
   showBookmarksPanel: tProp(types.boolean, true),
 }) {
   onAttachedToRootStore() {
-    bus.on("video.gotoTime", (originVideo: Video, newTime: number) => {
+    bus.on("video.gotoTime", () => {
+      this.unselectBookmark();
+    });
+
+    bus.on("video.play", () => {
       this.unselectBookmark();
     });
   }

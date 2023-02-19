@@ -1,3 +1,4 @@
+import consola from "consola";
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
@@ -91,6 +92,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   };
 
   const handleTLDrawMounted = (app: TldrawApp) => {
+    consola.info("TLDraw mounted");
     setTlDrawInstance(app);
   };
 
@@ -124,11 +126,16 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
 
   // Loading the drawing when the active bookmark page changes
   React.useEffect(() => {
+    if (tlDrawInstance === null) {
+      return;
+    }
     if (
       selectedBookmarkPage === undefined ||
-      tlDrawInstance === null ||
       selectedBookmarkPage.drawing.data === null
     ) {
+      const tool = tlDrawInstance.useStore.getState().appState.activeTool;
+      tlDrawInstance.deleteAll();
+      tlDrawInstance.selectTool(tool);
       return;
     }
 
