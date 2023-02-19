@@ -29,6 +29,9 @@ const VideoNavigationControls = ({
   const [frameNavigationHeld, setFrameNavigationHeld] =
     React.useState<Direction | null>(null);
 
+  const [jumpNavigationHeld, setJumpNavigationHeld] =
+    React.useState<Direction | null>(null);
+
   // Toggle playing of the video on and off depending on the current state
   const handleTogglePlay = () => {
     if (playing === true) {
@@ -48,6 +51,16 @@ const VideoNavigationControls = ({
     onGotoTime(videoEl.currentTime + frameLength * 1);
   };
 
+  // jump forward by a set amount (currently 1 second, needs to be configurable)
+  const handleForwardJump = () => {
+    onGotoTime(videoEl.currentTime + 1);
+  };
+
+  // jump back by a set amount (currently 1 second, needs to be configurable)
+  const handleBackJump = () => {
+    onGotoTime(videoEl.currentTime - 1);
+  };
+
   useHotkeys(
     "space",
     (event) => {
@@ -62,6 +75,9 @@ const VideoNavigationControls = ({
     [keyboardShortcutsEnabled, playing]
   );
 
+  /**
+   * Frame navigation
+   */
   useHotkeys(
     "a,arrowLeft",
     () => {
@@ -138,6 +154,86 @@ const VideoNavigationControls = ({
       clearInterval(interval);
     };
   }, [frameNavigationHeld, seeking]);
+
+  /**
+   * Jump navigation
+   */
+  useHotkeys(
+    "w,arrowUp",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      handleForwardJump();
+      setJumpNavigationHeld(Direction.Forward);
+    },
+    {
+      keydown: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "w,arrowUp",
+    () => {
+      setJumpNavigationHeld(null);
+    },
+    {
+      keyup: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "s,arrowDown",
+    () => {
+      if (keyboardShortcutsEnabled === false) {
+        return;
+      }
+      handleBackJump();
+      setJumpNavigationHeld(Direction.Back);
+    },
+    {
+      keydown: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  useHotkeys(
+    "s,arrowDown",
+    () => {
+      setJumpNavigationHeld(null);
+    },
+    {
+      keyup: true,
+    },
+    [keyboardShortcutsEnabled]
+  );
+
+  React.useEffect(() => {
+    if (seeking === true || jumpNavigationHeld === null) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      switch (jumpNavigationHeld) {
+        case Direction.Back:
+          handleBackJump();
+          break;
+        case Direction.Forward:
+          handleForwardJump();
+          break;
+        default:
+          throw new UnknownDirection(
+            `A direction was passed to navigate by jump but we didn't understand it (was: ${frameNavigationHeld})`
+          );
+      }
+    }, FRAME_ADVANCE_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [jumpNavigationHeld, seeking]);
 
   return null;
 };
