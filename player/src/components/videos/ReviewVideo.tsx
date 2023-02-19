@@ -124,26 +124,6 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
     containerEl.current.appendChild(video.reviewVideoEl);
   }, [video.videoElementsCreated, video, dimensionsReady]);
 
-  // Loading the drawing when the active bookmark page changes
-  React.useEffect(() => {
-    if (tlDrawInstance === null) {
-      return;
-    }
-    if (
-      selectedBookmarkPage === undefined ||
-      selectedBookmarkPage.drawing.data === null
-    ) {
-      const tool = tlDrawInstance.useStore.getState().appState.activeTool;
-      tlDrawInstance.deleteAll();
-      tlDrawInstance.selectTool(tool);
-      return;
-    }
-
-    tlDrawInstance.loadDocument(
-      structuredClone(selectedBookmarkPage.drawing.data)
-    );
-  }, [selectedBookmarkPage, tlDrawInstance]);
-
   return (
     <div
       className="w-full h-full relative"
@@ -172,11 +152,13 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
             <div style={dimensionsStyle} className="relative">
               <div className="absolute inset-0 z-20">
                 <Drawing
+                  drawing={selectedBookmarkPage?.drawing.data || null}
                   scale={scale}
                   onMount={(app) => handleTLDrawMounted(app)}
                   onPersist={(document) => handlePersistDrawing(document)}
                 />
               </div>
+
               <div
                 className="absolute inset-0 z-10 reviewVideo"
                 ref={containerEl}
