@@ -96,6 +96,16 @@ export default function Session() {
                 <td className="th">Select viewpoint</td>
               </tr>
               <tr>
+                <td className="td font-mono">f</td>
+                <td className="th">Fullscreen mode</td>
+              </tr>
+              <tr>
+                <td className="td font-mono">h</td>
+                <td className="th">
+                  Toggle overlays (drawing, video controls etc)
+                </td>
+              </tr>
+              <tr>
                 <td className="td font-mono">t</td>
                 <td className="th">Shape select tool</td>
               </tr>
