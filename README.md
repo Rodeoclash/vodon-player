@@ -32,12 +32,9 @@ While the Vodon Player is open source, it is intended to be backed by a closed s
 
 ## Todo:
 
-1. Add multiple videos at once
+1. Fix up tool problems when loading documents in TLDraw
 2. Drag and drop to add video (including multiple)
-3. Notes on videos (should us a rich text system)
-4. Drawing on videos (should be assigned to notes first)
-5. Fullscreen
-6. Switch player POV via number keys
-7. Skip forward / back n number of seconds using w, s
-8. Settings page to configure things like skip distance
-9. Roster / players assignable to videos
+3. Select multiple videos at once
+4. Skip forward / back n number of seconds using w, s
+5. Settings page to configure things like skip distance
+6. Roster / players assignable to videos
