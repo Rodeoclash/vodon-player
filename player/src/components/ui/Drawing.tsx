@@ -1,3 +1,4 @@
+import consola from "consola";
 import * as React from "react";
 import { Tldraw, TldrawApp, TDDocument } from "@tldraw/tldraw";
 
@@ -18,6 +19,7 @@ const Drawing = ({ onMount, scale, onPersist, drawing }: Props) => {
   };
 
   const handlePersist = (app: TldrawApp) => {
+    app.selectNone();
     onPersist(app.document);
   };
 
@@ -34,16 +36,21 @@ const Drawing = ({ onMount, scale, onPersist, drawing }: Props) => {
     if (tlDrawRef.current === null) {
       return;
     }
+
+    const app = tlDrawRef.current;
+    const tool = app.useStore.getState().appState.activeTool;
+
     if (!drawing) {
-      const tool = tlDrawRef.current.useStore.getState().appState.activeTool;
-      tlDrawRef.current.deleteAll();
-      tlDrawRef.current.selectTool(tool);
-      return;
+      consola.info("Clearing TLDraw document");
+      app.deleteAll();
+    } else {
+      consola.info("Loading TLDraw document");
+      app.loadDocument(structuredClone(drawing));
     }
 
-    tlDrawRef.current.loadDocument(structuredClone(drawing));
-
-    tlDrawRef.current.setCamera([0, 0], scale, "layout_resized");
+    app.setCamera([0, 0], scale, "layout_resized");
+    app.selectTool(tool);
+    app.toggleToolLock();
   }, [drawing]);
 
   return (

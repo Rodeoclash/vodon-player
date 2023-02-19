@@ -5,9 +5,9 @@ import classNames from "classnames";
 import {
   TbClick,
   TbPencil,
-  TbArrowUpRight,
-  TbScribble,
-  TbRectangleVertical,
+  TbArrowRightCircle,
+  TbLine,
+  TbRectangle,
   TbCircle,
 } from "react-icons/tb";
 
@@ -118,12 +118,12 @@ const DrawingControls = ({ app }: Props) => {
       </Tooltip>
       <Tooltip content="Arrow tool (r)">
         <button className={arrowClasses} onClick={() => handlePickArrow()}>
-          <TbArrowUpRight />
+          <TbArrowRightCircle />
         </button>
       </Tooltip>
       <Tooltip content="Line tool (l)">
         <button className={lineClasses} onClick={() => handlePickLine()}>
-          <TbScribble />
+          <TbLine />
         </button>
       </Tooltip>
       <Tooltip content="Box tool (b)">
@@ -131,10 +131,10 @@ const DrawingControls = ({ app }: Props) => {
           className={rectangleClasses}
           onClick={() => handlePickRectangle()}
         >
-          <TbRectangleVertical />
+          <TbRectangle />
         </button>
       </Tooltip>
-      <Tooltip content="Circle tool (b)">
+      <Tooltip content="Circle tool (c)">
         <button className={ellipseClasses} onClick={() => handlePickEllipse()}>
           <TbCircle />
         </button>
