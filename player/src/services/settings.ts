@@ -1,1 +1,1 @@
-export const FRAME_ADVANCE_INTERVAL = 100;
+export const FRAME_ADVANCE_INTERVAL = 150;
