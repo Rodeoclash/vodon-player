@@ -24,6 +24,9 @@ const Edit = observer(({ bookmark }: Props) => {
     selectedBookmarkPage.setContent(content);
   };
 
+  const deleteText =
+    bookmark.bookmarkPageCount === 1 ? "Delete bookmark" : "Delete page";
+
   return (
     <>
       <div>
@@ -37,7 +40,7 @@ const Edit = observer(({ bookmark }: Props) => {
           className="btn btn-warning block w-full"
           onClick={() => handleClickDelete()}
         >
-          Delete
+          {deleteText}
         </button>
         <button
           className="btn btn-secondary block w-full"

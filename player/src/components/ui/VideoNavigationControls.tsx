@@ -85,7 +85,7 @@ const VideoNavigationControls = ({
   }, [frameNavigationHeld, seeking]);
 
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between">
         <div className="basis-1/3 text-bright">
           {secondsToHms(currentTime)} / {secondsToHms(duration)}
@@ -187,7 +187,7 @@ const VideoNavigationControls = ({
           seeking={seeking}
         />
       </div>
-    </div>
+    </>
   );
 };
 

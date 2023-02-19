@@ -1,4 +1,6 @@
 import { observer } from "mobx-react-lite";
+import classNames from "classnames";
+
 import Bookmark from "services/models/bookmark";
 import Tooltip from "components/ui/Tooltip";
 
@@ -11,14 +13,19 @@ const AddPage = observer(({ bookmark }: Props) => {
     bookmark.createBookmarkPage();
   };
 
+  const classes = classNames({
+    "border-l border-slate-700 px-2": true,
+    "cursor-not-allowed": bookmark.editingInProgress === true,
+  });
+
   return (
     <Tooltip
       className="h-full flex items-center justify-center"
-      content="Add page"
+      content="Add page to bookmark"
       offset={[0, 5]}
     >
       <button
-        className="border-l border-stone-700 px-2"
+        className={classes}
         onClick={() => handleClick()}
         disabled={bookmark.editingInProgress === true}
       >

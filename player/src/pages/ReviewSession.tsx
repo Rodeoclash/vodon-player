@@ -32,7 +32,9 @@ const ReviewSession = observer(() => {
   >(null);
 
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
+
   const selectedVideo = session.selectedVideo;
+  const selectedBookmark = session.selectedBookmark;
 
   const handleToggleReviewVideosPanel = () => {
     session.toggleReviewVideoPanel();

@@ -1,5 +1,6 @@
 import { computed } from "mobx";
 import consola from "consola";
+import bus from "services/bus";
 
 import {
   model,
@@ -29,6 +30,12 @@ export default class Session extends Model({
   showReviewVideoPanel: tProp(types.boolean, true),
   showBookmarksPanel: tProp(types.boolean, true),
 }) {
+  onAttachedToRootStore() {
+    bus.on("video.gotoTime", (originVideo: Video, newTime: number) => {
+      this.unselectBookmark();
+    });
+  }
+
   @modelAction
   setName(name: string) {
     this.name = name;
@@ -88,6 +95,11 @@ export default class Session extends Model({
     ) {
       this.selectedVideo.reviewVideoEl.currentTime = bookmark.videoTimestamp;
     }
+  }
+
+  @modelAction
+  unselectBookmark() {
+    this.selectedBookmarkRef = null;
   }
 
   @modelAction

@@ -61,6 +61,7 @@ export default class Bookmark extends Model({
     const bookmarkPage = createBookmarkPage();
     this.bookmarkPages.push(bookmarkPage);
     this.selectBookmarkPage(bookmarkPage);
+    this.setEditingInProgress(true);
   }
 
   /**

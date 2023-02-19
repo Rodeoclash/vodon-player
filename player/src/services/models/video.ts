@@ -1,4 +1,5 @@
 import { computed } from "mobx";
+import mime from "mime-types";
 import {
   findParent,
   idProp,
@@ -205,5 +206,39 @@ export default class Video extends Model({
   @computed
   get duration() {
     return parseFloat(this.videoData.data.Duration);
+  }
+
+  /**
+   * File extension for this video based off the mime type it has.
+   */
+  @computed
+  get mimeExtension() {
+    if (this.type === null) {
+      return null;
+    }
+
+    return mime.extension(this.type);
+  }
+
+  /**
+   * The path of this file when stored in the OPFS or online in cloud storage
+   * somewhere
+   */
+  @computed
+  get storageDirectory() {
+    return `${this.session.id}/${this.id}`;
+  }
+
+  /**
+   * The path of this file when stored in the OPFS or online in cloud storage
+   * somewhere
+   */
+  @computed
+  get videoFileName() {
+    if (this.mimeExtension === null) {
+      return null;
+    }
+
+    return `video.${this.mimeExtension}`;
   }
 }

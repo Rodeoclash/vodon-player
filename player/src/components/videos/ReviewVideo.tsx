@@ -8,9 +8,10 @@ import { TldrawApp, TDDocument } from "@tldraw/tldraw";
 import Drawing from "components/ui/Drawing";
 import DrawingControls from "components/ui/Drawing/DrawingControls";
 import DrawingControlsKeyboardShortcuts from "components/ui/Drawing/DrawingControlsKeyboardShortcuts";
-import VideoSizer from "components/ui/VideoSizer";
+import Floating from "components/bookmarks/Floating";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
+import VideoSizer from "components/ui/VideoSizer";
 
 type Props = {
   hideOverlays: boolean;
@@ -18,8 +19,9 @@ type Props = {
 };
 
 const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
-  const selectedBookmarkPage =
-    video.session.selectedBookmark?.selectedBookmarkPage;
+  const selectedBookmark = video.session.selectedBookmark;
+
+  const selectedBookmarkPage = selectedBookmark?.selectedBookmarkPage;
 
   // Track when the mouse is over the video to show the controls
   const [dimensionsReady, setDimensionsReady] = React.useState<boolean | null>(
@@ -229,6 +231,16 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       {tlDrawInstance !== null && (
         <DrawingControlsKeyboardShortcuts app={tlDrawInstance} />
       )}
+      {hideOverlays === false &&
+        video.session.showBookmarksPanel === false &&
+        selectedBookmark !== null && (
+          <div
+            className="z-20 absolute inset-0 pointer-events-none flex items-end justify-center"
+            style={{ bottom: "150px" }}
+          >
+            <Floating bookmark={selectedBookmark} />
+          </div>
+        )}
     </div>
   );
 });
