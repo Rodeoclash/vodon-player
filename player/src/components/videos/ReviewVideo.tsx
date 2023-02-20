@@ -222,7 +222,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       )}
       {hideOverlays === false &&
         video.session.showBookmarksPanel === false &&
-        selectedBookmark !== null && (
+        selectedBookmark !== undefined && (
           <div
             className="z-20 absolute inset-0 pointer-events-none flex items-end justify-center"
             style={{ bottom: "150px" }}

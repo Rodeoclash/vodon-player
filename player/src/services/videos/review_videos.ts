@@ -40,6 +40,22 @@ export const buildElement = async (
     metadata: VideoFrameCallbackMetadata
   ) => {
     video.setCurrentTime(metadata.mediaTime);
+
+    // For each tick of playback, check what bookmarks are supposed to be
+    // active. If we reach an active bookmark situation, highlight and
+    // pause the videos here.
+    if (video.hasBookmarks === true) {
+      const roundedCurrentTime = metadata.mediaTime.toFixed(1);
+
+      video.bookmarks.forEach((bookmark) => {
+        if (roundedCurrentTime === bookmark.videoTimestamp.toFixed(1)) {
+          bookmark.setActive(true);
+        } else {
+          bookmark.setActive(false);
+        }
+      });
+    }
+
     el.requestVideoFrameCallback(handleVideoFrame);
   };
 
@@ -74,6 +90,8 @@ export const buildElement = async (
       video.calculatedOffset - originVideo.calculatedOffset;
 
     el.currentTime = newTime + offsetFromIncomingVideo;
+
+    // mark all bookmarks ahead of this time as not seen
   });
 
   return el;

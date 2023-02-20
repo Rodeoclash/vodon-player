@@ -1,5 +1,6 @@
 import consola from "consola";
-import { computed } from "mobx";
+import bus from "services/bus";
+import { computed, reaction } from "mobx";
 import {
   model,
   Model,
@@ -21,6 +22,7 @@ import { createBookmarkPage } from "services/bookmark_pages";
 export default class Bookmark extends Model({
   id: idProp,
   createdAt: tProp(types.number, Date.now()),
+  active: tProp(types.boolean, false).withSetter(),
   videoTimestamp: tProp(types.number),
   editingInProgress: tProp(types.boolean, false).withSetter(),
   selectedBookmarkPageRef: prop<Ref<BookmarkPage>>(),
@@ -29,6 +31,27 @@ export default class Bookmark extends Model({
     () => []
   ),
 }) {
+  onAttachedToRootStore() {
+    const reactionDisposer = reaction(
+      () => this.active,
+      async (active) => {
+        if (active === true) {
+          consola.info(`Activated bookmark: ${this.videoTimestamp}`);
+          const video = this.video;
+          video.reviewVideoEl?.pause();
+          bus.emit("video.pause", video);
+        }
+      },
+      {
+        fireImmediately: true,
+      }
+    );
+
+    return () => {
+      reactionDisposer();
+    };
+  }
+
   /**
    * Delete this bookmark
    */

@@ -80,6 +80,9 @@ export default class Video extends Model({
 
   // Volume of the video
   volume: tProp(types.number, 0.5).withSetter(),
+
+  // Seen bookmark ids
+  seenBookmarkIds: tProp(types.array(types.string), []).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
   reviewVideoEl: HTMLVideoElement | null = null;
@@ -107,7 +110,7 @@ export default class Video extends Model({
       database.table("storageVideoFileHandles").get({ id: this.id })
     );
 
-    storageVideoFileHandleObservable.subscribe({
+    const subscriptionDisposer = storageVideoFileHandleObservable.subscribe({
       next: async (result) => {
         if (result === undefined) {
           return;
@@ -122,6 +125,10 @@ export default class Video extends Model({
       },
       error: (error) => console.error(error),
     });
+
+    return () => {
+      subscriptionDisposer.unsubscribe();
+    };
   }
 
   @modelAction
@@ -141,6 +148,20 @@ export default class Video extends Model({
     });
   }
 
+  @modelAction
+  addSeenBookmarkId(id: string) {
+    this.seenBookmarkIds.push(id);
+  }
+
+  @modelAction
+  resetSeenBookmarkIdsUntil(time: number) {
+    /*
+    this.bookmarks = this.bookmarks.filter((innerBookmark) => {
+      return innerBookmark.id !== bookmark.id;
+    });
+    */
+  }
+
   /**
    * Get this position of this video in the session, according to the other videos
    */
@@ -149,6 +170,11 @@ export default class Video extends Model({
     return this.session.videos.findIndex((video) => {
       return video.id === this.id;
     });
+  }
+
+  @computed
+  get hasBookmarks() {
+    return this.bookmarks.length > 0;
   }
 
   @computed
@@ -240,5 +266,9 @@ export default class Video extends Model({
     }
 
     return `video.${this.mimeExtension}`;
+  }
+
+  seenBookmark(id: string) {
+    return this.seenBookmarkIds.includes(id);
   }
 }

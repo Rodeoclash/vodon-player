@@ -34,20 +34,9 @@ export default class Session extends Model({
   createdAt: tProp(types.number, Date.now()),
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
   selectedVideoRef: prop<Ref<Video> | null>(),
-  selectedBookmarkRef: prop<Ref<Bookmark> | null>(),
   showReviewVideoPanel: tProp(types.boolean, true),
   showBookmarksPanel: tProp(types.boolean, true),
 }) {
-  onAttachedToRootStore() {
-    bus.on("video.gotoTime", () => {
-      this.unselectBookmark();
-    });
-
-    bus.on("video.play", () => {
-      this.unselectBookmark();
-    });
-  }
-
   @modelAction
   update(values: FormikValues) {
     consola.info(`Updating session with: ${values}`);
@@ -99,7 +88,6 @@ export default class Session extends Model({
 
     consola.info(`Selecting bookmark: ${bookmark.videoTimestamp}`);
 
-    this.selectedBookmarkRef = bookmarkRef(bookmark);
     this.selectedVideoRef = videoRef(bookmark.video);
 
     if (
@@ -108,11 +96,6 @@ export default class Session extends Model({
     ) {
       this.selectedVideo.reviewVideoEl.currentTime = bookmark.videoTimestamp;
     }
-  }
-
-  @modelAction
-  unselectBookmark() {
-    this.selectedBookmarkRef = null;
   }
 
   @modelAction
@@ -143,7 +126,9 @@ export default class Session extends Model({
 
   @computed
   get selectedBookmark() {
-    return this.selectedBookmarkRef ? this.selectedBookmarkRef.current : null;
+    return this.bookmarks.find((bookmark) => {
+      return bookmark.active === true;
+    });
   }
 
   @computed
