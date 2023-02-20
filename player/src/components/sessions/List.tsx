@@ -4,6 +4,7 @@ import { RootStoreContext } from "services/models/root";
 
 import { Link } from "react-router-dom";
 import TimeAgo from "components/ui/TimeAgo";
+import Edit from "components/sessions/Edit";
 
 const List = observer(() => {
   const store = React.useContext(RootStoreContext);
@@ -25,6 +26,9 @@ const List = observer(() => {
             <TimeAgo date={createdAtDate} />
           </span>
         </td>
+        <td className="td">
+          <Edit session={session} />
+        </td>
       </tr>
     );
   });
@@ -40,6 +44,7 @@ const List = observer(() => {
           <th className="th">Name</th>
           <th className="th">Number of viewpoints</th>
           <th className="th">Created</th>
+          <th className="th"></th>
         </tr>
       </thead>
       <tbody>{renderedSessions}</tbody>

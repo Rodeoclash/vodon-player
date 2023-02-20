@@ -1,6 +1,7 @@
 import { computed } from "mobx";
 import consola from "consola";
 import bus from "services/bus";
+import { stringToFilename } from "services/import_export";
 
 import {
   model,
@@ -11,6 +12,8 @@ import {
   idProp,
   prop,
   Ref,
+  findParent,
+  getRoot,
 } from "mobx-keystone";
 
 import { RecordNotFound } from "services/errors";
@@ -18,11 +21,16 @@ import { RecordNotFound } from "services/errors";
 import Video from "./video";
 import Bookmark from "./bookmark";
 import { videoRef, bookmarkRef } from "./references";
+import { FormikValues } from "formik";
+
+type UpdateValues = {
+  name: string;
+};
 
 @model("VodonPlayer/Session")
 export default class Session extends Model({
   id: idProp,
-  name: tProp(types.string),
+  name: tProp(types.string).withSetter(),
   createdAt: tProp(types.number, Date.now()),
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
   selectedVideoRef: prop<Ref<Video> | null>(),
@@ -41,8 +49,9 @@ export default class Session extends Model({
   }
 
   @modelAction
-  setName(name: string) {
-    this.name = name;
+  update(values: FormikValues) {
+    consola.info(`Updating session with: ${values}`);
+    this.setName(values.name);
   }
 
   @modelAction
@@ -169,6 +178,11 @@ export default class Session extends Model({
         [video.index.toString()]: video,
       };
     }, {});
+  }
+
+  @computed
+  get filename() {
+    return stringToFilename(this.name);
   }
 
   getVideoById(id: string) {

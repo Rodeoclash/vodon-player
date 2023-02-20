@@ -136,9 +136,9 @@ export default class Video extends Model({
    */
   @modelAction
   removeBookmark(bookmark: Bookmark) {
-    return (this.bookmarks = this.bookmarks.filter((innerBookmark) => {
+    this.bookmarks = this.bookmarks.filter((innerBookmark) => {
       return innerBookmark.id !== bookmark.id;
-    }));
+    });
   }
 
   /**

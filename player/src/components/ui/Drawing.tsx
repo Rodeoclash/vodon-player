@@ -1,4 +1,3 @@
-import consola from "consola";
 import * as React from "react";
 import { Tldraw, TldrawApp, TDDocument } from "@tldraw/tldraw";
 
@@ -41,10 +40,8 @@ const Drawing = ({ onMount, scale, onPersist, drawing }: Props) => {
     const tool = app.useStore.getState().appState.activeTool;
 
     if (!drawing) {
-      consola.info("Clearing TLDraw document");
       app.deleteAll();
     } else {
-      consola.info("Loading TLDraw document");
       app.loadDocument(structuredClone(drawing));
     }
 

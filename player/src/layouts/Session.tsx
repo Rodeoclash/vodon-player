@@ -1,15 +1,17 @@
 import consola from "consola";
 import * as React from "react";
-import type { SessionLoaderData } from "services/routes";
-import { fromSnapshot, getSnapshot } from "mobx-keystone";
 
-import { saveAsJSON, stringToFilename } from "services/file";
+import { getSnapshot } from "mobx-keystone";
+
+import { saveAsJSON, loadFromJSON } from "services/import_export";
 
 import { Outlet, NavLink, useRouteLoaderData } from "react-router-dom";
 import Modal from "components/ui/Modal";
 import ModalHeader from "components/ui/ModalHeader";
 import ModalBody from "components/ui/ModalBody";
 import ModalControls from "components/ui/ModalControls";
+
+import type { SessionLoaderData } from "services/routes";
 
 export default function Session() {
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
@@ -27,11 +29,7 @@ export default function Session() {
 
   const handleClickExport = () => {
     consola.info("Exporting project");
-    saveAsJSON(`${stringToFilename(session.name)}.json`, getSnapshot(session));
-  };
-
-  const handleClickImport = () => {
-    consola.info("Importing project");
+    saveAsJSON(`${session.filename}.json`, getSnapshot(session));
   };
 
   return (
@@ -69,10 +67,6 @@ export default function Session() {
 
             <button className="navlink" onClick={() => handleClickHelp()}>
               Help
-            </button>
-
-            <button className="navlink" onClick={() => handleClickImport()}>
-              Import session
             </button>
 
             <button className="navlink" onClick={() => handleClickExport()}>

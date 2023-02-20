@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Session from "services/models/session";
@@ -13,32 +11,27 @@ import ModalBody from "components/ui/ModalBody";
 import ModalControls from "components/ui/ModalControls";
 import Form from "components/sessions/Form";
 
-const Create = observer(() => {
+type Props = {
+  session: Session;
+};
+
+const Edit = observer(({ session }: Props) => {
   const formRef = React.useRef<FormikProps<FormikValues>>(null);
-  const store = React.useContext(RootStoreContext);
   const [open, setOpen] = React.useState<boolean>(false);
-  const navigate = useNavigate();
 
   const handleRequestClose = () => {
     setOpen(false);
   };
 
-  const handleRequestCreate = () => {
+  const handleRequestUpdate = () => {
     if (formRef.current) {
       formRef.current.handleSubmit();
     }
   };
 
   const handleSubmit = (values: FormikValues) => {
-    const session = new Session({
-      name: values.name,
-      selectedVideoRef: null,
-      selectedBookmarkRef: null,
-    });
-
+    session.update(values);
     setOpen(false);
-    store.addSession(session);
-    navigate(`/sessions/${session.id}/setup`);
   };
 
   const handleClick = () => {
@@ -46,17 +39,17 @@ const Create = observer(() => {
   };
 
   const initialValues = {
-    name: `Session #${store.sessionsCount + 1}`,
+    name: session.name,
   };
 
   return (
     <>
       <button className="btn btn-primary" onClick={() => handleClick()}>
-        Create new session
+        Edit
       </button>
       <Modal isOpen={open === true} onRequestClose={() => handleRequestClose()}>
         <ModalHeader>
-          <h2 className="header-2">Create session</h2>
+          <h2 className="header-2">Update session</h2>
         </ModalHeader>
         <ModalBody>
           <Form
@@ -75,10 +68,10 @@ const Create = observer(() => {
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => handleRequestCreate()}
+              onClick={() => handleRequestUpdate()}
               type="submit"
             >
-              Create
+              Update
             </button>
           </div>
         </ModalControls>
@@ -87,4 +80,4 @@ const Create = observer(() => {
   );
 });
 
-export default Create;
+export default Edit;

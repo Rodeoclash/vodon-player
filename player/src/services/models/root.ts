@@ -74,6 +74,19 @@ export class RootStore extends Model({
     this.sessions.push(session);
   }
 
+  @modelAction
+  removeSession(session: Session) {
+    this.sessions = this.sessions.filter((innerSession) => {
+      return innerSession.id !== session.id;
+    });
+  }
+
+  @modelAction
+  upsertSession(session: Session) {
+    this.removeSession(session);
+    this.sessions.push(session);
+  }
+
   @computed
   get sessionsCount() {
     return this.sessions.length;

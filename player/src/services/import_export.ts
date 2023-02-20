@@ -23,6 +23,25 @@ export const saveAsJSON = (filename: string, dataObjToWrite: object) => {
   link.remove();
 };
 
+const importPickerOpts = {
+  types: [
+    {
+      description: "JSON",
+      accept: {
+        "application/json": [".json"],
+      },
+    },
+  ],
+  excludeAcceptAllOption: true,
+  multiple: false,
+};
+
+export const loadFromJSON = async () => {
+  const [fileHandle] = await window.showOpenFilePicker(importPickerOpts);
+  const file = await fileHandle.getFile();
+  return file.text();
+};
+
 export const stringToFilename = (str: string) => {
   return str
     .toLocaleLowerCase()
