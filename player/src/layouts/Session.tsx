@@ -1,10 +1,19 @@
+import consola from "consola";
 import * as React from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import type { SessionLoaderData } from "services/routes";
+import { fromSnapshot, getSnapshot } from "mobx-keystone";
+
+import { saveAsJSON, stringToFilename } from "services/file";
+
+import { Outlet, NavLink, useRouteLoaderData } from "react-router-dom";
 import Modal from "components/ui/Modal";
 import ModalHeader from "components/ui/ModalHeader";
 import ModalBody from "components/ui/ModalBody";
+import ModalControls from "components/ui/ModalControls";
 
 export default function Session() {
+  const { session } = useRouteLoaderData("session") as SessionLoaderData;
+
   const [helpOpen, setHelpOpen] = React.useState<boolean>(false);
 
   const handleClickHelp = () => {
@@ -13,6 +22,16 @@ export default function Session() {
 
   const handleRequestCloseHelp = () => {
     setHelpOpen(false);
+    ``;
+  };
+
+  const handleClickExport = () => {
+    consola.info("Exporting project");
+    saveAsJSON(`${stringToFilename(session.name)}.json`, getSnapshot(session));
+  };
+
+  const handleClickImport = () => {
+    consola.info("Importing project");
   };
 
   return (
@@ -50,6 +69,14 @@ export default function Session() {
 
             <button className="navlink" onClick={() => handleClickHelp()}>
               Help
+            </button>
+
+            <button className="navlink" onClick={() => handleClickImport()}>
+              Import session
+            </button>
+
+            <button className="navlink" onClick={() => handleClickExport()}>
+              Export session
             </button>
           </nav>
           <div className="basis-5/12"></div>
@@ -132,6 +159,16 @@ export default function Session() {
             </tbody>
           </table>
         </ModalBody>
+        <ModalControls>
+          <div className="flex items-center justify-end gap-4">
+            <button
+              className="btn btn-primary"
+              onClick={() => handleRequestCloseHelp()}
+            >
+              Close
+            </button>
+          </div>
+        </ModalControls>
       </Modal>
     </>
   );
