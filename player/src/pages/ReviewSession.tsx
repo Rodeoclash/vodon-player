@@ -34,7 +34,6 @@ const ReviewSession = observer(() => {
   const { session } = useRouteLoaderData("session") as SessionLoaderData;
 
   const selectedVideo = session.selectedVideo;
-  const selectedBookmark = session.selectedBookmark;
 
   const handleToggleReviewVideosPanel = () => {
     session.toggleReviewVideoPanel();
@@ -78,12 +77,15 @@ const ReviewSession = observer(() => {
   // When loading the page, trigger a video realignment as the offsets may have
   // been adjusted in the setup page.
   React.useEffect(() => {
-    if (selectedVideo !== null) {
-      consola.info(
-        "Detected review page loaded, trigger video time synchronisation"
-      );
-      bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
+    if (selectedVideo === null) {
+      return;
     }
+
+    consola.info(
+      "Detected review page loaded, trigger video time synchronisation"
+    );
+
+    // bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
   }, []);
 
   React.useLayoutEffect(() => {
@@ -190,7 +192,7 @@ const ReviewSession = observer(() => {
         </div>
       )}
       <div className="flex-grow relative" style={videoStyle}>
-        {selectedVideo !== null && (
+        {session.hasVideos === true && (
           <button
             className="absolute top-0 left-0 z-30"
             onClick={() => handleToggleReviewVideosPanel()}

@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
+import PQueue from "p-queue";
 import Session from "services/models/session";
-import Video from "services/models/video";
 import { createVideoInSession } from "services/videos";
 
 const pickerOpts = {
@@ -13,7 +13,7 @@ const pickerOpts = {
     },
   ],
   excludeAcceptAllOption: true,
-  multiple: false,
+  multiple: true,
 };
 
 type Props = {
@@ -21,10 +21,13 @@ type Props = {
 };
 
 const Add = observer(({ session }: Props) => {
-  const handleClick = async (): Promise<Video> => {
-    const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
-    const video = await createVideoInSession(session, fileHandle);
-    return video;
+  const handleClick = async () => {
+    const queue = new PQueue({ concurrency: 1 });
+    const fileHandles = await window.showOpenFilePicker(pickerOpts);
+
+    fileHandles.forEach(async (fileHandle) => {
+      await queue.add(() => createVideoInSession(session, fileHandle));
+    });
   };
 
   return (

@@ -17,10 +17,6 @@ const Pagination = observer(({ bookmark }: Props) => {
     bookmarkPage.select();
   };
 
-  const handleClickDeletePage = (bookmarkPage: BookmarkPage) => {
-    bookmarkPage.delete();
-  };
-
   const renderedPages = bookmark.sortedBookmarkPages.map(
     (bookmarkPage, index) => {
       const classes = classNames({
