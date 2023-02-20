@@ -85,7 +85,7 @@ const ReviewSession = observer(() => {
       "Detected review page loaded, trigger video time synchronisation"
     );
 
-    // bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
+    bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
   }, []);
 
   React.useLayoutEffect(() => {
