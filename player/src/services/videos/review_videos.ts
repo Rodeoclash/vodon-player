@@ -60,11 +60,20 @@ export const buildElement = async (
   el.requestVideoFrameCallback(handleVideoFrame);
 
   bus.on("video.pause", (originVideo: Video) => {
-    if (video.id === originVideo.id) {
+    if (
+      video.id === originVideo.id ||
+      video.calculatedOffset === null ||
+      originVideo.calculatedOffset === null
+    ) {
       return;
     }
 
     el.pause();
+
+    const offsetFromIncomingVideo =
+      video.calculatedOffset - originVideo.calculatedOffset;
+
+    el.currentTime = originVideo.currentTime + offsetFromIncomingVideo;
   });
 
   bus.on("video.play", (originVideo: Video) => {
