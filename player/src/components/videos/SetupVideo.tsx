@@ -40,14 +40,14 @@ const SetupListItem = observer(({ video }: Props) => {
     containerEl.current.appendChild(video.setupVideoEl);
   }, [video.videoElementsCreated]);
 
-  // TODO: This will need to show any loading progress etc
+  // This video isn't ready for some reason
   if (
     video.videoElementsCreated === false ||
     video.videoElementsCreated === null
   ) {
     return (
       <div>
-        <p>Copying file</p>
+        <p>Processing</p>
         {video.copyToStorageProgress && (
           <progress max={1} value={video.copyToStorageProgress} />
         )}

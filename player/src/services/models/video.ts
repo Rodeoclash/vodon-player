@@ -32,6 +32,9 @@ export default class Video extends Model({
 
   createdAt: tProp(types.number, Date.now()),
 
+  // The URL of where this video exists
+  url: tProp(types.maybeNull(types.string)),
+
   // Are we in progress with a copy to local storage?
   copyToStorageInProgress: tProp(
     types.maybeNull(types.boolean),
@@ -104,8 +107,19 @@ export default class Video extends Model({
     this.setSetupVideoSeeking(false);
     this.setReviewVideoSeeking(false);
 
+    // If URLs exist on the videos, build from them. Later we'll check for
+    // local file handles and build from them if they exist
+    (async () => {
+      console.log("=== here");
+      if (this.url !== null) {
+        this.setupVideoEl = await buildSetupElement(this, this.url);
+        this.reviewVideoEl = await buildReviewElement(this, this.url);
+        this.setVideoElementsCreated(true);
+      }
+    })();
+
     // Start observing the storage file handle, when it's present we'll create
-    // the required video elements
+    // the required video elements.
     const storageVideoFileHandleObservable = liveQuery(() =>
       database.table("storageVideoFileHandles").get({ id: this.id })
     );
@@ -116,8 +130,11 @@ export default class Video extends Model({
           return;
         }
 
-        this.setupVideoEl = await buildSetupElement(this, result.fileHandle);
-        this.reviewVideoEl = await buildReviewElement(this, result.fileHandle);
+        const file = await result.fileHandle.getFile();
+        const url = URL.createObjectURL(file);
+
+        this.setupVideoEl = await buildSetupElement(this, url);
+        this.reviewVideoEl = await buildReviewElement(this, url);
 
         // Mark that all setup videos have now been created, this controls
         // further UI being created

@@ -3,11 +3,9 @@ import bus from "services/bus";
 
 export const buildElement = async (
   video: Video,
-  fileHandle: FileSystemFileHandle
+  url: string
 ): Promise<HTMLVideoElement> => {
   const el = document.createElement("video");
-  const file = await fileHandle.getFile();
-  const url = URL.createObjectURL(file);
 
   el.volume = video.volume;
   el.src = url;
