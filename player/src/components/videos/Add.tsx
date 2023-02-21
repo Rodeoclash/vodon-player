@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
+import { IS_DEVELOPMENT } from "services/system";
 
 import AddLocal from "components/videos/AddLocal";
 import AddURL from "components/videos/AddURL";
@@ -17,7 +18,7 @@ const Add = observer(({ session }: Props) => {
         </p>
       )}
       <div className="flex items-center gap-4">
-        <AddURL session={session} />
+        {IS_DEVELOPMENT === true && <AddURL session={session} />}
         <AddLocal session={session} />
       </div>
     </div>

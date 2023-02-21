@@ -110,7 +110,6 @@ export default class Video extends Model({
     // If URLs exist on the videos, build from them. Later we'll check for
     // local file handles and build from them if they exist
     (async () => {
-      console.log("=== here");
       if (this.url !== null) {
         this.setupVideoEl = await buildSetupElement(this, this.url);
         this.reviewVideoEl = await buildReviewElement(this, this.url);
