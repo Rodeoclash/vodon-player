@@ -34,62 +34,62 @@ const DrawingControls = ({ app }: Props) => {
   };
 
   const handlePickDraw = () => {
-    consola.info("Using tool: draw");
+    consola.info(`Using tool: ${TDShapeType.Draw}`);
     selectTool(TDShapeType.Draw);
   };
 
   const handlePickArrow = () => {
-    consola.info("Using tool: arrow");
+    consola.info(`Using tool: ${TDShapeType.Arrow}`);
     selectTool(TDShapeType.Arrow);
   };
 
   const handlePickLine = () => {
-    consola.info("Using tool: line");
+    consola.info(`Using tool: ${TDShapeType.Line}`);
     selectTool(TDShapeType.Line);
   };
 
   const handlePickRectangle = () => {
-    consola.info("Using tool: rectangle");
+    consola.info(`Using tool: ${TDShapeType.Rectangle}`);
     selectTool(TDShapeType.Rectangle);
   };
 
   const handlePickEllipse = () => {
-    consola.info("Using tool: ellipse");
+    consola.info(`Using tool: ${TDShapeType.Ellipse}`);
     selectTool(TDShapeType.Ellipse);
   };
 
   const baseClasses = {
-    "block bg-stone-700 p-2": true,
+    "block bg-zinc-700 p-2": true,
   };
 
   const selectClasses = classNames({
     ...baseClasses,
-    ["bg-stone-500"]: activeTool === "select",
+    ["bg-zinc-500"]: activeTool === "select",
   });
 
   const pencilClasses = classNames({
     ...baseClasses,
-    ["bg-stone-500"]: activeTool === TDShapeType.Draw,
+    ["bg-zinc-500"]: activeTool === TDShapeType.Draw,
   });
 
   const arrowClasses = classNames({
     ...baseClasses,
-    ["bg-stone-500"]: activeTool === TDShapeType.Arrow,
+    ["bg-zinc-500"]: activeTool === TDShapeType.Arrow,
   });
 
   const lineClasses = classNames({
     ...baseClasses,
-    ["bg-stone-500"]: activeTool === TDShapeType.Line,
+    ["bg-zinc-500"]: activeTool === TDShapeType.Line,
   });
 
   const rectangleClasses = classNames({
     ...baseClasses,
-    ["bg-stone-500"]: activeTool === TDShapeType.Rectangle,
+    ["bg-zinc-500"]: activeTool === TDShapeType.Rectangle,
   });
 
   const ellipseClasses = classNames({
     ...baseClasses,
-    ["bg-stone-500"]: activeTool === TDShapeType.Ellipse,
+    ["bg-zinc-500"]: activeTool === TDShapeType.Ellipse,
   });
 
   const colourSwatchSelectClasses = classNames({
