@@ -33,7 +33,6 @@ const Create = observer(() => {
     const session = new Session({
       name: values.name,
       selectedVideoRef: null,
-      selectedBookmarkRef: null,
     });
 
     setOpen(false);
