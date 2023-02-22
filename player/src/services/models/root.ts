@@ -1,6 +1,8 @@
+import consola from "consola";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import examples from "services/examples";
 import { MissingRequiredAPIs } from "services/errors";
 
 import {
@@ -43,6 +45,7 @@ const getInitalState = () => {
 export class RootStore extends Model({
   sessions: tProp(types.array(types.model(Session)), () => []),
   videos: tProp(types.array(types.model(Video)), () => []),
+  importedDefaultExamples: tProp(types.boolean, false).withSetter(),
   _version: tProp(1),
 }) {
   // On changes to the root store, persist them to localstorage
@@ -58,6 +61,14 @@ export class RootStore extends Model({
         fireImmediately: true,
       }
     );
+
+    if (this.importedDefaultExamples === false) {
+      console.info(
+        "Detected that example sessions have not imported, importing them now"
+      );
+      this.importDefaultExamples();
+      this.setImportedDefaultExamples(true);
+    }
 
     return () => {
       reactionDisposer();
@@ -85,6 +96,13 @@ export class RootStore extends Model({
   upsertSession(session: Session) {
     this.removeSession(session);
     this.sessions.push(session);
+  }
+
+  @modelAction
+  importDefaultExamples() {
+    examples.forEach((example) => {
+      this.addSession(fromSnapshot(Session, example));
+    });
   }
 
   @computed
