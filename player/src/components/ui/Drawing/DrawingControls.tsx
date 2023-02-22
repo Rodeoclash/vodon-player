@@ -59,48 +59,51 @@ const DrawingControls = ({ app }: Props) => {
   };
 
   const baseClasses = {
-    "block bg-zinc-700 p-2": true,
+    "block p-2": true,
   };
 
   const selectClasses = classNames({
     ...baseClasses,
-    ["bg-zinc-500"]: activeTool === "select",
+    "bg-zinc-500": activeTool === "select",
   });
 
   const pencilClasses = classNames({
     ...baseClasses,
-    ["bg-zinc-500"]: activeTool === TDShapeType.Draw,
+    "bg-zinc-500": activeTool === TDShapeType.Draw,
   });
 
   const arrowClasses = classNames({
     ...baseClasses,
-    ["bg-zinc-500"]: activeTool === TDShapeType.Arrow,
+    "bg-zinc-500": activeTool === TDShapeType.Arrow,
   });
 
   const lineClasses = classNames({
     ...baseClasses,
-    ["bg-zinc-500"]: activeTool === TDShapeType.Line,
+    "bg-zinc-500": activeTool === TDShapeType.Line,
   });
 
   const rectangleClasses = classNames({
     ...baseClasses,
-    ["bg-zinc-500"]: activeTool === TDShapeType.Rectangle,
+    "bg-zinc-500": activeTool === TDShapeType.Rectangle,
   });
 
   const ellipseClasses = classNames({
     ...baseClasses,
-    ["bg-zinc-500"]: activeTool === TDShapeType.Ellipse,
+    "bg-zinc-500": activeTool === TDShapeType.Ellipse,
   });
 
   const colourSwatchSelectClasses = classNames({
+    "bg-zinc-600": true,
     ...baseClasses,
   });
 
   const dashSelectClasses = classNames({
+    "bg-zinc-600": true,
     ...baseClasses,
   });
 
   const sizeSelectClasses = classNames({
+    "bg-zinc-600": true,
     ...baseClasses,
   });
 
