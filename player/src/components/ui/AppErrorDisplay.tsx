@@ -34,7 +34,7 @@ class ErrorBoundary extends Component<Props, State> {
             return <p>You are missing required APIs</p>;
 
           default:
-            return <p>Uknown error</p>;
+            return <p>Unknown error</p>;
         }
       })();
 
