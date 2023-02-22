@@ -2,24 +2,55 @@ import * as React from "react";
 import { Tldraw, TldrawApp, TDDocument } from "@tldraw/tldraw";
 
 type Props = {
+  drawingId: string;
   drawing: TDDocument | null;
   onMount: (app: TldrawApp) => void;
   onPersist: (document: TDDocument) => void;
   scale: number;
 };
 
-const Drawing = ({ onMount, scale, onPersist, drawing }: Props) => {
+const Drawing = ({ onMount, scale, onPersist, drawing, drawingId }: Props) => {
   const tlDrawRef = React.useRef<TldrawApp | null>(null);
 
   const handleMount = (app: TldrawApp) => {
     tlDrawRef.current = app;
     tlDrawRef.current.setCamera([0, 0], scale, "layout_mounted");
+
+    if (drawing !== null) {
+      app.loadDocument(structuredClone(drawing));
+    }
+
     onMount(app);
   };
 
+  /**
+   * Calls the persist handler of the parent component. We have a bit of magic
+   * in this function to ensure we keep the same tool highlighted when we
+   * persist but also ensure that we deselect before we save so we don't
+   * persist objects in a selected state.
+   *
+   * For some reason, calling the `selectNone` doesn't actually seem to turn
+   * off the selected shapes???
+   *
+   * I don't understand but it works how I want it to.
+   * @param app
+   * @returns
+   */
   const handlePersist = (app: TldrawApp) => {
+    if (tlDrawRef.current === null) {
+      return;
+    }
+
+    const tool = app.useStore.getState().appState.activeTool;
     app.selectNone();
+
     onPersist(app.document);
+
+    // BUG BUG: We need to select two tools here to correctly highlight the one
+    // we want to use!?
+    app.selectTool("select");
+    app.selectTool(tool);
+    app.toggleToolLock();
   };
 
   React.useEffect(() => {
@@ -36,6 +67,8 @@ const Drawing = ({ onMount, scale, onPersist, drawing }: Props) => {
       return;
     }
 
+    console.log("drawingId changed", drawing);
+
     const app = tlDrawRef.current;
     const tool = app.useStore.getState().appState.activeTool;
 
@@ -48,7 +81,7 @@ const Drawing = ({ onMount, scale, onPersist, drawing }: Props) => {
     app.setCamera([0, 0], scale, "layout_resized");
     app.selectTool(tool);
     app.toggleToolLock();
-  }, [drawing]);
+  }, [drawingId]);
 
   return (
     <Tldraw

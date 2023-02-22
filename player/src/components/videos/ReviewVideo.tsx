@@ -152,6 +152,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
             <div style={dimensionsStyle} className="relative">
               <div className="absolute inset-0 z-20">
                 <Drawing
+                  drawingId={selectedBookmarkPage?.id || "freeform"}
                   drawing={selectedBookmarkPage?.drawing.data || null}
                   scale={scale}
                   onMount={(app) => handleTLDrawMounted(app)}

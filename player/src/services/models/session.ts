@@ -39,7 +39,7 @@ export default class Session extends Model({
 }) {
   @modelAction
   update(values: FormikValues) {
-    consola.info(`Updating session with: ${values}`);
+    consola.info(`Updating session with: ${JSON.stringify(values)}`);
     this.setName(values.name);
   }
 
