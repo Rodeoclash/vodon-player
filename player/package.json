@@ -11,6 +11,8 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.7",
     "@popperjs/core": "^2.11.6",
+    "@sentry/react": "^7.38.0",
+    "@sentry/tracing": "^7.38.0",
     "@tiptap/react": "^2.0.0-beta.209",
     "@tiptap/starter-kit": "^2.0.0-beta.209",
     "@tldraw/tldraw": "^1.28.0",
