@@ -85,6 +85,12 @@ export const createLocalVideoInSession = async (
   return video;
 };
 
+/**
+ * Triggers the removal of a video from the system. We call this service
+ * instead of a delete method on the video as we have a bunch of cleanup that
+ * needs to be done as part of the removal.
+ * @param video The video to remove
+ */
 export const removeVideo = async (video: Video) => {
   // Remove from OPFS
   removeFromStorage(video);

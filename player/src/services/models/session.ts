@@ -1,7 +1,7 @@
 import { computed } from "mobx";
 import consola from "consola";
-import bus from "services/bus";
 import { stringToFilename } from "services/import_export";
+import { removeVideo } from "services/videos";
 
 import {
   model,
@@ -12,7 +12,6 @@ import {
   idProp,
   prop,
   Ref,
-  findParent,
   getRoot,
 } from "mobx-keystone";
 
@@ -20,7 +19,8 @@ import { RecordNotFound } from "services/errors";
 
 import Video from "./video";
 import Bookmark from "./bookmark";
-import { videoRef, bookmarkRef } from "./references";
+
+import { videoRef } from "./references";
 import { FormikValues } from "formik";
 
 type UpdateValues = {
@@ -44,12 +44,21 @@ export default class Session extends Model({
   }
 
   @modelAction
+  delete() {
+    this.videos.forEach((video) => {
+      removeVideo(video);
+    });
+
+    this.root.removeSession(this);
+  }
+
+  @modelAction
   addVideo(video: Video) {
     return this.videos.push(video);
   }
 
   @modelAction
-  removeVideo(video: Video) {
+  async removeVideo(video: Video) {
     this.videos = this.videos.filter(
       (innerVideo) => innerVideo.id !== video.id
     );
@@ -106,6 +115,11 @@ export default class Session extends Model({
   @modelAction
   toggleBookmarksPanel() {
     this.showBookmarksPanel = !this.showBookmarksPanel;
+  }
+
+  @computed
+  get root() {
+    return getRoot(this);
   }
 
   @computed

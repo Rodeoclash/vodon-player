@@ -9,9 +9,11 @@ import {
   tProp,
   types,
 } from "mobx-keystone";
+import { liveQuery } from "dexie";
+
 import { buildElement as buildSetupElement } from "services/videos/setup_videos";
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
-import { liveQuery } from "dexie";
+import { removeFromStorage } from "services/video_storage";
 import database from "services/database";
 
 import Session from "./session";

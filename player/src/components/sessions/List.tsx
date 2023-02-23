@@ -5,6 +5,7 @@ import { RootStoreContext } from "services/models/root";
 import { Link } from "react-router-dom";
 import TimeAgo from "components/ui/TimeAgo";
 import Edit from "components/sessions/Edit";
+import Delete from "components/sessions/Delete";
 
 const List = observer(() => {
   const store = React.useContext(RootStoreContext);
@@ -27,7 +28,10 @@ const List = observer(() => {
           </span>
         </td>
         <td className="td">
-          <Edit session={session} />
+          <div className="flex items-center gap-4">
+            <Edit session={session} />
+            <Delete session={session} />
+          </div>
         </td>
       </tr>
     );
