@@ -2,3 +2,4 @@
 
 - Added Sentry error tracking
 - Added ability to delete a session
+- Sorted sessions alphabetically on homepage

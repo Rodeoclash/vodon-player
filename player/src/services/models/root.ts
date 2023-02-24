@@ -113,7 +113,12 @@ export class RootStore extends Model({
   @computed
   get sortedSessions() {
     return [...this.sessions].sort((a, b) => {
-      return a.createdAt - b.createdAt;
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
     });
   }
 }
