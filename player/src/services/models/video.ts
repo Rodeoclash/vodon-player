@@ -13,7 +13,6 @@ import { liveQuery } from "dexie";
 
 import { buildElement as buildSetupElement } from "services/videos/setup_videos";
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
-import { removeFromStorage } from "services/video_storage";
 import database from "services/database";
 
 import Session from "./session";
@@ -265,12 +264,19 @@ export default class Video extends Model({
   }
 
   /**
-   * The path of this file when stored in the OPFS or online in cloud storage
-   * somewhere
+   * The path of where this file is stored (OPFS + cloud)
    */
   @computed
   get storageDirectory() {
-    return `${this.session.id}/${this.id}`;
+    return `${this.session.id}`;
+  }
+
+  /**
+   * The filename of this video
+   */
+  @computed
+  get storageFilename() {
+    return `${this.id}`;
   }
 
   /**

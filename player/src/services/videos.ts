@@ -1,7 +1,8 @@
+import consola from "consola";
 import { frozen } from "mobx-keystone";
 
 import { MissingLocalFileHandle } from "services/errors";
-import { copyToStorage, removeFromStorage } from "services/video_storage";
+import { add, remove } from "services/opfs";
 import database from "services/database";
 import {
   readMediaDataFromFile,
@@ -85,26 +86,6 @@ export const createLocalVideoInSession = async (
   return video;
 };
 
-/**
- * Triggers the removal of a video from the system. We call this service
- * instead of a delete method on the video as we have a bunch of cleanup that
- * needs to be done as part of the removal.
- * @param video The video to remove
- */
-export const removeVideo = async (video: Video) => {
-  // Remove from OPFS
-  removeFromStorage(video);
-
-  // Remove local file handle (if it exists)
-  await database.table("localVideoFileHandles").delete(video.id);
-
-  // Remove storage file handle (if it exists)
-  await database.table("storageVideoFileHandles").delete(video.id);
-
-  // Remove from session
-  video.session.removeVideo(video);
-};
-
 export const requestLocalFileHandlePermission = async (
   video: Video
 ): Promise<Video> => {
@@ -132,6 +113,13 @@ export const requestLocalFileHandlePermission = async (
   return video;
 };
 
+/**
+ * Handles storing the video (currently only OPFS)
+ * TODO: Move file about video storage.
+ *
+ * @param video The video file to store
+ * @returns video
+ */
 export const storeFile = async (video: Video): Promise<Video> => {
   const fileHandleRecord = await database.table("localVideoFileHandles").get({
     id: video.id,
@@ -151,7 +139,54 @@ export const storeFile = async (video: Video): Promise<Video> => {
     );
   }
 
-  copyToStorage(fileHandleRecord.fileHandle, video);
+  // Add to the OPFS storage
+  add(video.storageDirectory, video.storageFilename, fileHandle, {
+    onStart: (event) => {
+      consola.info("Starting copy of video file handle into OPFS");
+      video.setCopyToStorageInProgress(true);
+      video.setCopyToStorageProgress(event.progress);
+    },
+    onProgress: (event) => {
+      consola.info(`Video copy into OPFS progress: ${event.progress}`);
+      video.setCopyToStorageProgress(event.progress);
+    },
+    onComplete: async (event) => {
+      consola.info("Completed copy of video file handle into OPFS");
+      video.setCopyToStorageInProgress(false);
+      video.setCopyToStorageProgress(event.progress);
+
+      await database.table("storageVideoFileHandles").put({
+        id: video.id,
+        fileHandle: event.fileHandle,
+      });
+    },
+  });
 
   return video;
+};
+
+/**
+ * Triggers the removal of a video from the system. We call this service
+ * instead of a delete method on the video as we have a bunch of cleanup that
+ * needs to be done as part of the removal.
+ * TODO: Move file about video storage.
+ *
+ * @param video The video to remove
+ */
+export const removeVideo = async (video: Video) => {
+  // Remove from OPFS
+  remove(video.storageDirectory, video.storageFilename, {
+    onComplete: async () => {
+      consola.info(`Completed removing video file from OPFS `);
+
+      // Remove local file handle (if it exists)
+      await database.table("localVideoFileHandles").delete(video.id);
+
+      // Remove storage file handle (if it exists)
+      await database.table("storageVideoFileHandles").delete(video.id);
+
+      // Remove from session
+      video.session.removeVideo(video);
+    },
+  });
 };

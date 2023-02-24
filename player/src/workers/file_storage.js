@@ -12,22 +12,19 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
   rootDirectory = fetchedRootDirectory;
 });
 
-/**
- * Handles copying a file into the local OPFS storage
- */
-const handleCopyFile = async ({ data }) => {
+const handleAddFile = async ({ data }) => {
   // Get a reference to the file that's being copied
   const originFile = await data.fileHandle.getFile();
 
   // Create a directory under the session id for the file to be copied to
   const parentDirectory = await rootDirectory.getDirectoryHandle(
-    data.folderName,
+    data.location.folderName,
     { create: true }
   );
 
   // Get a handle to the destination of where the file will be copied to
   const destinationFileHandle = await parentDirectory.getFileHandle(
-    data.fileName,
+    data.location.fileName,
     { create: true }
   );
 
@@ -39,8 +36,11 @@ const handleCopyFile = async ({ data }) => {
   const totalChunks = Math.ceil(originFile.size / chunkSize, chunkSize);
 
   postMessage({
-    kind: "COPY_FILE_START",
+    kind: "ADD_FILE_START",
     meta: data.meta,
+    event: {
+      progress: 0,
+    },
   });
 
   // Loop over the chunks, writing out the file. This avoids loading the entire
@@ -56,9 +56,12 @@ const handleCopyFile = async ({ data }) => {
     // TODO - Mark % of file completed
 
     postMessage({
-      kind: "COPY_FILE_PROGRESS",
-      progress: currentChunk / totalChunks,
+      kind: "ADD_FILE_PROGRESS",
       meta: data.meta,
+      fileHandle: destinationFileHandle,
+      event: {
+        progress: currentChunk / totalChunks,
+      },
     });
 
     currentChunk++;
@@ -69,9 +72,12 @@ const handleCopyFile = async ({ data }) => {
 
   // Send a message back to the client that the copy has completed
   postMessage({
-    kind: "COPY_FILE_COMPLETE",
-    fileHandle: destinationFileHandle,
+    kind: "ADD_FILE_COMPLETE",
     meta: data.meta,
+    event: {
+      progress: 1,
+      fileHandle: destinationFileHandle,
+    },
   });
 };
 
@@ -81,7 +87,7 @@ const handleCopyFile = async ({ data }) => {
 const handleRemoveFile = async ({ data }) => {
   // Create a directory under the session id for the file to be copied to
   const parentDirectory = await rootDirectory.getDirectoryHandle(
-    data.folderName
+    data.location.folderName
   );
 
   postMessage({
@@ -89,7 +95,7 @@ const handleRemoveFile = async ({ data }) => {
     meta: data.meta,
   });
 
-  await parentDirectory.removeEntry(data.fileName);
+  await parentDirectory.removeEntry(data.location.fileName);
 
   postMessage({
     kind: "REMOVE_FILE_COMPLETE",
@@ -102,8 +108,8 @@ const handleRemoveFile = async ({ data }) => {
  */
 onmessage = async (event) => {
   switch (event.data.kind) {
-    case "COPY_FILE":
-      handleCopyFile(event);
+    case "ADD_FILE":
+      handleAddFile(event);
       break;
     case "REMOVE_FILE":
       handleRemoveFile(event);

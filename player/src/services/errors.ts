@@ -47,3 +47,11 @@ export class UnknownDirection extends CustomError {
     );
   }
 }
+
+export class UnknownMessage extends CustomError {
+  public constructor(message?: string) {
+    super(
+      message || "Add message was given but no known action could be taken"
+    );
+  }
+}
