@@ -3,8 +3,6 @@ import Video from "services/models/video";
 import bus from "services/bus";
 
 const handlePlay = (originVideo: Video) => {
-  consola.log("Playing preview videos");
-
   originVideo.session.videos.forEach((video) => {
     if (
       video.id === originVideo.id ||
@@ -20,8 +18,6 @@ const handlePlay = (originVideo: Video) => {
 };
 
 const handlePause = (originVideo: Video) => {
-  consola.log("Pausing preview videos");
-
   originVideo.session.videos.forEach((video) => {
     if (
       video.id === originVideo.id ||
@@ -44,8 +40,6 @@ const handlePause = (originVideo: Video) => {
 };
 
 const handleGotoTime = (originVideo: Video, newTime: number) => {
-  consola.log(`Seeking preview videos to: ${newTime}`);
-
   originVideo.session.videos.forEach((video) => {
     if (
       video.id === originVideo.id ||
@@ -66,12 +60,14 @@ const handleGotoTime = (originVideo: Video, newTime: number) => {
 };
 
 export const bindBus = () => {
+  consola.log(`Binding bus listeners`);
   bus.on(`video.play`, handlePlay);
   bus.on(`video.pause`, handlePause);
   bus.on(`video.gotoTime`, handleGotoTime);
 };
 
 export const unbindBus = () => {
+  consola.log(`Unbinding bus listeners`);
   bus.off(`video.play`, handlePlay);
   bus.off(`video.pause`, handlePause);
   bus.off(`video.pause`, handleGotoTime);
