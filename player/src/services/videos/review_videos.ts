@@ -1,5 +1,4 @@
 import Video from "services/models/video";
-import bus from "services/bus";
 
 export const buildElement = async (
   video: Video,
@@ -58,48 +57,6 @@ export const buildElement = async (
   };
 
   el.requestVideoFrameCallback(handleVideoFrame);
-
-  bus.on("video.pause", (originVideo: Video) => {
-    if (
-      video.id === originVideo.id ||
-      video.calculatedOffset === null ||
-      originVideo.calculatedOffset === null
-    ) {
-      return;
-    }
-
-    el.pause();
-
-    const offsetFromIncomingVideo =
-      video.calculatedOffset - originVideo.calculatedOffset;
-
-    el.currentTime = originVideo.currentTime + offsetFromIncomingVideo;
-  });
-
-  bus.on("video.play", (originVideo: Video) => {
-    if (video.id === originVideo.id) {
-      return;
-    }
-
-    el.play();
-  });
-
-  bus.on("video.gotoTime", (originVideo: Video, newTime: number) => {
-    if (
-      video.id === originVideo.id ||
-      video.calculatedOffset === null ||
-      originVideo.calculatedOffset === null
-    ) {
-      return;
-    }
-
-    const offsetFromIncomingVideo =
-      video.calculatedOffset - originVideo.calculatedOffset;
-
-    el.currentTime = newTime + offsetFromIncomingVideo;
-
-    // mark all bookmarks ahead of this time as not seen
-  });
 
   return el;
 };

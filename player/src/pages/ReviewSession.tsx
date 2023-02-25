@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useRouteLoaderData } from "react-router-dom";
 import bus from "services/bus";
+import { bindBus, unbindBus } from "services/session";
 import consola from "consola";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -73,6 +74,15 @@ const ReviewSession = observer(() => {
     },
     []
   );
+
+  // When loading the page, bind the bus events so that the preview videos
+  // follow the main video
+  React.useEffect(() => {
+    bindBus();
+    return () => {
+      unbindBus();
+    };
+  }, []);
 
   // When loading the page, trigger a video realignment as the offsets may have
   // been adjusted in the setup page.
