@@ -46,6 +46,10 @@ export class RootStore extends Model({
   sessions: tProp(types.array(types.model(Session)), () => []),
   videos: tProp(types.array(types.model(Video)), () => []),
   importedDefaultExamples: tProp(types.boolean, false).withSetter(),
+  latestChangelogReadHash: tProp(
+    types.maybeNull(types.number),
+    null
+  ).withSetter(),
   _version: tProp(1),
 }) {
   // On changes to the root store, persist them to localstorage
