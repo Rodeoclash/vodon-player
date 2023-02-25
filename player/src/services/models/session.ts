@@ -1,7 +1,6 @@
 import { computed } from "mobx";
 import consola from "consola";
 import { stringToFilename } from "services/import_export";
-import { removeVideo } from "services/videos";
 
 import {
   model,
@@ -45,20 +44,18 @@ export default class Session extends Model({
 
   @modelAction
   delete() {
-    this.videos.forEach((video) => {
-      removeVideo(video);
-    });
-
     this.root.removeSession(this);
   }
 
   @modelAction
   addVideo(video: Video) {
+    consola.info(`Adding video to session: ${video.name}`);
     return this.videos.push(video);
   }
 
   @modelAction
   async removeVideo(video: Video) {
+    consola.info(`Removing video from session: ${video.name}`);
     this.videos = this.videos.filter(
       (innerVideo) => innerVideo.id !== video.id
     );

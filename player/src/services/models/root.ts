@@ -82,11 +82,13 @@ export class RootStore extends Model({
 
   @modelAction
   addSession(session: Session) {
+    consola.info(`Adding session: ${session.name}`);
     this.sessions.push(session);
   }
 
   @modelAction
   removeSession(session: Session) {
+    consola.info(`Removing session: ${session.name}`);
     this.sessions = this.sessions.filter((innerSession) => {
       return innerSession.id !== session.id;
     });

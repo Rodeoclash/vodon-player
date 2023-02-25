@@ -1,32 +1,22 @@
-import consola from "consola";
 import { frozen } from "mobx-keystone";
 
 import { MissingLocalFileHandle } from "services/errors";
-import { add, remove } from "services/opfs";
 import database from "services/database";
+import {
+  store as storeAssets,
+  remove as removeAssets,
+} from "services/videos/assets";
+
 import {
   readMediaDataFromFile,
   readMediaDataFromURL,
 } from "./videos/mediainfo";
+
 import { InvalidVideo } from "services/errors";
 
 import Session from "services/models/session";
 import Video from "services/models/video";
 import { ResultObject } from "mediainfo.js/dist/types";
-
-const extractVideoTrack = (result: ResultObject) => {
-  const videoTrack = result.media.track.find(
-    (track) => track["@type"] === "Video"
-  ) as any;
-
-  if (videoTrack === undefined) {
-    throw new InvalidVideo(
-      "Could not find a video track in the supplied video"
-    );
-  }
-
-  return videoTrack;
-};
 
 export const createRemoteVideoInSession = async (
   session: Session,
@@ -81,7 +71,7 @@ export const createLocalVideoInSession = async (
   });
 
   // Trigger storing the file
-  await storeFile(video);
+  await storeAssets(video);
 
   return video;
 };
@@ -114,79 +104,26 @@ export const requestLocalFileHandlePermission = async (
 };
 
 /**
- * Handles storing the video (currently only OPFS)
- * TODO: Move file about video storage.
- *
- * @param video The video file to store
- * @returns video
- */
-export const storeFile = async (video: Video): Promise<Video> => {
-  const fileHandleRecord = await database.table("localVideoFileHandles").get({
-    id: video.id,
-  });
-
-  if (fileHandleRecord === undefined) {
-    throw new MissingLocalFileHandle(
-      "Attempted to use local file handle but it was not present"
-    );
-  }
-
-  const fileHandle = fileHandleRecord.fileHandle;
-
-  if ((await fileHandle.queryPermission({ mode: "read" })) !== "granted") {
-    throw new MissingLocalFileHandle(
-      "Attempting to copy file but it does not have permission granted"
-    );
-  }
-
-  // Add to the OPFS storage
-  add(video.storageDirectory, video.storageFilename, fileHandle, {
-    onStart: (event) => {
-      consola.info("Starting copy of video file handle into OPFS");
-      video.setCopyToStorageInProgress(true);
-      video.setCopyToStorageProgress(event.progress);
-    },
-    onProgress: (event) => {
-      consola.info(`Video copy into OPFS progress: ${event.progress}`);
-      video.setCopyToStorageProgress(event.progress);
-    },
-    onComplete: async (event) => {
-      consola.info("Completed copy of video file handle into OPFS");
-      video.setCopyToStorageInProgress(false);
-      video.setCopyToStorageProgress(event.progress);
-
-      await database.table("storageVideoFileHandles").put({
-        id: video.id,
-        fileHandle: event.fileHandle,
-      });
-    },
-  });
-
-  return video;
-};
-
-/**
- * Triggers the removal of a video from the system. We call this service
- * instead of a delete method on the video as we have a bunch of cleanup that
- * needs to be done as part of the removal.
- * TODO: Move file about video storage.
+ * Helper function for removing videos. Will first remove all the assets that
+ * are related to the video then will remove the video itself.
  *
  * @param video The video to remove
  */
-export const removeVideo = async (video: Video) => {
-  // Remove from OPFS
-  remove(video.storageDirectory, video.storageFilename, {
-    onComplete: async () => {
-      consola.info(`Completed removing video file from OPFS `);
+export const remove = async (video: Video) => {
+  await removeAssets(video);
+  video.delete();
+};
 
-      // Remove local file handle (if it exists)
-      await database.table("localVideoFileHandles").delete(video.id);
+const extractVideoTrack = (result: ResultObject) => {
+  const videoTrack = result.media.track.find(
+    (track) => track["@type"] === "Video"
+  ) as any;
 
-      // Remove storage file handle (if it exists)
-      await database.table("storageVideoFileHandles").delete(video.id);
+  if (videoTrack === undefined) {
+    throw new InvalidVideo(
+      "Could not find a video track in the supplied video"
+    );
+  }
 
-      // Remove from session
-      video.session.removeVideo(video);
-    },
-  });
+  return videoTrack;
 };

@@ -149,6 +149,11 @@ export default class Video extends Model({
   }
 
   @modelAction
+  delete() {
+    return this.session.removeVideo(this);
+  }
+
+  @modelAction
   addBookmark(bookmark: Bookmark) {
     return this.bookmarks.push(bookmark);
   }

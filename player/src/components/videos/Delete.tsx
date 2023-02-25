@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
-import { removeVideo } from "services/videos";
+import { remove } from "services/videos";
 
 type Props = {
   video: Video;
@@ -9,9 +9,9 @@ type Props = {
 
 const Delete = observer(({ video }: Props) => {
   const handleClick = React.useCallback(
-    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (window.confirm("Remove this video?")) {
-        removeVideo(video);
+        await remove(video);
       }
     },
     [video]
