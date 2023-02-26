@@ -187,9 +187,6 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
               duration={video.duration}
               durationDisplay={video.session.duration}
               frameLength={video.frameLength}
-              offsetStart={
-                video.session.largestCalculatedOffset - video.calculatedOffset
-              }
               onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
               onGotoTime={(time) => handleGotoTime(time)}
               onPause={() => handlePause()}
