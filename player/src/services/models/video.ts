@@ -217,6 +217,28 @@ export default class Video extends Model({
     return this.offset - session.shortestVideoOffset;
   }
 
+  /**
+   * The time in the "global" session time that this video starts at.
+   */
+  @computed
+  get beginsAt() {
+    const session = this.session;
+
+    if (this.calculatedOffset === null) {
+      return null;
+    }
+
+    return session.largestCalculatedOffset - this.calculatedOffset;
+  }
+
+  get finishesAt() {
+    if (this.beginsAt === null) {
+      return null;
+    }
+
+    return this.beginsAt + this.duration;
+  }
+
   @computed
   get frameLength() {
     if (this.frameRate === null) {
@@ -254,6 +276,15 @@ export default class Video extends Model({
   @computed
   get duration() {
     return parseFloat(this.videoData.data.Duration);
+  }
+
+  @computed
+  get calcualtedDuration() {
+    if (this.calculatedOffset === null) {
+      return null;
+    }
+
+    return this.duration + this.calculatedOffset;
   }
 
   /**
