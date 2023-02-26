@@ -28,27 +28,26 @@ const Progress = ({ currentTime, duration, seeking, onGotoTime }: Props) => {
     null
   );
   const [dragInProgress, setDragInProgress] = React.useState<boolean>(false);
-  const [mouseDownSlider, setMouseDownSlider] = React.useState<boolean>(false);
 
   const progress = currentTime / duration;
 
   /**
    * Set state that the drag is currently in progress
    */
-  const handleStart = React.useCallback(() => {
+  const handleStart = () => {
     setDragInProgress(true);
-  }, []);
+  };
 
   /**
    * Remove the flag that the drag is in progress after a short timeout of
    * the drag being completed. This prevents the ending "click" event from
    * being registered as a click on the volume track.
    */
-  const handleStop = React.useCallback(() => {
+  const handleStop = () => {
     setTimeout(() => {
       setDragInProgress(false);
     }, DRAG_TIMEOUT);
-  }, []);
+  };
 
   /**
    * Fires as the volume slider is dragged along the track. Automatically sets
@@ -59,17 +58,14 @@ const Progress = ({ currentTime, duration, seeking, onGotoTime }: Props) => {
    * remains smooth (even though we may overwhelm the ability for the video
    * player to keep up)
    */
-  const handleDrag = React.useCallback(
-    (event: DraggableEvent, data: DraggableData) => {
-      if (containerWidth === null) {
-        return;
-      }
+  const handleDrag = (event: DraggableEvent, data: DraggableData) => {
+    if (containerWidth === null) {
+      return;
+    }
 
-      const perc = data.x / containerWidth;
-      onGotoTime(perc * duration);
-    },
-    [containerWidth, seeking]
-  );
+    const perc = data.x / containerWidth;
+    onGotoTime(perc * duration);
+  };
 
   /**
    * Clicking the slider will set the volume directly. We need to ensure that
@@ -79,34 +75,31 @@ const Progress = ({ currentTime, duration, seeking, onGotoTime }: Props) => {
    * Clicking sets the volume of the video equal to how far along the slider
    * that we clicked.
    */
-  const handleMouseClickSlider = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (
-        containerWidth === null ||
-        dragInProgress === true ||
-        seeking === true
-      ) {
-        return;
-      }
+  const handleMouseClickSlider = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    if (
+      containerWidth === null ||
+      dragInProgress === true ||
+      seeking === true
+    ) {
+      return;
+    }
 
-      const target = event.target as HTMLDivElement;
-      const bounds = target.getBoundingClientRect();
-      const localX = event.clientX - bounds.left;
-      const perc = localX / containerWidth;
-      onGotoTime(perc * duration);
+    const target = event.target as HTMLDivElement;
+    const bounds = target.getBoundingClientRect();
+    const localX = event.clientX - bounds.left;
+    const perc = localX / containerWidth;
+    onGotoTime(perc * duration);
+  };
 
-      setMouseDownSlider(true);
-    },
-    [containerWidth, dragInProgress]
-  );
-
-  const handleClickStart = React.useCallback(() => {
+  const handleClickStart = () => {
     onGotoTime(0);
-  }, []);
+  };
 
-  const handleClickEnd = React.useCallback(() => {
+  const handleClickEnd = () => {
     onGotoTime(duration - 0.01); // for some reason, we can't set exactly the end time
-  }, [duration]);
+  };
 
   /**
    * Measure the width of the volume slider container as the page reloads.
