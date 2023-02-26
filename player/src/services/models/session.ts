@@ -141,22 +141,30 @@ export default class Session extends Model({
     }, 0);
   }
 
+  /**
+   * Returns the current time for the entire "session".
+   */
   @computed
   get currentTime() {
     if (this.hasVideos === false) {
       return null;
     }
 
-    const firstVideo = this.videos[0];
+    const selectedVideo = this.videos.find((video) => {
+      return video.beginsAt === 0;
+    });
 
-    if (firstVideo.calculatedOffset === null) {
+    if (
+      selectedVideo === undefined ||
+      selectedVideo.calculatedOffset === null
+    ) {
       return null;
     }
 
     return (
-      firstVideo.currentTime +
+      selectedVideo.currentTime +
       this.largestCalculatedOffset -
-      firstVideo.calculatedOffset
+      selectedVideo.calculatedOffset
     );
   }
 
