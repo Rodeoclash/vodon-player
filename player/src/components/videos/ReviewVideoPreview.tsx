@@ -16,9 +16,13 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
   const containerEl = React.useRef<null | HTMLDivElement>(null);
   const selectedVideo = video.session.selectedVideo;
 
-  const handleClick = React.useCallback(() => {
+  const handleClick = () => {
+    if (videoNotStarted === true || videoFinished === true) {
+      return;
+    }
+
     video.session.selectVideo(video);
-  }, [video]);
+  };
 
   React.useEffect(() => {
     if (
