@@ -30,7 +30,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   );
 
   // Track when the mouse is over the video to show the controls
-  const [mouseActive, setMouseActive] = React.useState<boolean | null>(false);
+  const [mouseActive, setMouseActive] = React.useState<boolean | null>(true);
 
   // track when the user is actually interacting with a control area on the
   // screen, this is used to prevent the controls from being removed when
@@ -56,7 +56,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
   };
 
   const handleMouseLeave = () => {
-    setMouseActive(false);
+    setMouseActive(true);
   };
 
   const handleControlsEnter = () => {
@@ -170,6 +170,9 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       </VideoSizer>
       {video.reviewVideoEl !== null &&
         video.duration !== null &&
+        video.calculatedOffset !== null &&
+        video.session.duration !== null &&
+        video.session.currentTime !== null &&
         hideOverlays === false &&
         (mouseActive === true || controlsHovered === true) &&
         video.frameLength !== null && (
@@ -180,8 +183,13 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
           >
             <VideoNavigationControls
               currentTime={video.currentTime}
+              currentTimeDisplay={video.session.currentTime}
               duration={video.duration}
+              durationDisplay={video.session.duration}
               frameLength={video.frameLength}
+              offsetStart={
+                video.session.largestCalculatedOffset - video.calculatedOffset
+              }
               onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
               onGotoTime={(time) => handleGotoTime(time)}
               onPause={() => handlePause()}

@@ -131,6 +131,36 @@ export default class Session extends Model({
   }
 
   @computed
+  get largestCalculatedOffset() {
+    return this.videos.reduce((acc, video) => {
+      if (video.calculatedOffset === null) {
+        return acc;
+      }
+
+      return video.calculatedOffset > acc ? video.calculatedOffset : acc;
+    }, 0);
+  }
+
+  @computed
+  get currentTime() {
+    if (this.hasVideos === false) {
+      return null;
+    }
+
+    const firstVideo = this.videos[0];
+
+    if (firstVideo.calculatedOffset === null) {
+      return null;
+    }
+
+    return (
+      firstVideo.currentTime +
+      this.largestCalculatedOffset -
+      firstVideo.calculatedOffset
+    );
+  }
+
+  @computed
   get selectedVideo() {
     return this.selectedVideoRef ? this.selectedVideoRef.current : null;
   }
@@ -179,6 +209,29 @@ export default class Session extends Model({
   @computed
   get filename() {
     return stringToFilename(this.name);
+  }
+
+  /**
+   * The full duration of videos in the session is equal to the video with the
+   * longest duration + the offset of it.
+   */
+  @computed
+  get duration() {
+    return this.videos.reduce((acc: number | null, video) => {
+      if (acc === null) {
+        return video.calcualtedDuration;
+      }
+
+      if (video.calcualtedDuration === null) {
+        return acc;
+      }
+
+      if (video.calcualtedDuration > acc) {
+        return video.calcualtedDuration;
+      }
+
+      return acc;
+    }, null);
   }
 
   getVideoById(id: string) {

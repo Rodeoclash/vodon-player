@@ -1,6 +1,5 @@
 import * as React from "react";
 import { secondsToHms } from "services/time";
-import { useHotkeys } from "react-hotkeys-hook";
 import { FRAME_ADVANCE_INTERVAL } from "services/settings";
 import { UnknownDirection } from "services/errors";
 
@@ -12,8 +11,11 @@ import { Direction } from "./VideoNavigationControls/FrameAdjust";
 
 type Props = {
   currentTime: number;
+  currentTimeDisplay?: number;
   duration: number;
+  durationDisplay?: number;
   frameLength: number;
+  offsetStart?: number;
   onChangeVolume: (newVolume: number) => void;
   onGotoTime: (newTime: number) => void;
   onPause: () => void;
@@ -26,8 +28,11 @@ type Props = {
 
 const VideoNavigationControls = ({
   currentTime,
+  currentTimeDisplay,
   duration,
+  durationDisplay,
   frameLength,
+  offsetStart = 0,
   onChangeVolume,
   onGotoTime,
   onPause,
@@ -88,7 +93,8 @@ const VideoNavigationControls = ({
     <>
       <div className="flex items-center justify-between">
         <div className="basis-1/3 text-bright">
-          {secondsToHms(currentTime)} / {secondsToHms(duration)}
+          {secondsToHms(currentTimeDisplay || currentTime)} /{" "}
+          {secondsToHms(durationDisplay || duration)}
         </div>
         <div className="basis-1/3 flex items-center justify-center gap-4 flex-grow">
           <div className="flex items-center justify-center">
