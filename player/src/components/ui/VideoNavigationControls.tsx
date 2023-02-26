@@ -15,7 +15,6 @@ type Props = {
   duration: number;
   durationDisplay?: number;
   frameLength: number;
-  offsetStart?: number;
   onChangeVolume: (newVolume: number) => void;
   onGotoTime: (newTime: number) => void;
   onPause: () => void;
@@ -32,7 +31,6 @@ const VideoNavigationControls = ({
   duration,
   durationDisplay,
   frameLength,
-  offsetStart = 0,
   onChangeVolume,
   onGotoTime,
   onPause,
