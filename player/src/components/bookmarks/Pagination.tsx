@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
-import { TbX } from "react-icons/tb";
+import useVideoControls from "services/hooks/useVideoControls";
+import bus from "services/bus";
 import Bookmark from "services/models/bookmark";
 import BookmarkPage from "services/models/bookmark_page";
 
@@ -9,11 +10,17 @@ type Props = {
 };
 
 const Pagination = observer(({ bookmark }: Props) => {
+  const [gotoTime, pause, play, setVolume] = useVideoControls(
+    bookmark.video.reviewVideoEl
+  );
+
   const handleClickPageNumber = (bookmarkPage: BookmarkPage) => {
     if (bookmark.editingInProgress === true) {
       return;
     }
 
+    gotoTime(bookmark.videoTimestamp);
+    bus.emit("video.gotoTime", bookmark.video, bookmark.videoTimestamp);
     bookmarkPage.select();
   };
 
