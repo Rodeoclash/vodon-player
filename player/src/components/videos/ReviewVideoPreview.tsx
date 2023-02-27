@@ -1,5 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
+import { secondsToHms } from "services/time";
 import Video from "services/models/video";
 
 type Props = {
@@ -59,50 +60,42 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
 
   const style = { aspectRatio: `${video.width}/${video.height}` };
 
-  const renderedContent = (() => {
-    if (videoNotStarted === null) {
-      return null;
-    }
-
+  const renderedMessage = (() => {
     if (selectedVideo !== null && selectedVideo.id === video.id) {
-      return (
-        <div className="flex items-center justify-center w-full italic text-white/50">
-          Playing in main window
-        </div>
-      );
+      return "Playing in main window";
     }
 
     if (videoNotStarted === true) {
-      return (
-        <div className="flex items-center justify-center w-full italic text-white/50">
-          Before video starts
-        </div>
-      );
+      return `Video starts at ${secondsToHms(video.beginsAt)}`;
     }
 
     if (videoFinished === true) {
-      return (
-        <div className="flex items-center justify-center w-full italic text-white/50">
-          Video finished
-        </div>
-      );
+      return `Video finished at ${secondsToHms(video.finishesAt)}`;
     }
 
-    return <div ref={containerEl} className="w-full" />;
+    return null;
   })();
 
   return (
     <div
       style={style}
-      className="relative bg-zinc-800 flex items-stretch justify-items-stretch cursor-pointer outline-sky-500 hover:outline hover:z-10"
+      className="relative bg-zinc-800 flex items-stretch justify-items-stretch cursor-pointer"
       onClick={() => handleClick()}
     >
-      <div className="absolute top-0 left-0 bg-black/70 px-2">
+      <div className="absolute top-0 left-0 bg-black/70 px-2 z-30">
         <h3>
           {video.index + 1}. {video.name}
         </h3>
       </div>
-      {renderedContent}
+      {renderedMessage !== null && (
+        <div className="absolute inset-0 flex items-center justify-center italic text-white/50 z-20 bg-zinc-800">
+          {renderedMessage}
+        </div>
+      )}
+      <div
+        className="absolute inset-0 z-10 reviewVideo z-10"
+        ref={containerEl}
+      />
     </div>
   );
 });
