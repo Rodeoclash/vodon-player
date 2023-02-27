@@ -14,7 +14,7 @@ import {
 } from "react-icons/tb";
 
 import AddBookmark from "components/videos/AddBookmark";
-import BookmarkList from "components/videos/BookmarkList";
+import BookmarkList from "components/sessions/BookmarkList";
 import ReviewVideo from "components/videos/ReviewVideo";
 import ReviewVideoList from "components/sessions/ReviewVideoList";
 import Tooltip from "components/ui/Tooltip";
@@ -254,7 +254,7 @@ const ReviewSession = observer(() => {
           style={bookmarkPanelStyle}
         >
           <div className="flex-grow overflow-y-auto">
-            <BookmarkList video={selectedVideo} />
+            <BookmarkList session={session} />
           </div>
           <div className="border-t border-stone-700 p-4">
             <AddBookmark video={selectedVideo} />
