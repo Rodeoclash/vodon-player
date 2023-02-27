@@ -29,7 +29,7 @@ const Changelog = observer(() => {
         <h2 className="header-2">Latest changes</h2>
       </ModalHeader>
       <ModalBody>
-        <div className="whitespace-pre">{changelog}</div>
+        <div className="whitespace-pre-wrap max-w-prose">{changelog}</div>
       </ModalBody>
       <ModalControls>
         <div className="flex items-center justify-end gap-4">

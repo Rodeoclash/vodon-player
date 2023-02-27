@@ -1,3 +1,7 @@
+# 27/02/2023
+
+- All bookmarks in a session are now present in the sidebar. If a bookmark on another player is activated, the viewpoint will automatically switch to them.
+
 # 26/02/2023
 
 - Added latest changes news
