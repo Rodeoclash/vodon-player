@@ -202,19 +202,38 @@ export default class Video extends Model({
   @computed
   get sortedBookmarks() {
     return [...this.bookmarks].sort((a, b) => {
-      return a.videoTimestamp - b.videoTimestamp;
+      return a.displayTimestamp - b.displayTimestamp;
     });
   }
 
+  /**
+   * This is the normalised session offset. If we have three videos in the
+   * session with the following offsets:
+   *
+   * 1. 10 seconds
+   * 2. 5 seconds
+   * 3. 15 seconds
+   *
+   * The calculatedOffset is:
+   *
+   * 1. 5 seconds
+   * 2. 0 seconds
+   * 3. 10 seconds
+   *
+   * TODO: Rename this to "normalisedOffset" instead.
+   */
   @computed
-  get calculatedOffset() {
-    const session = this.session;
+  get normalisedOffset() {
+    return this.offset - this.session.shortestNormalisedOffset;
+  }
 
-    if (this.offset === null || session.shortestVideoOffset === Infinity) {
-      return null;
-    }
-
-    return this.offset - session.shortestVideoOffset;
+  /**
+   * This is the current videos time in the "global" session time. Useful for
+   * calculations like bookmark times.
+   */
+  @computed
+  get currentTimeInSession() {
+    return this.currentTime + this.beginsAt;
   }
 
   /**
@@ -222,20 +241,10 @@ export default class Video extends Model({
    */
   @computed
   get beginsAt() {
-    const session = this.session;
-
-    if (this.calculatedOffset === null) {
-      return null;
-    }
-
-    return session.largestCalculatedOffset - this.calculatedOffset;
+    return this.session.largestNormalisedOffset - this.normalisedOffset;
   }
 
   get finishesAt() {
-    if (this.beginsAt === null) {
-      return null;
-    }
-
     return this.beginsAt + this.duration;
   }
 
@@ -279,12 +288,12 @@ export default class Video extends Model({
   }
 
   @computed
-  get calcualtedDuration() {
-    if (this.calculatedOffset === null) {
+  get normalisedDuration() {
+    if (this.normalisedOffset === null) {
       return null;
     }
 
-    return this.duration + this.calculatedOffset;
+    return this.duration + this.normalisedOffset;
   }
 
   /**

@@ -123,6 +123,11 @@ export default class Bookmark extends Model({
   }
 
   @computed
+  get displayTimestamp() {
+    return this.videoTimestamp + this.video.beginsAt;
+  }
+
+  @computed
   get selected(): boolean {
     return this.session.selectedBookmark?.id === this.id;
   }

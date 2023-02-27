@@ -170,7 +170,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       </VideoSizer>
       {video.reviewVideoEl !== null &&
         video.duration !== null &&
-        video.calculatedOffset !== null &&
+        video.normalisedOffset !== null &&
         video.session.duration !== null &&
         video.session.currentTime !== null &&
         hideOverlays === false &&

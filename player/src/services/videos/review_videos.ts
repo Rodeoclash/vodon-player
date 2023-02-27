@@ -42,10 +42,12 @@ export const buildElement = async (
     // active. If we reach an active bookmark situation, highlight and
     // pause the videos here.
     if (video.hasBookmarks === true) {
-      const roundedCurrentTime = metadata.mediaTime.toFixed(1);
-
       video.bookmarks.forEach((bookmark) => {
-        if (roundedCurrentTime === bookmark.videoTimestamp.toFixed(1)) {
+        if (
+          bookmark.videoTimestamp > metadata.mediaTime - 0.1 &&
+          bookmark.videoTimestamp < metadata.mediaTime + 0.1
+        ) {
+          bookmark.session.selectBookmark(bookmark);
           bookmark.setActive(true);
         } else {
           bookmark.setActive(false);

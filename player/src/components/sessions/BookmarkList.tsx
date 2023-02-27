@@ -3,14 +3,14 @@ import { observer } from "mobx-react-lite";
 import Show from "components/bookmarks/Show";
 import Edit from "components/bookmarks/Edit";
 import Container from "components/bookmarks/Container";
-import Video from "services/models/video";
+import Session from "services/models/session";
 
 type Props = {
-  video: Video;
+  session: Session;
 };
 
-const BookmarkList = observer(({ video }: Props) => {
-  const renderedBookmarks = video.sortedBookmarks.map((bookmark) => {
+const BookmarkList = observer(({ session }: Props) => {
+  const renderedBookmarks = session.sortedBookmarks.map((bookmark) => {
     if (bookmark.editingInProgress === true) {
       return (
         <Container key={bookmark.id} bookmark={bookmark}>

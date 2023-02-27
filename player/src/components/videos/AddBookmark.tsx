@@ -28,7 +28,7 @@ const AddBookmark = observer(({ video }: Props) => {
       className="btn btn-primary block w-full"
       onClick={() => handleClick()}
     >
-      Add bookmark at {secondsToHms(video.currentTime)}
+      Add bookmark at {secondsToHms(video.currentTimeInSession)}
     </button>
   );
 });

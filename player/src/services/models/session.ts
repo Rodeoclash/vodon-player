@@ -96,12 +96,14 @@ export default class Session extends Model({
 
     this.selectedVideoRef = videoRef(bookmark.video);
 
+    /*
     if (
       this.selectedVideo !== null &&
       this.selectedVideo.reviewVideoEl !== null
     ) {
       this.selectedVideo.reviewVideoEl.currentTime = bookmark.videoTimestamp;
     }
+    */
   }
 
   @modelAction
@@ -119,25 +121,20 @@ export default class Session extends Model({
     return getRoot(this);
   }
 
+  /**
+   * Returns the value of the shortest video offset in the session.
+   */
   @computed
-  get shortestVideoOffset() {
+  get shortestNormalisedOffset() {
     return this.videos.reduce((acc, video) => {
-      if (video.offset === null) {
-        return acc;
-      }
-
       return video.offset < acc ? video.offset : acc;
     }, Infinity);
   }
 
   @computed
-  get largestCalculatedOffset() {
+  get largestNormalisedOffset() {
     return this.videos.reduce((acc, video) => {
-      if (video.calculatedOffset === null) {
-        return acc;
-      }
-
-      return video.calculatedOffset > acc ? video.calculatedOffset : acc;
+      return video.normalisedOffset > acc ? video.normalisedOffset : acc;
     }, 0);
   }
 
@@ -156,16 +153,12 @@ export default class Session extends Model({
 
     if (
       selectedVideo === undefined ||
-      selectedVideo.calculatedOffset === null
+      selectedVideo.normalisedOffset === null
     ) {
       return null;
     }
 
-    return (
-      selectedVideo.currentTime +
-      this.largestCalculatedOffset -
-      selectedVideo.calculatedOffset
-    );
+    return selectedVideo.currentTimeInSession;
   }
 
   @computed
@@ -193,6 +186,13 @@ export default class Session extends Model({
   @computed
   get bookmarks() {
     return this.videos.flatMap((video) => video.bookmarks);
+  }
+
+  @computed
+  get sortedBookmarks() {
+    return [...this.bookmarks].sort((a, b) => {
+      return a.displayTimestamp - b.displayTimestamp;
+    });
   }
 
   @computed
@@ -227,15 +227,15 @@ export default class Session extends Model({
   get duration() {
     return this.videos.reduce((acc: number | null, video) => {
       if (acc === null) {
-        return video.calcualtedDuration;
+        return video.normalisedDuration;
       }
 
-      if (video.calcualtedDuration === null) {
+      if (video.normalisedDuration === null) {
         return acc;
       }
 
-      if (video.calcualtedDuration > acc) {
-        return video.calcualtedDuration;
+      if (video.normalisedDuration > acc) {
+        return video.normalisedDuration;
       }
 
       return acc;

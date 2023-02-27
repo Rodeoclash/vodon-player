@@ -6,9 +6,9 @@ const handlePlay = (originVideo: Video) => {
   originVideo.session.videos.forEach((video) => {
     if (
       video.id === originVideo.id ||
-      video.calculatedOffset === null ||
+      video.normalisedOffset === null ||
       video.reviewVideoEl === null ||
-      originVideo.calculatedOffset === null
+      originVideo.normalisedOffset === null
     ) {
       return;
     }
@@ -21,9 +21,9 @@ const handlePause = (originVideo: Video) => {
   originVideo.session.videos.forEach((video) => {
     if (
       video.id === originVideo.id ||
-      video.calculatedOffset === null ||
+      video.normalisedOffset === null ||
       video.reviewVideoEl === null ||
-      originVideo.calculatedOffset === null
+      originVideo.normalisedOffset === null
     ) {
       return;
     }
@@ -33,7 +33,7 @@ const handlePause = (originVideo: Video) => {
     el.pause();
 
     const offsetFromIncomingVideo =
-      video.calculatedOffset - originVideo.calculatedOffset;
+      video.normalisedOffset - originVideo.normalisedOffset;
 
     el.currentTime = originVideo.currentTime + offsetFromIncomingVideo;
   });
@@ -43,9 +43,9 @@ const handleGotoTime = (originVideo: Video, newTime: number) => {
   originVideo.session.videos.forEach((video) => {
     if (
       video.id === originVideo.id ||
-      video.calculatedOffset === null ||
+      video.normalisedOffset === null ||
       video.reviewVideoEl === null ||
-      originVideo.calculatedOffset === null
+      originVideo.normalisedOffset === null
     ) {
       return;
     }
@@ -53,7 +53,7 @@ const handleGotoTime = (originVideo: Video, newTime: number) => {
     const el = video.reviewVideoEl;
 
     const offsetFromIncomingVideo =
-      video.calculatedOffset - originVideo.calculatedOffset;
+      video.normalisedOffset - originVideo.normalisedOffset;
 
     el.currentTime = newTime + offsetFromIncomingVideo;
   });

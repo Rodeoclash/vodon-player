@@ -67,8 +67,6 @@ const Drawing = ({ onMount, scale, onPersist, drawing, drawingId }: Props) => {
       return;
     }
 
-    console.log("drawingId changed", drawing);
-
     const app = tlDrawRef.current;
     const tool = app.useStore.getState().appState.activeTool;
 
