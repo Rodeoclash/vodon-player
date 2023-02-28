@@ -66,11 +66,16 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
     }
 
     if (videoNotStarted === true) {
-      return `Video starts at ${secondsToHms(video.beginsAt)}`;
+      if (video.session.currentTime === null) {
+        return `Video starts at ${secondsToHms(Math.round(video.beginsAt))}`;
+      }
+      return `Video starts in ${secondsToHms(
+        Math.round(video.beginsAt) - Math.round(video.session.currentTime)
+      )}`;
     }
 
     if (videoFinished === true) {
-      return `Video finished at ${secondsToHms(video.finishesAt)}`;
+      return `Video finished at ${secondsToHms(Math.round(video.finishesAt))}`;
     }
 
     return null;
