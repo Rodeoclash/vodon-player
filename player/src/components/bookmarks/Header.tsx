@@ -12,18 +12,32 @@ type Props = {
 };
 
 const Header = observer(({ bookmark }: Props) => {
-  const [gotoTime, pause, play, setVolume] = useVideoControls(
-    bookmark.video.reviewVideoEl
-  );
-
   /**
    * Goto the selected time. We don't need to set the active video here because
    * we'll automatically switch to the active bookmark when arriving at this
    * time.
    */
   const handleClickTimecode = () => {
-    gotoTime(bookmark.videoTimestamp);
-    bus.emit("video.gotoTime", bookmark.video, bookmark.videoTimestamp);
+    const bookmarkPage = bookmark.selectedBookmarkPage;
+
+    if (
+      bookmark.editingInProgress === true ||
+      bookmarkPage.video.reviewVideoEl === null
+    ) {
+      return;
+    }
+
+    // The time we're going to be going to
+    const newTime = bookmarkPage.videoTimestamp;
+
+    // Set the video attached to the bookmark page to be active in the display
+    bookmark.session.selectVideo(bookmarkPage.video);
+
+    // Set the time of the video to match what's stored on the page
+    bookmarkPage.video.reviewVideoEl.currentTime = newTime;
+
+    // Ensure follower videos are at the correct time
+    bus.emit("video.gotoTime", bookmarkPage.video, newTime);
   };
 
   return (
@@ -32,10 +46,10 @@ const Header = observer(({ bookmark }: Props) => {
         className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700"
         onClick={() => handleClickTimecode()}
       >
-        {secondsToHms(bookmark.displayTimestamp)}
+        {secondsToHms(bookmark.timestamp)}
       </div>
       <div className="flex-shrink flex items-center text-sm px-4">
-        <strong>{bookmark.video.name}</strong>
+        <strong>{bookmark.selectedBookmarkPage.video.name}</strong>
       </div>
       <ol className="flex-grow flex items-stretch justify-end">
         <Pagination bookmark={bookmark} />

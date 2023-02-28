@@ -22,12 +22,6 @@ import Bookmark from "./bookmark";
 export default class Video extends Model({
   id: idProp,
 
-  // The notes on the video
-  bookmarks: tProp(
-    types.array(types.model<Bookmark>(() => Bookmark)),
-    () => []
-  ),
-
   // (usually) the name of the player in the video. Defaults to the filename.
   name: tProp(types.string).withSetter(),
 
@@ -154,23 +148,6 @@ export default class Video extends Model({
   }
 
   @modelAction
-  addBookmark(bookmark: Bookmark) {
-    return this.bookmarks.push(bookmark);
-  }
-
-  /**
-   * Removes a bookmark from this video by filtering it out.
-   * @param bookmark The bookmark to remove
-   * @returns
-   */
-  @modelAction
-  removeBookmark(bookmark: Bookmark) {
-    this.bookmarks = this.bookmarks.filter((innerBookmark) => {
-      return innerBookmark.id !== bookmark.id;
-    });
-  }
-
-  @modelAction
   addSeenBookmarkId(id: string) {
     this.seenBookmarkIds.push(id);
   }
@@ -191,18 +168,6 @@ export default class Video extends Model({
   get index() {
     return this.session.videos.findIndex((video) => {
       return video.id === this.id;
-    });
-  }
-
-  @computed
-  get hasBookmarks() {
-    return this.bookmarks.length > 0;
-  }
-
-  @computed
-  get sortedBookmarks() {
-    return [...this.bookmarks].sort((a, b) => {
-      return a.displayTimestamp - b.displayTimestamp;
     });
   }
 

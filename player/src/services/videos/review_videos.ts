@@ -38,22 +38,28 @@ export const buildElement = async (
   ) => {
     video.setCurrentTime(metadata.mediaTime);
 
-    // For each tick of playback, check what bookmarks are supposed to be
-    // active. If we reach an active bookmark situation, highlight and
-    // pause the videos here.
-    if (video.hasBookmarks === true) {
-      video.bookmarks.forEach((bookmark) => {
-        if (
-          bookmark.videoTimestamp > metadata.mediaTime - 0.1 &&
-          bookmark.videoTimestamp < metadata.mediaTime + 0.1
-        ) {
-          bookmark.session.selectBookmark(bookmark);
-          bookmark.setActive(true);
-        } else {
-          bookmark.setActive(false);
+    // We only want to do bookmark checks using a single video so if we're not
+    // the selected video in the session, skip
+    //if (video.session.selectedVideo !== null && video.session.selectedVideo.id == video.id) {
+
+    // iterate through all bookmarks and pages to determine which bookmarks
+    // should be marked as active. Marking a bookmark as active triggers
+    // watchers on that attribute that pause the video.
+    video.session.bookmarks.forEach((bookmark) => {
+      bookmark.bookmarkPages.forEach((bookmarkPage) => {
+        if (bookmarkPage.video.id === video.id) {
+          if (
+            bookmarkPage.videoTimestamp > metadata.mediaTime - 0.1 &&
+            bookmarkPage.videoTimestamp < metadata.mediaTime + 0.1
+          ) {
+            bookmark.setActive(true);
+          } else {
+            bookmark.setActive(false);
+          }
         }
       });
-    }
+    });
+    //}
 
     el.requestVideoFrameCallback(handleVideoFrame);
   };

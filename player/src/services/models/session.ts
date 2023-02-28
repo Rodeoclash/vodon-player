@@ -31,10 +31,14 @@ export default class Session extends Model({
   id: idProp,
   name: tProp(types.string).withSetter(),
   createdAt: tProp(types.number, Date.now()),
-  videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
+  bookmarks: tProp(
+    types.array(types.model<Bookmark>(() => Bookmark)),
+    () => []
+  ).withSetter(),
   selectedVideoRef: prop<Ref<Video> | null>(),
-  showReviewVideoPanel: tProp(types.boolean, true),
   showBookmarksPanel: tProp(types.boolean, true),
+  showReviewVideoPanel: tProp(types.boolean, true),
+  videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
 }) {
   @modelAction
   update(values: FormikValues) {
@@ -44,6 +48,7 @@ export default class Session extends Model({
 
   @modelAction
   delete() {
+    consola.info(`Removing session: ${this.name}`);
     this.root.removeSession(this);
   }
 
@@ -68,51 +73,51 @@ export default class Session extends Model({
    */
   @modelAction
   selectVideo(video: Video) {
+    consola.info(`Selecting video: ${video.name}`);
+
     if (!this.videos.includes(video))
       throw new RecordNotFound(
         "Tried to select video but it did not belong to this session"
       );
 
-    consola.info(`Selecting video: ${video.name}`);
-
     this.selectedVideoRef = videoRef(video);
   }
 
   /**
-   * Selects a bookmark page in this session, will automatically change the
-   * selected video as well. Useful for when we want to select a bookmark on
-   * the timeline that belongs to a different video.
-   *
-   * @param bookmarkPage The bookmark page we want to select
+   * Adds a bookmark to this session.
+   * @param bookmark The bookmark to add
    */
   @modelAction
-  selectBookmark(bookmark: Bookmark) {
-    if (!this.bookmarks.includes(bookmark))
-      throw new RecordNotFound(
-        "Tried to select bookmark but it did not belong to this session"
-      );
+  addBookmark(bookmark: Bookmark) {
+    consola.info(`Adding bookmark: ${bookmark.timestamp}`);
 
-    consola.info(`Selecting bookmark: ${bookmark.videoTimestamp}`);
+    this.bookmarks.push(bookmark);
+  }
 
-    this.selectedVideoRef = videoRef(bookmark.video);
+  /**
+   * Removes a bookmark from this session
+   * @param bookmark The bookmark to remove
+   */
+  @modelAction
+  removeBookmark(bookmark: Bookmark) {
+    consola.info(`Removing bookmark: ${bookmark.timestamp}`);
 
-    /*
-    if (
-      this.selectedVideo !== null &&
-      this.selectedVideo.reviewVideoEl !== null
-    ) {
-      this.selectedVideo.reviewVideoEl.currentTime = bookmark.videoTimestamp;
-    }
-    */
+    this.setBookmarks(
+      this.bookmarks.filter((innerBookmark) => {
+        return innerBookmark.id !== bookmark.id;
+      })
+    );
   }
 
   @modelAction
   toggleReviewVideoPanel() {
+    consola.info(`Toggle video panel to: ${!this.showReviewVideoPanel}`);
     this.showReviewVideoPanel = !this.showReviewVideoPanel;
   }
 
   @modelAction
   toggleBookmarksPanel() {
+    consola.info(`Toggle bookmarks panel to: ${!this.showBookmarksPanel}`);
     this.showBookmarksPanel = !this.showBookmarksPanel;
   }
 
@@ -147,18 +152,15 @@ export default class Session extends Model({
       return null;
     }
 
-    const selectedVideo = this.videos.find((video) => {
+    const video = this.videos.find((video) => {
       return video.beginsAt === 0;
     });
 
-    if (
-      selectedVideo === undefined ||
-      selectedVideo.normalisedOffset === null
-    ) {
+    if (video === undefined) {
       return null;
     }
 
-    return selectedVideo.currentTimeInSession;
+    return video.currentTimeInSession;
   }
 
   @computed
@@ -167,7 +169,7 @@ export default class Session extends Model({
   }
 
   @computed
-  get selectedBookmark() {
+  get activeBookmark() {
     return this.bookmarks.find((bookmark) => {
       return bookmark.active === true;
     });
@@ -184,14 +186,9 @@ export default class Session extends Model({
   }
 
   @computed
-  get bookmarks() {
-    return this.videos.flatMap((video) => video.bookmarks);
-  }
-
-  @computed
   get sortedBookmarks() {
     return [...this.bookmarks].sort((a, b) => {
-      return a.displayTimestamp - b.displayTimestamp;
+      return a.timestamp - b.timestamp;
     });
   }
 

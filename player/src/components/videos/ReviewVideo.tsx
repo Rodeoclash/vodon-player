@@ -20,8 +20,7 @@ type Props = {
 };
 
 const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
-  const selectedBookmark = video.session.selectedBookmark;
-
+  const selectedBookmark = video.session.activeBookmark;
   const selectedBookmarkPage = selectedBookmark?.selectedBookmarkPage;
 
   // Track when the mouse is over the video to show the controls

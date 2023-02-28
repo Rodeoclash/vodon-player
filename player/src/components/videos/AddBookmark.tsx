@@ -4,6 +4,7 @@ import { secondsToHms } from "services/time";
 import Bookmark from "services/models/bookmark";
 import { bookmarkPageRef } from "services/models/references";
 import { createBookmarkPage } from "services/bookmark_pages";
+import { SessionInInvalidState } from "services/errors";
 
 type Props = {
   video: Video;
@@ -11,16 +12,24 @@ type Props = {
 
 const AddBookmark = observer(({ video }: Props) => {
   const handleClick = () => {
-    const bookmarkPage = createBookmarkPage();
+    const session = video.session;
+
+    if (session.currentTime === null) {
+      throw new SessionInInvalidState(
+        "Cannot add bookmark with a session currentTime"
+      );
+    }
+
+    const bookmarkPage = createBookmarkPage(video);
 
     const bookmark = new Bookmark({
       bookmarkPages: [bookmarkPage],
-      videoTimestamp: video.currentTime,
+      timestamp: session.currentTime,
       selectedBookmarkPageRef: bookmarkPageRef(bookmarkPage),
       editingInProgress: true,
     });
 
-    video.addBookmark(bookmark);
+    session.addBookmark(bookmark);
   };
 
   return (
