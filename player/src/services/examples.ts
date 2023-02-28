@@ -1,5 +1,6 @@
-import exampleOne from "./examples/01_apex_game";
+import { SnapshotOutOfModel } from "mobx-keystone";
+import Session from "services/models/session";
 
-const examples = [exampleOne];
+const examples: Array<SnapshotOutOfModel<Session>> = [];
 
 export default examples;
