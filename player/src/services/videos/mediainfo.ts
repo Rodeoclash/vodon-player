@@ -1,3 +1,4 @@
+import consola from "consola";
 import MediaInfoFactory, { MediaInfo, ReadChunkFunc } from "mediainfo.js";
 import type { ResultObject } from "mediainfo.js/dist/types";
 
@@ -96,7 +97,7 @@ export const readMediaDataFromURL = async (url: string) => {
     new Promise(async (resolve, reject) => {
       const requiredSize = chunkSize + offset;
 
-      console.log(
+      consola.info(
         `Current partial file size: ${partialFile.length}, need additional: ${requiredSize}`
       );
 

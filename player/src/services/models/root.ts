@@ -66,6 +66,7 @@ export class RootStore extends Model({
       }
     );
 
+    /*
     if (this.importedDefaultExamples === false) {
       console.info(
         "Detected that example sessions have not imported, importing them now"
@@ -73,6 +74,7 @@ export class RootStore extends Model({
       this.importDefaultExamples();
       this.setImportedDefaultExamples(true);
     }
+    */
 
     return () => {
       reactionDisposer();

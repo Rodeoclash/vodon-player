@@ -1,5 +1,4 @@
 import consola from "consola";
-import bus from "services/bus";
 import { computed, reaction } from "mobx";
 import {
   model,
@@ -13,17 +12,19 @@ import {
   Ref,
 } from "mobx-keystone";
 import { RecordNotFound } from "services/errors";
+import bus from "services/bus";
 import BookmarkPage from "./bookmark_page";
-import Video from "./video";
+import Session from "./session";
 import { bookmarkPageRef } from "./references";
 import { createBookmarkPage } from "services/bookmark_pages";
+import { SessionInInvalidState } from "services/errors";
 
 @model("VodonPlayer/Bookmark")
 export default class Bookmark extends Model({
   id: idProp,
   createdAt: tProp(types.number, Date.now()),
   active: tProp(types.boolean, false).withSetter(),
-  videoTimestamp: tProp(types.number),
+  timestamp: tProp(types.number),
   editingInProgress: tProp(types.boolean, false).withSetter(),
   selectedBookmarkPageRef: prop<Ref<BookmarkPage>>(),
   bookmarkPages: tProp(
@@ -36,10 +37,15 @@ export default class Bookmark extends Model({
       () => this.active,
       async (active) => {
         if (active === true) {
-          consola.info(`Activated bookmark: ${this.videoTimestamp}`);
-          const video = this.video;
-          video.reviewVideoEl?.pause();
-          bus.emit("video.pause", video);
+          consola.info(`Bookmark was activated: ${this.timestamp}`);
+
+          if (this.selectedBookmarkPage.video.reviewVideoEl === null) {
+            return;
+          }
+
+          this.session.selectVideo(this.selectedBookmarkPage.video);
+          this.selectedBookmarkPage.video.reviewVideoEl.pause();
+          bus.emit("video.pause", this.selectedBookmarkPage.video);
         }
       },
       {
@@ -57,8 +63,8 @@ export default class Bookmark extends Model({
    */
   @modelAction
   delete() {
-    consola.info(`Deleting bookmark: ${this.videoTimestamp}`);
-    this.video.removeBookmark(this);
+    consola.info(`Deleting bookmark: ${this.timestamp}`);
+    this.session.removeBookmark(this);
   }
 
   @modelAction
@@ -81,7 +87,13 @@ export default class Bookmark extends Model({
   @modelAction
   createBookmarkPage() {
     consola.info("Creating new blank bookmark page");
-    const bookmarkPage = createBookmarkPage();
+    if (this.session.selectedVideo === null) {
+      throw new SessionInInvalidState(
+        "Tried to create bookmark page but session had no selected video"
+      );
+    }
+
+    const bookmarkPage = createBookmarkPage(this.session.selectedVideo);
     this.bookmarkPages.push(bookmarkPage);
     this.selectBookmarkPage(bookmarkPage);
     this.setEditingInProgress(true);
@@ -103,13 +115,8 @@ export default class Bookmark extends Model({
   }
 
   @computed
-  get video() {
-    return findParent<Video>(this, (p) => p instanceof Video)!;
-  }
-
-  @computed
   get session() {
-    return this.video.session;
+    return findParent<Session>(this, (p) => p instanceof Session)!;
   }
 
   @computed
@@ -120,16 +127,6 @@ export default class Bookmark extends Model({
   @computed
   get hasBookmarkPages() {
     return this.bookmarkPageCount > 0;
-  }
-
-  @computed
-  get displayTimestamp() {
-    return this.videoTimestamp + this.video.beginsAt;
-  }
-
-  @computed
-  get selected(): boolean {
-    return this.session.selectedBookmark?.id === this.id;
   }
 
   @computed

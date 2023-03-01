@@ -10,9 +10,13 @@ import {
   findParent,
   modelAction,
   frozen,
+  prop,
+  Ref,
 } from "mobx-keystone";
 
 import Bookmark from "./bookmark";
+import Video from "./video";
+
 import { JSONContent } from "@tiptap/react";
 import { TDDocument } from "@tldraw/tldraw";
 
@@ -22,6 +26,8 @@ export default class BookmarkPage extends Model({
   createdAt: tProp(types.number, Date.now()),
   content: tProp(types.frozen(types.unchecked<JSONContent>())),
   drawing: tProp(types.frozen(types.unchecked<TDDocument | null>())),
+  videoRef: prop<Ref<Video>>(),
+  videoTimestamp: tProp(types.number),
 }) {
   @modelAction
   setContent(content: JSONContent) {
@@ -33,13 +39,6 @@ export default class BookmarkPage extends Model({
   setDrawing(document: TDDocument) {
     consola.info("Persisting drawing into bookmark page");
     this.drawing = frozen(structuredClone(document));
-  }
-
-  @modelAction
-  select() {
-    consola.info(`Selecting bookmark page: ${this.id}`);
-    this.session.selectBookmark(this.bookmark);
-    this.bookmark.selectBookmarkPage(this);
   }
 
   /**
@@ -83,7 +82,7 @@ export default class BookmarkPage extends Model({
 
   @computed
   get video() {
-    return this.bookmark.video;
+    return this.videoRef.current;
   }
 
   @computed

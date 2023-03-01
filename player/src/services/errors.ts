@@ -55,3 +55,12 @@ export class UnknownMessage extends CustomError {
     );
   }
 }
+
+export class SessionInInvalidState extends CustomError {
+  public constructor(message?: string) {
+    super(
+      message ||
+        "An action was taken with the session but it was in an invalid state"
+    );
+  }
+}

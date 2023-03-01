@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
-import useVideoControls from "services/hooks/useVideoControls";
 import bus from "services/bus";
 import Bookmark from "services/models/bookmark";
 import BookmarkPage from "services/models/bookmark_page";
@@ -10,18 +9,43 @@ type Props = {
 };
 
 const Pagination = observer(({ bookmark }: Props) => {
-  const [gotoTime, pause, play, setVolume] = useVideoControls(
-    bookmark.video.reviewVideoEl
-  );
-
   const handleClickPageNumber = (bookmarkPage: BookmarkPage) => {
-    if (bookmark.editingInProgress === true) {
+    if (
+      bookmark.editingInProgress === true ||
+      bookmarkPage.video.reviewVideoEl === null
+    ) {
       return;
     }
 
-    gotoTime(bookmark.videoTimestamp);
-    bus.emit("video.gotoTime", bookmark.video, bookmark.videoTimestamp);
-    bookmarkPage.select();
+    // The time we're going to be going to
+    const newTime = bookmarkPage.videoTimestamp;
+
+    // Set the video attached to the bookmark page to be active in the display
+    bookmark.session.selectVideo(bookmarkPage.video);
+
+    const handleSeek = () => {
+      if (bookmarkPage.video.reviewVideoEl === null) {
+        return;
+      }
+      bookmarkPage.video.reviewVideoEl.removeEventListener(
+        "seeked",
+        handleSeek
+      );
+      setTimeout(() => {
+        bookmark.setActive(true);
+      }, 25);
+    };
+
+    bookmarkPage.video.reviewVideoEl.addEventListener("seeked", handleSeek);
+
+    // Set the time of the video to match what's stored on the page
+    bookmarkPage.video.reviewVideoEl.currentTime = newTime;
+
+    // Ensure follower videos are at the correct time
+    bus.emit("video.gotoTime", bookmarkPage.video, newTime);
+
+    // Switch the display of the bookmark
+    bookmark.selectBookmarkPage(bookmarkPage);
   };
 
   const renderedPages = bookmark.sortedBookmarkPages.map(
