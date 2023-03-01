@@ -23,6 +23,21 @@ const Pagination = observer(({ bookmark }: Props) => {
     // Set the video attached to the bookmark page to be active in the display
     bookmark.session.selectVideo(bookmarkPage.video);
 
+    const handleSeek = () => {
+      if (bookmarkPage.video.reviewVideoEl === null) {
+        return;
+      }
+      bookmarkPage.video.reviewVideoEl.removeEventListener(
+        "seeked",
+        handleSeek
+      );
+      setTimeout(() => {
+        bookmark.setActive(true);
+      }, 25);
+    };
+
+    bookmarkPage.video.reviewVideoEl.addEventListener("seeked", handleSeek);
+
     // Set the time of the video to match what's stored on the page
     bookmarkPage.video.reviewVideoEl.currentTime = newTime;
 

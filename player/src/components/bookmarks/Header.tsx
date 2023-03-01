@@ -18,7 +18,7 @@ const Header = observer(({ bookmark }: Props) => {
    * time.
    */
   const handleClickTimecode = () => {
-    const bookmarkPage = bookmark.selectedBookmarkPage;
+    const bookmarkPage = bookmark.bookmarkPages[0];
 
     if (
       bookmark.editingInProgress === true ||
@@ -38,6 +38,8 @@ const Header = observer(({ bookmark }: Props) => {
 
     // Ensure follower videos are at the correct time
     bus.emit("video.gotoTime", bookmarkPage.video, newTime);
+
+    bookmark.selectBookmarkPage(bookmarkPage);
   };
 
   return (
@@ -51,10 +53,14 @@ const Header = observer(({ bookmark }: Props) => {
       <div className="flex-shrink flex items-center text-sm px-4">
         <strong>{bookmark.selectedBookmarkPage.video.name}</strong>
       </div>
-      <ol className="flex-grow flex items-stretch justify-end">
-        <Pagination bookmark={bookmark} />
-      </ol>
-      <AddPage bookmark={bookmark} />
+      {bookmark.active === true && (
+        <>
+          <ol className="flex-grow flex items-stretch justify-end">
+            <Pagination bookmark={bookmark} />
+          </ol>
+          <AddPage bookmark={bookmark} />
+        </>
+      )}
     </header>
   );
 });

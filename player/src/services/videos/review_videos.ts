@@ -46,18 +46,18 @@ export const buildElement = async (
     // should be marked as active. Marking a bookmark as active triggers
     // watchers on that attribute that pause the video.
     video.session.bookmarks.forEach((bookmark) => {
-      bookmark.bookmarkPages.forEach((bookmarkPage) => {
-        if (bookmarkPage.video.id === video.id) {
-          if (
-            bookmarkPage.videoTimestamp > metadata.mediaTime - 0.1 &&
-            bookmarkPage.videoTimestamp < metadata.mediaTime + 0.1
-          ) {
-            bookmark.setActive(true);
-          } else {
-            bookmark.setActive(false);
-          }
+      const bookmarkPage = bookmark.bookmarkPages[0];
+
+      if (bookmarkPage.video.id === video.id) {
+        if (
+          bookmarkPage.videoTimestamp > metadata.mediaTime - 0.1 &&
+          bookmarkPage.videoTimestamp < metadata.mediaTime + 0.1
+        ) {
+          bookmark.setActive(true);
+        } else {
+          bookmark.setActive(false);
         }
-      });
+      }
     });
     //}
 
