@@ -50,8 +50,8 @@ const Header = observer(({ bookmark }: Props) => {
       >
         {secondsToHms(bookmark.timestamp)}
       </div>
-      <div className="flex-shrink flex items-center text-sm px-4">
-        <strong>{bookmark.selectedBookmarkPage.video.name}</strong>
+      <div className="flex-shrink flex items-center text-sm px-4 truncate font-bold">
+        {bookmark.selectedBookmarkPage.video.name}
       </div>
       {bookmark.active === true && (
         <>
