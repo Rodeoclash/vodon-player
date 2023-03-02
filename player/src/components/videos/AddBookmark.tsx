@@ -35,7 +35,7 @@ const AddBookmark = observer(({ video }: Props) => {
 
   if (video.session.bookmarkPresent === true) {
     return (
-      <button className="btn btn-primary btn-disabled block w-full">
+      <button className="btn btn-primary btn-disabled block w-full cursor-not-allowed">
         Bookmark exists at {secondsToHms(video.currentTimeInSession)}
       </button>
     );
