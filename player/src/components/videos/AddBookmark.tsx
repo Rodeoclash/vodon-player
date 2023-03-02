@@ -27,6 +27,7 @@ const AddBookmark = observer(({ video }: Props) => {
       timestamp: session.currentTime,
       selectedBookmarkPageRef: bookmarkPageRef(bookmarkPage),
       editingInProgress: true,
+      active: true,
     });
 
     session.addBookmark(bookmark);
