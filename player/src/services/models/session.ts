@@ -239,6 +239,17 @@ export default class Session extends Model({
     }, null);
   }
 
+  @computed
+  get bookmarkPresent() {
+    return this.bookmarks.some((bookmark) => {
+      if (this.currentTime === null) {
+        return;
+      }
+
+      return Math.round(bookmark.timestamp) === Math.round(this.currentTime);
+    });
+  }
+
   getVideoById(id: string) {
     return this.videos.find((video) => video.id === id);
   }
