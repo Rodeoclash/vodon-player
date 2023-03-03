@@ -44,8 +44,7 @@
     "ts-custom-error": "^3.3.1",
     "usehooks-ts": "^2.9.1",
     "uuid": "^9.0.0",
-    "vite-tsconfig-paths": "^4.0.3",
-    "workbox-precaching": "^6.5.4"
+    "vite-tsconfig-paths": "^4.0.3"
   },
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.7",
@@ -58,7 +57,6 @@
     "postcss": "^8.4.20",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.3",
-    "vite": "^4.0.0",
-    "vite-plugin-pwa": "^0.14.1"
+    "vite": "^4.0.0"
   }
 }
