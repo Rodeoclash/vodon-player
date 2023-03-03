@@ -12,18 +12,17 @@ type Props = {
 };
 
 const SetupListItem = observer(({ video }: Props) => {
-  const [active, setActive] = React.useState<boolean | null>(false);
   const containerEl = React.useRef<null | HTMLDivElement>(null);
   const [gotoTime, pause, play, setVolume] = useVideoControls(
     video.setupVideoEl
   );
 
   const handleMouseEnter = React.useCallback(() => {
-    setActive(true);
+    video.setSetupVideoHovered(true);
   }, []);
 
   const handleMouseLeave = React.useCallback(() => {
-    setActive(false);
+    video.setSetupVideoHovered(false);
   }, []);
 
   const handleChangeVolume = (newVolume: number) => {
@@ -61,7 +60,7 @@ const SetupListItem = observer(({ video }: Props) => {
       onMouseEnter={() => handleMouseEnter()}
       onMouseLeave={() => handleMouseLeave()}
     >
-      {active === true && (
+      {video.setupVideoHovered === true && (
         <div className="absolute top-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
           <Toolbar video={video} />
         </div>
@@ -69,7 +68,7 @@ const SetupListItem = observer(({ video }: Props) => {
       <div ref={containerEl} />
       {video.setupVideoEl !== null &&
         video.duration !== null &&
-        active === true &&
+        video.setupVideoHovered === true &&
         video.frameLength !== null && (
           <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
             <VideoNavigationControls
@@ -92,7 +91,7 @@ const SetupListItem = observer(({ video }: Props) => {
         video.frameLength !== null && (
           <VideoNavigationKeyboardShortcuts
             frameLength={video.frameLength}
-            keyboardShortcutsEnabled={active === true}
+            keyboardShortcutsEnabled={video.setupVideoHovered === true}
             onGotoTime={(time) => gotoTime(time)}
             onPause={() => pause()}
             onPlay={() => play()}

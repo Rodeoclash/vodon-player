@@ -64,6 +64,11 @@ export default class Video extends Model({
   // to collect data about the video file itself (framerate, height etc)
   videoData: tProp(types.frozen(types.unchecked<any>())),
 
+  // Is the setup video currently being hovered over and showing its controls?
+  // we track this here because we want to show the controls as active after
+  // being added
+  setupVideoHovered: tProp(types.boolean, false).withSetter(),
+
   // Is the setup video currently playing?
   setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
@@ -79,7 +84,7 @@ export default class Video extends Model({
   // Volume of the video
   volume: tProp(types.number, 0.5).withSetter(),
 
-  // Seen bookmark ids
+  // Seen bookmark ids (currently deprecated)
   seenBookmarkIds: tProp(types.array(types.string), []).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;

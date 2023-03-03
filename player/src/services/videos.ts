@@ -27,9 +27,10 @@ export const createRemoteVideoInSession = async (
 
   const video = new Video({
     name: "url", // GET PARTIAL NAME FROM URL
+    setupVideoHovered: true,
     type: contentType,
-    videoData: frozen(videoTrack),
     url,
+    videoData: frozen(videoTrack),
   });
 
   session.addVideo(video);
@@ -56,9 +57,10 @@ export const createLocalVideoInSession = async (
 
   const video = new Video({
     name: file.name,
+    setupVideoHovered: true,
     type: file.type,
-    videoData: frozen(videoTrack),
     url: null,
+    videoData: frozen(videoTrack),
   });
 
   // Join the video to the session it was being created under
