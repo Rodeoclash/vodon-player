@@ -81,7 +81,10 @@ const VideoNavigationControls = ({
   useHotkeys(
     "a,arrowLeft",
     () => {
-      if (keyboardShortcutsEnabled === false) {
+      if (
+        keyboardShortcutsEnabled === false ||
+        frameNavigationHeld === Direction.Back
+      ) {
         return;
       }
       handleBackFrame();
@@ -90,7 +93,7 @@ const VideoNavigationControls = ({
     {
       keydown: true,
     },
-    [keyboardShortcutsEnabled]
+    [keyboardShortcutsEnabled, frameNavigationHeld]
   );
 
   useHotkeys(
@@ -107,7 +110,10 @@ const VideoNavigationControls = ({
   useHotkeys(
     "d,arrowRight",
     () => {
-      if (keyboardShortcutsEnabled === false) {
+      if (
+        keyboardShortcutsEnabled === false ||
+        frameNavigationHeld === Direction.Forward
+      ) {
         return;
       }
       handleForwardFrame();
@@ -116,7 +122,7 @@ const VideoNavigationControls = ({
     {
       keydown: true,
     },
-    [keyboardShortcutsEnabled]
+    [keyboardShortcutsEnabled, frameNavigationHeld]
   );
 
   useHotkeys(

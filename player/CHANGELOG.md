@@ -1,3 +1,8 @@
+# 03/03/2023
+
+- Bookmark pages now belong to a viewpoint. Meaning that you can now create bookmarks that talk about multiple viewpoints one after the other.
+- Fixed issue with a/d/left arrow/right arrow "outrunning" the video when being held down.
+
 # 27/02/2023
 
 - All bookmarks in a session are now present in the sidebar. If a bookmark on another player is activated, the viewpoint will automatically switch to them.
