@@ -39,6 +39,8 @@ const SetupListItem = observer(({ video }: Props) => {
     containerEl.current.appendChild(video.setupVideoEl);
   }, [video.videoElementsCreated]);
 
+  // On leaving this element, grab the current frame of the video and save it
+
   // This video isn't ready for some reason
   if (
     video.videoElementsCreated === false ||

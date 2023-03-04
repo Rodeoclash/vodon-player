@@ -8,15 +8,15 @@ import { v4 as uuidv4 } from "uuid";
 import { UnknownMessage } from "services/errors";
 
 enum SendMessageKinds {
-  ADD_FILE = "ADD_FILE",
+  ADD_FROM_FILE_HANDLE = "ADD_FROM_FILE_HANDLE",
   REMOVE_FILE = "REMOVE_FILE",
 }
 
 enum RecieveMessageKinds {
   // Adding files
-  ADD_FILE_START = "ADD_FILE_START",
-  ADD_FILE_PROGRESS = "ADD_FILE_PROGRESS",
-  ADD_FILE_COMPLETE = "ADD_FILE_COMPLETE",
+  ADD_FROM_FILE_HANDLE_START = "ADD_FROM_FILE_HANDLE_START",
+  ADD_FROM_FILE_HANDLE_PROGRESS = "ADD_FROM_FILE_HANDLE_PROGRESS",
+  ADD_FROM_FILE_HANDLE_COMPLETE = "ADD_FROM_FILE_HANDLE_COMPLETE",
 
   // Removing files
   REMOVE_FILE_START = "REMOVE_FILE_START",
@@ -85,16 +85,14 @@ const handleOperation = (
  * @param param0
  */
 worker.onmessage = async ({ data }) => {
-  const operation = addOperations[data.meta.id];
-
   switch (data.kind) {
-    case RecieveMessageKinds.ADD_FILE_START:
+    case RecieveMessageKinds.ADD_FROM_FILE_HANDLE_START:
       handleOperation(addOperations, data.meta.id, "onStart", data.event);
       break;
-    case RecieveMessageKinds.ADD_FILE_PROGRESS:
+    case RecieveMessageKinds.ADD_FROM_FILE_HANDLE_PROGRESS:
       handleOperation(addOperations, data.meta.id, "onProgress", data.event);
       break;
-    case RecieveMessageKinds.ADD_FILE_COMPLETE:
+    case RecieveMessageKinds.ADD_FROM_FILE_HANDLE_COMPLETE:
       handleOperation(addOperations, data.meta.id, "onComplete", data.event);
       delete addOperations[data.meta.id];
       break;
@@ -112,7 +110,7 @@ worker.onmessage = async ({ data }) => {
   }
 };
 
-export function add(
+export function addFromFileHandle(
   folderName: string,
   fileName: string,
   fileHandle: FileSystemFileHandle,
@@ -123,7 +121,7 @@ export function add(
   addOperations[id] = options;
 
   worker.postMessage({
-    kind: SendMessageKinds.ADD_FILE,
+    kind: SendMessageKinds.ADD_FROM_FILE_HANDLE,
     fileHandle,
     location: {
       folderName,
@@ -135,6 +133,7 @@ export function add(
   });
 }
 
+// Remove the data location in the folderName / fileName pair
 export function remove(
   folderName: string,
   fileName: string,

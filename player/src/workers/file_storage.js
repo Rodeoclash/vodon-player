@@ -12,7 +12,7 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
   rootDirectory = fetchedRootDirectory;
 });
 
-const handleAddFile = async ({ data }) => {
+const handleAddFromFileHandle = async ({ data }) => {
   // Get a reference to the file that's being copied
   const originFile = await data.fileHandle.getFile();
 
@@ -36,7 +36,7 @@ const handleAddFile = async ({ data }) => {
   const totalChunks = Math.ceil(originFile.size / chunkSize, chunkSize);
 
   postMessage({
-    kind: "ADD_FILE_START",
+    kind: "ADD_FROM_FILE_HANDLE_START",
     meta: data.meta,
     event: {
       progress: 0,
@@ -56,7 +56,7 @@ const handleAddFile = async ({ data }) => {
     // TODO - Mark % of file completed
 
     postMessage({
-      kind: "ADD_FILE_PROGRESS",
+      kind: "ADD_FROM_FILE_HANDLE_PROGRESS",
       meta: data.meta,
       fileHandle: destinationFileHandle,
       event: {
@@ -72,7 +72,7 @@ const handleAddFile = async ({ data }) => {
 
   // Send a message back to the client that the copy has completed
   postMessage({
-    kind: "ADD_FILE_COMPLETE",
+    kind: "ADD_FROM_FILE_HANDLE_COMPLETE",
     meta: data.meta,
     event: {
       progress: 1,
@@ -108,8 +108,8 @@ const handleRemoveFile = async ({ data }) => {
  */
 onmessage = async (event) => {
   switch (event.data.kind) {
-    case "ADD_FILE":
-      handleAddFile(event);
+    case "ADD_FROM_FILE_HANDLE":
+      handleAddFromFileHandle(event);
       break;
     case "REMOVE_FILE":
       handleRemoveFile(event);

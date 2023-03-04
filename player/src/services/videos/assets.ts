@@ -1,5 +1,8 @@
 import consola from "consola";
-import { add as opfsAdd, remove as opfsRemove } from "services/opfs";
+import {
+  addFromFileHandle as opfsAdd,
+  remove as opfsRemove,
+} from "services/opfs";
 import fileHandles from "services/file_handles";
 import { MissingLocalFileHandle } from "services/errors";
 
