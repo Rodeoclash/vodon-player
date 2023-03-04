@@ -17,7 +17,11 @@ const List = observer(() => {
       <tr key={session.id}>
         <td className="td">
           <Link className="link" to={`/sessions/${session.id}/review`}>
-            {session.name}
+            <div>{session.name}</div>
+            {session.videos[0] !== undefined &&
+              session.videos[0].previewImageUrl !== null && (
+                <img src={session.videos[0].previewImageUrl} className="w-32" />
+              )}
           </Link>
         </td>
         <td className="td">{session.videoCount}</td>

@@ -36,12 +36,15 @@ export default class Video extends Model({
   ).withSetter(),
 
   // Have the video element been created for this video? The creation of these
-  // elements is performed when we've attached the video to the root store
-  // TOOD: We may be able to remove this
+  // elements is performed when we've attached the video to the root store.
   videoElementsCreated: tProp(
     types.maybeNull(types.boolean),
     null
   ).withSetter(),
+
+  // URL to the preview image of this. Created locally from the sync frame
+  // but this might change once the remove storage comes into play.
+  previewImageUrl: tProp(types.maybeNull(types.string), null).withSetter(),
 
   // Mime type of the original video file
   type: tProp(types.maybeNull(types.string), null).withSetter(),
@@ -91,6 +94,7 @@ export default class Video extends Model({
     // We reset this back to false as the elements will have to be created
     // again from scratch
     this.setVideoElementsCreated(false);
+    this.setPreviewImageUrl(null);
 
     // Videos always start in a non playing state
     this.setSetupVideoPlaying(false);
@@ -102,6 +106,7 @@ export default class Video extends Model({
 
     // If URLs exist on the videos, build from them. Later we'll check for
     // local file handles and build from them if they exist
+    // TODO: This will actually need to download from URLs
     (async () => {
       if (this.url !== null) {
         this.setupVideoEl = await buildSetupElement(this, this.url);
@@ -110,7 +115,7 @@ export default class Video extends Model({
       }
     })();
 
-    // Start observing the storage file handle...
+    // Start observing the video storage file handle...
     const storageVideoFileHandleObservable = liveQuery(() =>
       fileHandles.table("storageVideoFileHandles").get({ id: this.id })
     );
@@ -118,7 +123,7 @@ export default class Video extends Model({
     // When we encounter elements in this storage, we're ready to build the
     // video HTML elements. These will either be present on boot, or present
     // after we're stored a record (see the video/assets file).
-    const videoElementSubscriptionDisposer =
+    const storageVideoFileHandleObservableDisposer =
       storageVideoFileHandleObservable.subscribe({
         next: async (result) => {
           if (result === undefined) {
@@ -138,8 +143,29 @@ export default class Video extends Model({
         error: (error) => console.error(error),
       });
 
+    // Start observing the video storage file handle...
+    const storageSyncImageFileHandleObservable = liveQuery(() =>
+      fileHandles.table("setupVideoSyncImageFileHandles").get({ id: this.id })
+    );
+
+    // Build the URL to the preview image
+    const storageSyncImageFileHandleObservableDisposer =
+      storageSyncImageFileHandleObservable.subscribe({
+        next: async (result) => {
+          if (result === undefined) {
+            return;
+          }
+
+          const file = await result.fileHandle.getFile();
+          const url = URL.createObjectURL(file);
+          this.setPreviewImageUrl(url);
+        },
+        error: (error) => console.error(error),
+      });
+
     return () => {
-      videoElementSubscriptionDisposer.unsubscribe();
+      storageVideoFileHandleObservableDisposer.unsubscribe();
+      storageSyncImageFileHandleObservableDisposer.unsubscribe();
     };
   }
 
