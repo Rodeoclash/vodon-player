@@ -29,21 +29,10 @@ export const storeSetupVideoSyncFrame = async (
  * @param video The video file to store
  * @returns video
  */
-export const storeVideoFile = async (video: Video): Promise<Video> => {
-  const fileHandleRecord = await fileHandles
-    .table("localVideoFileHandles")
-    .get({
-      id: video.id,
-    });
-
-  if (fileHandleRecord === undefined) {
-    throw new MissingLocalFileHandle(
-      "Attempted to use local file handle but it was not present"
-    );
-  }
-
-  const fileHandle = fileHandleRecord.fileHandle;
-
+export const storeVideoFile = async (
+  video: Video,
+  fileHandle: FileSystemFileHandle
+): Promise<FileSystemFileHandle> => {
   if ((await fileHandle.queryPermission({ mode: "read" })) !== "granted") {
     throw new MissingLocalFileHandle(
       "Attempting to copy file but it does not have permission granted"
@@ -68,14 +57,7 @@ export const storeVideoFile = async (video: Video): Promise<Video> => {
         onComplete: async (event) => {
           consola.info("Completed copy of video file handle into OPFS");
           video.setCopyToStorageProgress(event.progress);
-
-          // Should probably be moved out?
-          await fileHandles.table("storageVideoFileHandles").put({
-            id: video.id,
-            fileHandle: event.fileHandle,
-          });
-
-          resolve(video);
+          resolve(event.fileHandle);
         },
       }
     );

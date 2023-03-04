@@ -63,14 +63,13 @@ export const createLocalVideoInSession = async (
   // Join the video to the session it was being created under
   session.addVideo(video);
 
-  // Store a reference to this videos local file handle in the persistence database
-  await fileHandles.table("localVideoFileHandles").put({
-    id: video.id,
-    fileHandle,
-  });
-
   // Trigger storing the file
-  await storeVideoFile(video);
+  const responseFileHandle = await storeVideoFile(video, fileHandle);
+
+  await fileHandles.table("storageVideoFileHandles").put({
+    id: video.id,
+    fileHandle: responseFileHandle,
+  });
 
   return video;
 };
