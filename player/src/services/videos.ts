@@ -2,10 +2,7 @@ import { frozen } from "mobx-keystone";
 
 import { MissingLocalFileHandle } from "services/errors";
 import database from "services/database";
-import {
-  store as storeAssets,
-  remove as removeAssets,
-} from "services/videos/assets";
+import { storeVideoFile, removeVideoFlie } from "services/videos/assets";
 
 import {
   readMediaDataFromFile,
@@ -73,7 +70,7 @@ export const createLocalVideoInSession = async (
   });
 
   // Trigger storing the file
-  await storeAssets(video);
+  await storeVideoFile(video);
 
   return video;
 };
@@ -112,7 +109,7 @@ export const requestLocalFileHandlePermission = async (
  * @param video The video to remove
  */
 export const remove = async (video: Video) => {
-  await removeAssets(video);
+  await removeVideoFlie(video);
   video.delete();
 };
 

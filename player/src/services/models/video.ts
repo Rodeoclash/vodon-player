@@ -30,12 +30,6 @@ export default class Video extends Model({
   // The URL of where this video exists
   url: tProp(types.maybeNull(types.string)),
 
-  // Are we in progress with a copy to local storage?
-  copyToStorageInProgress: tProp(
-    types.maybeNull(types.boolean),
-    null
-  ).withSetter(),
-
   // How far through the copy process we are
   copyToStorageProgress: tProp(
     types.maybeNull(types.number),

@@ -12,7 +12,7 @@ import Video from "services/models/video";
  * @param video The video file to store
  * @returns video
  */
-export const store = async (video: Video): Promise<Video> => {
+export const storeVideoFile = async (video: Video): Promise<Video> => {
   const fileHandleRecord = await database.table("localVideoFileHandles").get({
     id: video.id,
   });
@@ -36,7 +36,6 @@ export const store = async (video: Video): Promise<Video> => {
     opfsAdd(video.storageDirectory, video.storageFilename, fileHandle, {
       onStart: (event) => {
         consola.info("Starting copy of video file handle into OPFS");
-        video.setCopyToStorageInProgress(true);
         video.setCopyToStorageProgress(event.progress);
       },
       onProgress: (event) => {
@@ -45,7 +44,6 @@ export const store = async (video: Video): Promise<Video> => {
       },
       onComplete: async (event) => {
         consola.info("Completed copy of video file handle into OPFS");
-        video.setCopyToStorageInProgress(false);
         video.setCopyToStorageProgress(event.progress);
 
         await database.table("storageVideoFileHandles").put({
@@ -67,7 +65,7 @@ export const store = async (video: Video): Promise<Video> => {
  *
  * @param video The video to remove
  */
-export const remove = async (video: Video): Promise<Video> => {
+export const removeVideoFlie = async (video: Video): Promise<Video> => {
   // Remove from OPFS
   return new Promise((resolve, reject) => {
     opfsRemove(video.storageDirectory, video.storageFilename, {
