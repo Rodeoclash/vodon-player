@@ -111,12 +111,14 @@ export default class Video extends Model({
       }
     })();
 
-    // Start observing the storage file handle, when it's present we'll create
-    // the required video elements.
+    // Start observing the storage file handle...
     const storageVideoFileHandleObservable = liveQuery(() =>
       database.table("storageVideoFileHandles").get({ id: this.id })
     );
 
+    // When we encounter elements in this storage, we're ready to build the
+    // video HTML elements. These will either be present on boot, or present
+    // after we're stored a record (see the video/assets file).
     const subscriptionDisposer = storageVideoFileHandleObservable.subscribe({
       next: async (result) => {
         if (result === undefined) {
