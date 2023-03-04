@@ -6,45 +6,58 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { UnknownMessage } from "services/errors";
+import consola from "consola";
 
 enum SendMessageKinds {
   ADD_FROM_FILE_HANDLE = "ADD_FROM_FILE_HANDLE",
+  ADD_FROM_BLOB = "ADD_FROM_BLOB",
   REMOVE_FILE = "REMOVE_FILE",
 }
 
 enum RecieveMessageKinds {
-  // Adding files
+  // Adding files from file handle
   ADD_FROM_FILE_HANDLE_START = "ADD_FROM_FILE_HANDLE_START",
   ADD_FROM_FILE_HANDLE_PROGRESS = "ADD_FROM_FILE_HANDLE_PROGRESS",
   ADD_FROM_FILE_HANDLE_COMPLETE = "ADD_FROM_FILE_HANDLE_COMPLETE",
+
+  // Adding files from blob
+  ADD_FROM_BLOB_START = "ADD_FROM_BLOB_START",
+  ADD_FROM_BLOB_COMPLETE = "ADD_FROM_BLOB_COMPLETE",
 
   // Removing files
   REMOVE_FILE_START = "REMOVE_FILE_START",
   REMOVE_FILE_COMPLETE = "REMOVE_FILE_COMPLETE",
 }
 
-type AddStartEvent = {
+// These add events are shared between all operations (adding file handles
+// and blobs)
+export type StartEvent = {
   progress: 0;
 };
 
-type AddProgressEvent = {
+export type ProgressEvent = {
   progress: number;
 };
 
-type AddCompleteEvent = {
+export type CompleteEvent = {
   progress: 1;
   fileHandle: FileSystemFileHandle;
 };
 
-type AddOperationOptions = {
-  onStart?: (event: AddStartEvent) => void;
-  onProgress?: (event: AddProgressEvent) => void;
-  onComplete?: (event: AddCompleteEvent) => void;
+type AddFromFileHandleOperationOptions = {
+  onStart?: (event: StartEvent) => void;
+  onProgress?: (event: ProgressEvent) => void;
+  onComplete?: (event: CompleteEvent) => void;
+};
+
+type AddFromBlobOperationOptions = {
+  onStart?: (event: StartEvent) => void;
+  onComplete?: (event: CompleteEvent) => void;
 };
 
 type RemoveOperationOptions = {
-  onStart?: (event: AddStartEvent) => void;
-  onComplete?: (event: AddCompleteEvent) => void;
+  onStart?: (event: StartEvent) => void;
+  onComplete?: (event: CompleteEvent) => void;
 };
 
 const worker = new Worker(
@@ -54,8 +67,17 @@ const worker = new Worker(
   }
 );
 
-const addOperations: { [key: string]: AddOperationOptions } = {};
+const addOperations: {
+  [key: string]:
+    | AddFromFileHandleOperationOptions
+    | AddFromBlobOperationOptions;
+} = {};
 const removeOperations: { [key: string]: RemoveOperationOptions } = {};
+
+const setOperationCallback = (operations: any, id: string, callback: any) => {
+  consola.info(`Setting OPFS callback: ${id}`);
+  operations[id] = callback;
+};
 
 /**
  * Guarded operations callback handler. Will invoke callbacks if they are
@@ -66,13 +88,19 @@ const removeOperations: { [key: string]: RemoveOperationOptions } = {};
  * @param method The kind of the callback
  * @param payload The payload to pass.
  */
-const handleOperation = (
+const handleOperationCallback = (
   operations: any,
   id: string,
   method: string,
   payload: Object
 ) => {
+  consola.info(`Performing OPFS callback: ${id}`);
+
   if (operations[id] === undefined || operations[id][method] === undefined) {
+    consola.warn(
+      `No operation found to activate for: ${method}, all that was found was`,
+      operations[id]
+    );
     return;
   }
 
@@ -85,22 +113,65 @@ const handleOperation = (
  * @param param0
  */
 worker.onmessage = async ({ data }) => {
+  consola.info(`Received file storage worker message: ${data.kind}`);
+
   switch (data.kind) {
     case RecieveMessageKinds.ADD_FROM_FILE_HANDLE_START:
-      handleOperation(addOperations, data.meta.id, "onStart", data.event);
+      handleOperationCallback(
+        addOperations,
+        data.meta.id,
+        "onStart",
+        data.event
+      );
       break;
     case RecieveMessageKinds.ADD_FROM_FILE_HANDLE_PROGRESS:
-      handleOperation(addOperations, data.meta.id, "onProgress", data.event);
+      handleOperationCallback(
+        addOperations,
+        data.meta.id,
+        "onProgress",
+        data.event
+      );
       break;
     case RecieveMessageKinds.ADD_FROM_FILE_HANDLE_COMPLETE:
-      handleOperation(addOperations, data.meta.id, "onComplete", data.event);
+      handleOperationCallback(
+        addOperations,
+        data.meta.id,
+        "onComplete",
+        data.event
+      );
       delete addOperations[data.meta.id];
       break;
+    case RecieveMessageKinds.ADD_FROM_BLOB_START:
+      handleOperationCallback(
+        addOperations,
+        data.meta.id,
+        "onStart",
+        data.event
+      );
+      break;
+    case RecieveMessageKinds.ADD_FROM_BLOB_COMPLETE:
+      handleOperationCallback(
+        addOperations,
+        data.meta.id,
+        "onComplete",
+        data.event
+      );
+      break;
     case RecieveMessageKinds.REMOVE_FILE_START:
-      handleOperation(removeOperations, data.meta.id, "onStart", data.event);
+      handleOperationCallback(
+        removeOperations,
+        data.meta.id,
+        "onStart",
+        data.event
+      );
       break;
     case RecieveMessageKinds.REMOVE_FILE_COMPLETE:
-      handleOperation(removeOperations, data.meta.id, "onComplete", data.event);
+      handleOperationCallback(
+        removeOperations,
+        data.meta.id,
+        "onComplete",
+        data.event
+      );
       delete removeOperations[data.meta.id];
       break;
     default:
@@ -110,15 +181,49 @@ worker.onmessage = async ({ data }) => {
   }
 };
 
+/**
+ * Adds a file to the storage system from a blob source (used for screenshots
+ * of videos).
+ */
+export function addFromBlob(
+  folderName: string,
+  fileName: string,
+  blob: Blob,
+  options: AddFromBlobOperationOptions
+) {
+  consola.info(`Storing file from blob to: ${folderName}/${fileName}`);
+
+  const id = uuidv4();
+
+  setOperationCallback(addOperations, id, options);
+
+  worker.postMessage({
+    kind: SendMessageKinds.ADD_FROM_BLOB,
+    blob,
+    location: {
+      folderName,
+      fileName,
+    },
+    meta: {
+      id,
+    },
+  });
+}
+
+/**
+ * Adds a file to the storage system from a file handle source.
+ */
 export function addFromFileHandle(
   folderName: string,
   fileName: string,
   fileHandle: FileSystemFileHandle,
-  options: AddOperationOptions
+  options: AddFromFileHandleOperationOptions
 ) {
+  consola.info(`Storing file from fileHandle to: ${folderName}/${fileName}`);
+
   const id = uuidv4();
 
-  addOperations[id] = options;
+  setOperationCallback(addOperations, id, options);
 
   worker.postMessage({
     kind: SendMessageKinds.ADD_FROM_FILE_HANDLE,
@@ -133,15 +238,17 @@ export function addFromFileHandle(
   });
 }
 
-// Remove the data location in the folderName / fileName pair
+/**
+ * Removes a file from storage.
+ */
 export function remove(
   folderName: string,
   fileName: string,
-  options: AddOperationOptions
+  options: AddFromFileHandleOperationOptions
 ) {
   const id = uuidv4();
 
-  removeOperations[id] = options;
+  setOperationCallback(removeOperations, id, options);
 
   worker.postMessage({
     kind: SendMessageKinds.REMOVE_FILE,

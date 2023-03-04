@@ -14,7 +14,7 @@ class Storage extends Dexie {
     this.version(1).stores({
       localVideoFileHandles: "id",
       storageVideoFileHandles: "id",
-      //setupVideoSyncImageFileHandles: "id",
+      setupVideoSyncImageFileHandles: "id",
     });
   }
 }

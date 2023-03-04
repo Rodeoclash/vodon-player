@@ -128,3 +128,30 @@ const extractVideoTrack = (result: ResultObject) => {
 
   return videoTrack;
 };
+
+export const screenshot = (video: Video): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    if (video.setupVideoEl === null) {
+      throw new InvalidVideo("Cannot screenshot video unless it is ready");
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.width;
+    canvas.height = video.height;
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      throw new Error("Canvas context was null for some reason");
+    }
+
+    ctx.drawImage(video.setupVideoEl, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        throw new Error("Could not convert to blob for some reason");
+      }
+
+      resolve(blob);
+    });
+  });
+};

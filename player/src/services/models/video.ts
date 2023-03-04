@@ -118,27 +118,28 @@ export default class Video extends Model({
     // When we encounter elements in this storage, we're ready to build the
     // video HTML elements. These will either be present on boot, or present
     // after we're stored a record (see the video/assets file).
-    const subscriptionDisposer = storageVideoFileHandleObservable.subscribe({
-      next: async (result) => {
-        if (result === undefined) {
-          return;
-        }
+    const videoElementSubscriptionDisposer =
+      storageVideoFileHandleObservable.subscribe({
+        next: async (result) => {
+          if (result === undefined) {
+            return;
+          }
 
-        const file = await result.fileHandle.getFile();
-        const url = URL.createObjectURL(file);
+          const file = await result.fileHandle.getFile();
+          const url = URL.createObjectURL(file);
 
-        this.setupVideoEl = await buildSetupElement(this, url);
-        this.reviewVideoEl = await buildReviewElement(this, url);
+          this.setupVideoEl = await buildSetupElement(this, url);
+          this.reviewVideoEl = await buildReviewElement(this, url);
 
-        // Mark that all setup videos have now been created, this controls
-        // further UI being created
-        this.setVideoElementsCreated(true);
-      },
-      error: (error) => console.error(error),
-    });
+          // Mark that all setup videos have now been created, this controls
+          // further UI being created
+          this.setVideoElementsCreated(true);
+        },
+        error: (error) => console.error(error),
+      });
 
     return () => {
-      subscriptionDisposer.unsubscribe();
+      videoElementSubscriptionDisposer.unsubscribe();
     };
   }
 
@@ -287,6 +288,15 @@ export default class Video extends Model({
   @computed
   get storageFilename() {
     return `${this.id}`;
+  }
+
+  /**
+   * The filename of the frame taken from the timecode that the user used to
+   * sync the video.
+   */
+  @computed
+  get storageFilenameSyncFrame() {
+    return `${this.storageFilename}_setupFrame`;
   }
 
   /**

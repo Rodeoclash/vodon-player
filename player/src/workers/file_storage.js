@@ -12,29 +12,53 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
   rootDirectory = fetchedRootDirectory;
 });
 
-const handleAddFromFileHandle = async ({ data }) => {
-  // Get a reference to the file that's being copied
-  const originFile = await data.fileHandle.getFile();
-
+const createDestination = async (folderName, fileName) => {
   // Create a directory under the session id for the file to be copied to
-  const parentDirectory = await rootDirectory.getDirectoryHandle(
-    data.location.folderName,
-    { create: true }
-  );
+  const parentDirectory = await rootDirectory.getDirectoryHandle(folderName, {
+    create: true,
+  });
 
   // Get a handle to the destination of where the file will be copied to
-  const destinationFileHandle = await parentDirectory.getFileHandle(
-    data.location.fileName,
-    { create: true }
+  return await parentDirectory.getFileHandle(fileName, { create: true });
+};
+
+const handleAddFromBlob = async ({ data }) => {
+  postMessage({
+    kind: "ADD_FROM_BLOB_START",
+    meta: data.meta,
+    event: {
+      progress: 0,
+    },
+  });
+
+  // Get a handle to the destination of where the file will be copied to
+  const destinationFileHandle = await createDestination(
+    data.location.folderName,
+    data.location.fileName
   );
 
   // Create a writable stream for the destination file
   const destinationWritableStream =
     await destinationFileHandle.createWritable();
 
-  // Total number of chunks we're going to copy the file using
-  const totalChunks = Math.ceil(originFile.size / chunkSize, chunkSize);
+  // Write out the blob data
+  await destinationWritableStream.write(data.blob);
 
+  // Mark the destination file as being closed
+  await destinationWritableStream.close();
+
+  // Send a message back to the client that the copy has completed
+  postMessage({
+    kind: "ADD_FROM_BLOB_COMPLETE",
+    meta: data.meta,
+    event: {
+      progress: 1,
+      fileHandle: destinationFileHandle,
+    },
+  });
+};
+
+const handleAddFromFileHandle = async ({ data }) => {
   postMessage({
     kind: "ADD_FROM_FILE_HANDLE_START",
     meta: data.meta,
@@ -42,6 +66,22 @@ const handleAddFromFileHandle = async ({ data }) => {
       progress: 0,
     },
   });
+
+  // Get a handle to the destination of where the file will be copied to
+  const destinationFileHandle = await createDestination(
+    data.location.folderName,
+    data.location.fileName
+  );
+
+  // Get a reference to the file that's being copied
+  const originFile = await data.fileHandle.getFile();
+
+  // Create a writable stream for the destination file
+  const destinationWritableStream =
+    await destinationFileHandle.createWritable();
+
+  // Total number of chunks we're going to copy the file using
+  const totalChunks = Math.ceil(originFile.size / chunkSize, chunkSize);
 
   // Loop over the chunks, writing out the file. This avoids loading the entire
   // file into memory at once
@@ -110,6 +150,9 @@ onmessage = async (event) => {
   switch (event.data.kind) {
     case "ADD_FROM_FILE_HANDLE":
       handleAddFromFileHandle(event);
+      break;
+    case "ADD_FROM_BLOB":
+      handleAddFromBlob(event);
       break;
     case "REMOVE_FILE":
       handleRemoveFile(event);

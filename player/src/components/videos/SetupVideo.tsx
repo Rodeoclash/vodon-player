@@ -40,6 +40,11 @@ const SetupListItem = observer(({ video }: Props) => {
   }, [video.videoElementsCreated]);
 
   // On leaving this element, grab the current frame of the video and save it
+  React.useEffect(() => {
+    return () => {
+      console.log("leave");
+    };
+  }, []);
 
   // This video isn't ready for some reason
   if (
