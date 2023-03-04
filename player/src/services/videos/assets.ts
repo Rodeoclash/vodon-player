@@ -1,6 +1,6 @@
 import consola from "consola";
 import { add as opfsAdd, remove as opfsRemove } from "services/opfs";
-import database from "services/database";
+import fileHandles from "services/file_handles";
 import { MissingLocalFileHandle } from "services/errors";
 
 import Video from "services/models/video";
@@ -13,9 +13,11 @@ import Video from "services/models/video";
  * @returns video
  */
 export const storeVideoFile = async (video: Video): Promise<Video> => {
-  const fileHandleRecord = await database.table("localVideoFileHandles").get({
-    id: video.id,
-  });
+  const fileHandleRecord = await fileHandles
+    .table("localVideoFileHandles")
+    .get({
+      id: video.id,
+    });
 
   if (fileHandleRecord === undefined) {
     throw new MissingLocalFileHandle(
@@ -46,7 +48,7 @@ export const storeVideoFile = async (video: Video): Promise<Video> => {
         consola.info("Completed copy of video file handle into OPFS");
         video.setCopyToStorageProgress(event.progress);
 
-        await database.table("storageVideoFileHandles").put({
+        await fileHandles.table("storageVideoFileHandles").put({
           id: video.id,
           fileHandle: event.fileHandle,
         });
@@ -73,10 +75,10 @@ export const removeVideoFlie = async (video: Video): Promise<Video> => {
         consola.info(`Completed removing video file from OPFS `);
 
         // Remove local file handle (if it exists)
-        await database.table("localVideoFileHandles").delete(video.id);
+        await fileHandles.table("localVideoFileHandles").delete(video.id);
 
         // Remove storage file handle (if it exists)
-        await database.table("storageVideoFileHandles").delete(video.id);
+        await fileHandles.table("storageVideoFileHandles").delete(video.id);
 
         resolve(video);
       },

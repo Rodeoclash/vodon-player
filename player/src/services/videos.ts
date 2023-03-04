@@ -1,7 +1,7 @@
 import { frozen } from "mobx-keystone";
 
 import { MissingLocalFileHandle } from "services/errors";
-import database from "services/database";
+import fileHandles from "services/file_handles";
 import { storeVideoFile, removeVideoFlie } from "services/videos/assets";
 
 import {
@@ -64,7 +64,7 @@ export const createLocalVideoInSession = async (
   session.addVideo(video);
 
   // Store a reference to this videos local file handle in the persistence database
-  await database.table("localVideoFileHandles").put({
+  await fileHandles.table("localVideoFileHandles").put({
     id: video.id,
     fileHandle,
   });
@@ -78,9 +78,11 @@ export const createLocalVideoInSession = async (
 export const requestLocalFileHandlePermission = async (
   video: Video
 ): Promise<Video> => {
-  const fileHandleRecord = await database.table("localVideoFileHandles").get({
-    id: video.id,
-  });
+  const fileHandleRecord = await fileHandles
+    .table("localVideoFileHandles")
+    .get({
+      id: video.id,
+    });
 
   if (fileHandleRecord === undefined) {
     throw new MissingLocalFileHandle(
@@ -94,7 +96,7 @@ export const requestLocalFileHandlePermission = async (
     mode: "read",
   });
 
-  await database.table("localVideoFileHandles").put({
+  await fileHandles.table("localVideoFileHandles").put({
     id: video.id,
     fileHandle,
   });

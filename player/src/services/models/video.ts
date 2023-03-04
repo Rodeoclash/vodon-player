@@ -13,10 +13,9 @@ import { liveQuery } from "dexie";
 
 import { buildElement as buildSetupElement } from "services/videos/setup_videos";
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
-import database from "services/database";
+import fileHandles from "services/file_handles";
 
 import Session from "./session";
-import Bookmark from "./bookmark";
 
 @model("VodonPlayer/Video")
 export default class Video extends Model({
@@ -113,7 +112,7 @@ export default class Video extends Model({
 
     // Start observing the storage file handle...
     const storageVideoFileHandleObservable = liveQuery(() =>
-      database.table("storageVideoFileHandles").get({ id: this.id })
+      fileHandles.table("storageVideoFileHandles").get({ id: this.id })
     );
 
     // When we encounter elements in this storage, we're ready to build the
