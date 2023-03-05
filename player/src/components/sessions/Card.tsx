@@ -26,7 +26,7 @@ const Card = observer(({ session }: Props) => {
             )}
         </Link>
       </div>
-      <div className="p-4 header-2 pb-0">
+      <div className="p-4 header-3 pb-0">
         <h2>
           <Link className="link" to={`/sessions/${session.id}/review`}>
             {session.name}

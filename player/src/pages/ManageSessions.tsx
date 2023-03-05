@@ -5,7 +5,7 @@ import Import from "components/sessions/Import";
 export default function ManageSessions() {
   return (
     <div className="p-4">
-      <h1 className="header-1">Manage Sessions</h1>
+      <h1 className="header-1">Your Sessions</h1>
       <div className="my-4">
         <List />
       </div>
