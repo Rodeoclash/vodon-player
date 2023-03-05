@@ -4,13 +4,15 @@ import Import from "components/sessions/Import";
 
 export default function ManageSessions() {
   return (
-    <>
+    <div className="p-4">
       <h1 className="header-1">Manage Sessions</h1>
-      <List />
+      <div className="my-4">
+        <List />
+      </div>
       <div className="mt-4 flex items-center gap-4">
         <Import />
         <Create />
       </div>
-    </>
+    </div>
   );
 }
