@@ -172,7 +172,6 @@ const handleAddFromFileHandle = async ({ data }) => {
 const handleRemoveFile = async ({ data }) => {
   const parts = data.location.split("/");
   const fileName = parts[parts.length - 1];
-
   const destinationFolders = await upsertDestinationFolders(data.location);
 
   postMessage({

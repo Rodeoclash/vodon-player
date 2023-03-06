@@ -1,3 +1,4 @@
+import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
 
@@ -11,19 +12,52 @@ type Props = {
 };
 
 const Card = observer(({ session }: Props) => {
+  const [heroImageIndex, setHeroImageIndex] = React.useState<number>(0);
+  const [active, setActive] = React.useState<boolean>(false);
   const createdAtDate = new Date(session.createdAt);
 
+  const handleMouseEnter = () => {
+    console.log("true");
+    setActive(true);
+  };
+
+  const handleMouseLeave = () => {
+    setActive(false);
+    setHeroImageIndex(0);
+  };
+
+  React.useEffect(() => {
+    if (active === false) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setHeroImageIndex(
+        heroImageIndex === session.videos.length - 1 ? 0 : heroImageIndex + 1
+      );
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [active, session, heroImageIndex]);
+
+  const video = session.videos[heroImageIndex];
+
   return (
-    <div className="flex flex-col bg-zinc-800">
+    <div
+      className="flex flex-col bg-zinc-800"
+      onMouseEnter={() => handleMouseEnter()}
+      onMouseLeave={() => handleMouseLeave()}
+    >
       <div>
         <Link className="link" to={`/sessions/${session.id}/review`}>
-          {session.videos[0] !== undefined &&
-            session.videos[0].previewImageUrl !== null && (
-              <img
-                src={session.videos[0].previewImageUrl}
-                className="w-full h-full object-contain"
-              />
-            )}
+          {video !== undefined && video.previewImageUrl !== null && (
+            <img
+              src={video.previewImageUrl}
+              className="w-full h-full object-contain"
+            />
+          )}
         </Link>
       </div>
       <div className="p-4 header-3 pb-0">
