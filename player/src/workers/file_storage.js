@@ -16,7 +16,7 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
  * Takes a path string and recursively creates the folders for it.
  * @param {string} location Path of where we're going to create the folders
  */
-const createDestinationFolders = async (location) => {
+const upsertDestinationFolders = async (location) => {
   const folderNames = location.split("/");
   let acc = [];
 
@@ -61,7 +61,7 @@ const createDestinationFileHandle = async (location) => {
   const parts = location.split("/");
   const fileName = parts[parts.length - 1];
 
-  const destinationFolders = await createDestinationFolders(location);
+  const destinationFolders = await upsertDestinationFolders(location);
 
   return await destinationFolders[destinationFolders.length - 1].getFileHandle(
     fileName,
@@ -170,17 +170,17 @@ const handleAddFromFileHandle = async ({ data }) => {
  * Handles removing a file from the local OPFS storage
  */
 const handleRemoveFile = async ({ data }) => {
-  // Create a directory under the session id for the file to be copied to
-  const parentDirectory = await rootDirectory.getDirectoryHandle(
-    data.location.folderName
-  );
+  const parts = data.location.split("/");
+  const fileName = parts[parts.length - 1];
+
+  const destinationFolders = await upsertDestinationFolders(data.location);
 
   postMessage({
     kind: "REMOVE_FILE_START",
     meta: data.meta,
   });
 
-  await parentDirectory.removeEntry(data.location.fileName);
+  await destinationFolders[destinationFolders.length - 1].removeEntry(fileName);
 
   postMessage({
     kind: "REMOVE_FILE_COMPLETE",
