@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { RootStoreContext } from "services/models/root";
 import changelog from "../../CHANGELOG.md?raw";
 
+import ReactMarkdown from "react-markdown";
 import Modal from "components/ui/Modal";
 import ModalHeader from "components/ui/ModalHeader";
 import ModalBody from "components/ui/ModalBody";
@@ -29,7 +30,9 @@ const Changelog = observer(() => {
         <h2 className="header-2">Latest changes</h2>
       </ModalHeader>
       <ModalBody>
-        <div className="whitespace-pre-wrap max-w-prose">{changelog}</div>
+        <div className="max-w-prose prose prose-invert">
+          <ReactMarkdown>{changelog}</ReactMarkdown>
+        </div>
       </ModalBody>
       <ModalControls>
         <div className="flex items-center justify-end gap-4">
