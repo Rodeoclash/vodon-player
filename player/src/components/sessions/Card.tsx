@@ -3,6 +3,8 @@ import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
 
 import { Link } from "react-router-dom";
+import { TbEye, TbBookmark } from "react-icons/tb";
+
 import TimeAgo from "components/ui/TimeAgo";
 import Edit from "components/sessions/Edit";
 import Delete from "components/sessions/Delete";
@@ -17,8 +19,8 @@ const Card = observer(({ session }: Props) => {
   const createdAtDate = new Date(session.createdAt);
 
   const handleMouseEnter = () => {
-    console.log("true");
     setActive(true);
+    setHeroImageIndex(1);
   };
 
   const handleMouseLeave = () => {
@@ -35,7 +37,7 @@ const Card = observer(({ session }: Props) => {
       setHeroImageIndex(
         heroImageIndex === session.videos.length - 1 ? 0 : heroImageIndex + 1
       );
-    }, 500);
+    }, 750);
 
     return () => {
       clearInterval(interval);
@@ -45,12 +47,11 @@ const Card = observer(({ session }: Props) => {
   const video = session.videos[heroImageIndex];
 
   return (
-    <div
-      className="flex flex-col bg-zinc-800"
-      onMouseEnter={() => handleMouseEnter()}
-      onMouseLeave={() => handleMouseLeave()}
-    >
-      <div>
+    <div className="flex flex-col bg-zinc-800">
+      <div
+        onMouseEnter={() => handleMouseEnter()}
+        onMouseLeave={() => handleMouseLeave()}
+      >
         <Link className="link" to={`/sessions/${session.id}/review`}>
           {video !== undefined && video.previewImageUrl !== null && (
             <img
@@ -60,12 +61,22 @@ const Card = observer(({ session }: Props) => {
           )}
         </Link>
       </div>
-      <div className="p-4 header-3 pb-0">
-        <h2>
+      <div className="p-4 header-3 border-b border-zinc-600 flex items-center">
+        <h2 className="flex-grow">
           <Link className="link" to={`/sessions/${session.id}/review`}>
             {session.name}
           </Link>
         </h2>
+        <div className="flex items-center gap-4 text-white/70">
+          <div className="flex items-center gap-1">
+            <TbEye size={24} />
+            {session.videos.length}
+          </div>
+          <div className="flex items-center gap-1">
+            <TbBookmark size={24} />
+            {session.bookmarks.length}
+          </div>
+        </div>
       </div>
       <div className="p-4 flex items-stretch">
         <div className="flex-grow">
