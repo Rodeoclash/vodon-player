@@ -10,6 +10,7 @@ import {
   types,
 } from "mobx-keystone";
 import { liveQuery } from "dexie";
+import { safeFileName } from "services/opfs";
 
 import { buildElement as buildSetupElement } from "services/videos/setup_videos";
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
@@ -301,28 +302,27 @@ export default class Video extends Model({
   }
 
   /**
-   * The path of where this file is stored (OPFS + cloud)
+   * Base storage of all files related to this video
    */
   @computed
-  get storageDirectory() {
-    return `${this.session.id}`;
+  get storageBasePath() {
+    return `${safeFileName(this.session.id)}/${safeFileName(this.id)}`;
   }
 
   /**
-   * The filename of this video
+   * Path for the video storage
    */
   @computed
-  get storageFilename() {
-    return `${this.id}`;
+  get videoFilePath() {
+    return `${this.storageBasePath}/${this.videoFileName}`;
   }
 
   /**
-   * The filename of the frame taken from the timecode that the user used to
-   * sync the video.
+   * Path for the syncFrame storage
    */
   @computed
-  get storageFilenameSyncFrame() {
-    return `${this.storageFilename}_setupFrame`;
+  get syncFramePath() {
+    return `${this.storageBasePath}/syncFrame.png`;
   }
 
   /**

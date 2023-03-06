@@ -74,35 +74,6 @@ export const createLocalVideoInSession = async (
   return video;
 };
 
-export const requestLocalFileHandlePermission = async (
-  video: Video
-): Promise<Video> => {
-  const fileHandleRecord = await fileHandles
-    .table("localVideoFileHandles")
-    .get({
-      id: video.id,
-    });
-
-  if (fileHandleRecord === undefined) {
-    throw new MissingLocalFileHandle(
-      "Attempted to request permissions on videos file handle but it was not present"
-    );
-  }
-
-  const fileHandle = fileHandleRecord.fileHandle;
-
-  await fileHandle.requestPermission({
-    mode: "read",
-  });
-
-  await fileHandles.table("localVideoFileHandles").put({
-    id: video.id,
-    fileHandle,
-  });
-
-  return video;
-};
-
 /**
  * Helper function for removing videos. Will first remove all the assets that
  * are related to the video then will remove the video itself.
@@ -151,6 +122,6 @@ export const screenshot = (video: Video): Promise<Blob> => {
       }
 
       resolve(blob);
-    });
+    }, "image/png");
   });
 };

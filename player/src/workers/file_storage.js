@@ -12,14 +12,61 @@ navigator.storage.getDirectory().then((fetchedRootDirectory) => {
   rootDirectory = fetchedRootDirectory;
 });
 
-const createDestination = async (folderName, fileName) => {
-  // Create a directory under the session id for the file to be copied to
-  const parentDirectory = await rootDirectory.getDirectoryHandle(folderName, {
-    create: true,
-  });
+/**
+ * Takes a path string and recursively creates the folders for it.
+ * @param {string} location Path of where we're going to create the folders
+ */
+const createDestinationFolders = async (location) => {
+  const folderNames = location.split("/");
+  let acc = [];
 
-  // Get a handle to the destination of where the file will be copied to
-  return await parentDirectory.getFileHandle(fileName, { create: true });
+  // Loop over all the parts of the path that aren't the filename
+  for (const [index, folderName] of folderNames
+    .slice(0, folderNames.length - 1)
+    .entries()) {
+    // When we haven't created any of the path yet
+    if (acc.length === 0) {
+      // Create a directory under the root
+      const folderHandle = await rootDirectory.getDirectoryHandle(folderName, {
+        create: true,
+      });
+
+      // Push as the first value of acc
+      acc.push(folderHandle);
+    } else {
+      // Get the parent directory (i.e. the last directory created)
+      const parentDirectory = acc[index - 1];
+
+      // Create a directory under the parent
+      const folderHandle = await parentDirectory.getDirectoryHandle(
+        folderName,
+        {
+          create: true,
+        }
+      );
+
+      acc.push(folderHandle);
+    }
+  }
+
+  return acc;
+};
+
+/**
+ * Takes a path string and ensures we can write a file at the end of it.
+ * @param {string} location Path of where we're going to create the file
+ * @returns
+ */
+const createDestinationFileHandle = async (location) => {
+  const parts = location.split("/");
+  const fileName = parts[parts.length - 1];
+
+  const destinationFolders = await createDestinationFolders(location);
+
+  return await destinationFolders[destinationFolders.length - 1].getFileHandle(
+    fileName,
+    { create: true }
+  );
 };
 
 const handleAddFromBlob = async ({ data }) => {
@@ -32,9 +79,8 @@ const handleAddFromBlob = async ({ data }) => {
   });
 
   // Get a handle to the destination of where the file will be copied to
-  const destinationFileHandle = await createDestination(
-    data.location.folderName,
-    data.location.fileName
+  const destinationFileHandle = await createDestinationFileHandle(
+    data.location
   );
 
   // Create a writable stream for the destination file
@@ -68,9 +114,8 @@ const handleAddFromFileHandle = async ({ data }) => {
   });
 
   // Get a handle to the destination of where the file will be copied to
-  const destinationFileHandle = await createDestination(
-    data.location.folderName,
-    data.location.fileName
+  const destinationFileHandle = await createDestinationFileHandle(
+    data.location
   );
 
   // Get a reference to the file that's being copied

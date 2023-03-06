@@ -186,12 +186,11 @@ worker.onmessage = async ({ data }) => {
  * of videos).
  */
 export function addFromBlob(
-  folderName: string,
-  fileName: string,
+  location: string,
   blob: Blob,
   options: AddFromBlobOperationOptions
 ) {
-  consola.info(`Storing file from blob to: ${folderName}/${fileName}`);
+  consola.info(`Storing file from blob to: ${location}`);
 
   const id = uuidv4();
 
@@ -200,10 +199,7 @@ export function addFromBlob(
   worker.postMessage({
     kind: SendMessageKinds.ADD_FROM_BLOB,
     blob,
-    location: {
-      folderName,
-      fileName,
-    },
+    location,
     meta: {
       id,
     },
@@ -214,12 +210,11 @@ export function addFromBlob(
  * Adds a file to the storage system from a file handle source.
  */
 export function addFromFileHandle(
-  folderName: string,
-  fileName: string,
+  location: string,
   fileHandle: FileSystemFileHandle,
   options: AddFromFileHandleOperationOptions
 ) {
-  consola.info(`Storing file from fileHandle to: ${folderName}/${fileName}`);
+  consola.info(`Storing file from fileHandle to: ${location}`);
 
   const id = uuidv4();
 
@@ -228,10 +223,7 @@ export function addFromFileHandle(
   worker.postMessage({
     kind: SendMessageKinds.ADD_FROM_FILE_HANDLE,
     fileHandle,
-    location: {
-      folderName,
-      fileName,
-    },
+    location,
     meta: {
       id,
     },
@@ -242,8 +234,7 @@ export function addFromFileHandle(
  * Removes a file from storage.
  */
 export function remove(
-  folderName: string,
-  fileName: string,
+  location: string,
   options: AddFromFileHandleOperationOptions
 ) {
   const id = uuidv4();
@@ -252,12 +243,13 @@ export function remove(
 
   worker.postMessage({
     kind: SendMessageKinds.REMOVE_FILE,
-    location: {
-      folderName,
-      fileName,
-    },
+    location,
     meta: {
       id,
     },
   });
+}
+
+export function safeFileName(name: string) {
+  return name.replace(/[^\p{L}\d]/gu, "");
 }

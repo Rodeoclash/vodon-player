@@ -14,7 +14,7 @@ export const storeSetupVideoSyncFrame = async (
   frame: Blob
 ): Promise<FileSystemFileHandle> => {
   return new Promise((resolve, reject) => {
-    addFromBlob(video.storageDirectory, video.storageFilenameSyncFrame, frame, {
+    addFromBlob(video.syncFramePath, frame, {
       onComplete: async (event) => {
         resolve(event.fileHandle);
       },
@@ -41,26 +41,21 @@ export const storeVideoFile = async (
 
   // Add to the OPFS storage
   return new Promise((resolve, reject) => {
-    addFromFileHandle(
-      video.storageDirectory,
-      video.storageFilename,
-      fileHandle,
-      {
-        onStart: (event) => {
-          consola.info("Starting copy of video file handle into OPFS");
-          video.setCopyToStorageProgress(event.progress);
-        },
-        onProgress: (event) => {
-          consola.info(`Video copy into OPFS progress: ${event.progress}`);
-          video.setCopyToStorageProgress(event.progress);
-        },
-        onComplete: async (event) => {
-          consola.info("Completed copy of video file handle into OPFS");
-          video.setCopyToStorageProgress(event.progress);
-          resolve(event.fileHandle);
-        },
-      }
-    );
+    addFromFileHandle(video.videoFilePath, fileHandle, {
+      onStart: (event) => {
+        consola.info("Starting copy of video file handle into OPFS");
+        video.setCopyToStorageProgress(event.progress);
+      },
+      onProgress: (event) => {
+        consola.info(`Video copy into OPFS progress: ${event.progress}`);
+        video.setCopyToStorageProgress(event.progress);
+      },
+      onComplete: async (event) => {
+        consola.info("Completed copy of video file handle into OPFS");
+        video.setCopyToStorageProgress(event.progress);
+        resolve(event.fileHandle);
+      },
+    });
   });
 };
 
@@ -71,14 +66,10 @@ export const storeVideoFile = async (
  * @param video The video to remove
  */
 export const removeVideoFlie = async (video: Video): Promise<Video> => {
-  // Remove from OPFS
   return new Promise((resolve, reject) => {
-    opfsRemove(video.storageDirectory, video.storageFilename, {
+    opfsRemove(video.videoFilePath, {
       onComplete: async () => {
         consola.info(`Completed removing video file from OPFS `);
-
-        // Remove local file handle (if it exists)
-        await fileHandles.table("localVideoFileHandles").delete(video.id);
 
         // Remove storage file handle (if it exists)
         await fileHandles.table("storageVideoFileHandles").delete(video.id);
