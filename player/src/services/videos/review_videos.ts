@@ -30,6 +30,7 @@ export const buildElement = async (
 
   el.addEventListener("seeked", async () => {
     video.setReviewVideoSeeking(false);
+    video.session.deactivateBookmarks();
     video.session.seeBookmarksBefore(el.currentTime - VIDEO_FUDGE_FACTOR);
     video.session.unseeBookmarksAfter(el.currentTime + VIDEO_FUDGE_FACTOR);
   });
