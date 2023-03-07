@@ -16,7 +16,7 @@ import bus from "services/bus";
 import BookmarkPage from "./bookmark_page";
 import Session from "./session";
 import { bookmarkPageRef } from "./references";
-import { createBookmarkPage } from "services/bookmark_pages";
+import { create } from "services/bookmark_pages";
 import { SessionInInvalidState } from "services/errors";
 
 @model("VodonPlayer/Bookmark")
@@ -24,7 +24,6 @@ export default class Bookmark extends Model({
   id: idProp,
   createdAt: tProp(types.number, Date.now()),
   active: tProp(types.boolean, false).withSetter(),
-  timestamp: tProp(types.number),
   editingInProgress: tProp(types.boolean, false).withSetter(),
   selectedBookmarkPageRef: prop<Ref<BookmarkPage>>(),
   bookmarkPages: tProp(
@@ -93,7 +92,7 @@ export default class Bookmark extends Model({
       );
     }
 
-    const bookmarkPage = createBookmarkPage(this.session.selectedVideo);
+    const bookmarkPage = create(this.session.selectedVideo);
     this.bookmarkPages.push(bookmarkPage);
     this.selectBookmarkPage(bookmarkPage);
     this.setEditingInProgress(true);
@@ -112,6 +111,14 @@ export default class Bookmark extends Model({
         return innerBookmarkPage.id !== bookmarkPage.id;
       }
     ));
+  }
+
+  /**
+   * Timestamps of bookmarks always related to this first page that's in them.
+   */
+  @computed
+  get timestamp() {
+    return this.bookmarkPages[0].timestamp;
   }
 
   @computed
@@ -139,5 +146,10 @@ export default class Bookmark extends Model({
   @computed
   get selectedBookmarkPage() {
     return this.selectedBookmarkPageRef.current;
+  }
+
+  @computed
+  get hasBeenSeen() {
+    return this.session.hasSeenBookmark(this);
   }
 }

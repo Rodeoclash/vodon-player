@@ -1,8 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { secondsToHms } from "services/time";
-import useVideoControls from "services/hooks/useVideoControls";
-import bus from "services/bus";
 import Bookmark from "services/models/bookmark";
+import { activate } from "services/bookmark_pages";
 
 import Pagination from "./Pagination";
 import AddPage from "./AddPage";
@@ -19,27 +18,7 @@ const Header = observer(({ bookmark }: Props) => {
    */
   const handleClickTimecode = () => {
     const bookmarkPage = bookmark.bookmarkPages[0];
-
-    if (
-      bookmark.editingInProgress === true ||
-      bookmarkPage.video.reviewVideoEl === null
-    ) {
-      return;
-    }
-
-    // The time we're going to be going to
-    const newTime = bookmarkPage.videoTimestamp;
-
-    // Set the video attached to the bookmark page to be active in the display
-    bookmark.session.selectVideo(bookmarkPage.video);
-
-    // Set the time of the video to match what's stored on the page
-    bookmarkPage.video.reviewVideoEl.currentTime = newTime;
-
-    // Ensure follower videos are at the correct time
-    bus.emit("video.gotoTime", bookmarkPage.video, newTime);
-
-    bookmark.selectBookmarkPage(bookmarkPage);
+    activate(bookmarkPage, true);
   };
 
   return (

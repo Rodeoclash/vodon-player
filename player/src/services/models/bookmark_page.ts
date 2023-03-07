@@ -90,6 +90,17 @@ export default class BookmarkPage extends Model({
     return this.video.session;
   }
 
+  /**
+   * The "session timestamp" (i.e. global time) of where this bookmark page is.
+   */
+  @computed
+  get timestamp() {
+    if (this.videoRef.isValid === false) {
+      return null;
+    }
+    return this.videoTimestamp + this.video.beginsAt;
+  }
+
   @computed
   get active() {
     return this.bookmark.selectedBookmarkPage.id === this.id;

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
-import bus from "services/bus";
+import { activate } from "services/bookmark_pages";
 import Bookmark from "services/models/bookmark";
 import BookmarkPage from "services/models/bookmark_page";
 
@@ -10,21 +10,7 @@ type Props = {
 
 const Pagination = observer(({ bookmark }: Props) => {
   const handleClickPageNumber = (bookmarkPage: BookmarkPage) => {
-    if (
-      bookmark.editingInProgress === true ||
-      bookmarkPage.video.reviewVideoEl === null
-    ) {
-      return;
-    }
-
-    // The time we're going to be going to
-    const newTime = bookmarkPage.videoTimestamp;
-
-    // Set the video attached to the bookmark page to be active in the display
-    bookmark.session.selectVideo(bookmarkPage.video);
-
-    // Switch the display of the bookmark
-    bookmark.selectBookmarkPage(bookmarkPage);
+    activate(bookmarkPage, false);
   };
 
   const renderedPages = bookmark.sortedBookmarkPages.map(

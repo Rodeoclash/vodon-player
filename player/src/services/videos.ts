@@ -1,6 +1,5 @@
 import { frozen } from "mobx-keystone";
 
-import { MissingLocalFileHandle } from "services/errors";
 import fileHandles from "services/file_handles";
 import { storeVideoFile, removeVideoFlie } from "services/videos/assets";
 
@@ -14,6 +13,10 @@ import { InvalidVideo } from "services/errors";
 import Session from "services/models/session";
 import Video from "services/models/video";
 import { ResultObject } from "mediainfo.js/dist/types";
+
+// Browser video is inaccurate on seeking, we accomodate an inaccuracy of the
+// following amount when dealing with seeking.
+export const VIDEO_FUDGE_FACTOR = 0.1;
 
 export const createRemoteVideoInSession = async (
   session: Session,

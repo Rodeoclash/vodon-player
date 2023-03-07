@@ -80,9 +80,6 @@ export default class Video extends Model({
 
   // Volume of the video
   volume: tProp(types.number, 0.5).withSetter(),
-
-  // Seen bookmark ids (currently deprecated)
-  seenBookmarkIds: tProp(types.array(types.string), []).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
   reviewVideoEl: HTMLVideoElement | null = null;
@@ -173,20 +170,6 @@ export default class Video extends Model({
   @modelAction
   delete() {
     return this.session.removeVideo(this);
-  }
-
-  @modelAction
-  addSeenBookmarkId(id: string) {
-    this.seenBookmarkIds.push(id);
-  }
-
-  @modelAction
-  resetSeenBookmarkIdsUntil(time: number) {
-    /*
-    this.bookmarks = this.bookmarks.filter((innerBookmark) => {
-      return innerBookmark.id !== bookmark.id;
-    });
-    */
   }
 
   /**
@@ -336,9 +319,5 @@ export default class Video extends Model({
     }
 
     return `video.${this.mimeExtension}`;
-  }
-
-  seenBookmark(id: string) {
-    return this.seenBookmarkIds.includes(id);
   }
 }

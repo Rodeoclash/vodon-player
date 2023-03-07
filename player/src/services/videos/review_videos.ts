@@ -1,4 +1,6 @@
 import Video from "services/models/video";
+import { activate } from "services/bookmark_pages";
+import { VIDEO_FUDGE_FACTOR } from "services/videos";
 
 export const buildElement = async (
   video: Video,
@@ -15,6 +17,7 @@ export const buildElement = async (
 
   el.addEventListener("play", async () => {
     video.setReviewVideoPlaying(true);
+    video.session.deactivateBookmarks();
   });
 
   el.addEventListener("pause", async () => {
@@ -27,6 +30,8 @@ export const buildElement = async (
 
   el.addEventListener("seeked", async () => {
     video.setReviewVideoSeeking(false);
+    video.session.seeBookmarksBefore(el.currentTime - VIDEO_FUDGE_FACTOR);
+    video.session.unseeBookmarksAfter(el.currentTime + VIDEO_FUDGE_FACTOR);
   });
 
   // Fired every time the frame in the video changes, used to automatically
@@ -36,6 +41,8 @@ export const buildElement = async (
     now: number,
     metadata: VideoFrameCallbackMetadata
   ) => {
+    const session = video.session;
+
     video.setCurrentTime(metadata.mediaTime);
 
     // We only want to do bookmark checks using a single video so if we're not
@@ -45,21 +52,18 @@ export const buildElement = async (
     // iterate through all bookmarks and pages to determine which bookmarks
     // should be marked as active. Marking a bookmark as active triggers
     // watchers on that attribute that pause the video.
-    video.session.bookmarks.forEach((bookmark) => {
+    session.bookmarks.forEach((bookmark) => {
       const bookmarkPage = bookmark.bookmarkPages[0];
 
       if (bookmarkPage.video.id === video.id) {
         if (
-          bookmarkPage.videoTimestamp > metadata.mediaTime - 0.1 &&
-          bookmarkPage.videoTimestamp < metadata.mediaTime + 0.1
+          bookmarkPage.videoTimestamp <= metadata.mediaTime &&
+          session.hasSeenBookmark(bookmark) === false
         ) {
-          bookmark.setActive(true);
-        } else {
-          bookmark.setActive(false);
+          activate(bookmarkPage, false);
         }
       }
     });
-    //}
 
     el.requestVideoFrameCallback(handleVideoFrame);
   };
