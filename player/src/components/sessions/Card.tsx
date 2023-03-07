@@ -17,13 +17,22 @@ const Card = observer(({ session }: Props) => {
   const [heroImageIndex, setHeroImageIndex] = React.useState<number>(0);
   const [active, setActive] = React.useState<boolean>(false);
   const createdAtDate = new Date(session.createdAt);
+  const hasAdditionalImages = session.videos.length > 1;
 
   const handleMouseEnter = () => {
+    if (hasAdditionalImages === false) {
+      return;
+    }
+
     setActive(true);
     setHeroImageIndex(1);
   };
 
   const handleMouseLeave = () => {
+    if (hasAdditionalImages === false) {
+      return;
+    }
+
     setActive(false);
     setHeroImageIndex(0);
   };
