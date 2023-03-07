@@ -12,6 +12,7 @@ import {
   prop,
   Ref,
   getRoot,
+  objectMap,
 } from "mobx-keystone";
 
 import { RecordNotFound } from "services/errors";
@@ -21,6 +22,7 @@ import Bookmark from "./bookmark";
 
 import { videoRef } from "./references";
 import { FormikValues } from "formik";
+import { VIDEO_FUDGE_FACTOR } from "services/videos";
 
 type UpdateValues = {
   name: string;
@@ -39,6 +41,7 @@ export default class Session extends Model({
   showBookmarksPanel: tProp(types.boolean, true),
   showReviewVideoPanel: tProp(types.boolean, true),
   videos: tProp(types.array(types.model<Video>(() => Video)), () => []),
+  seenBookmarkIds: prop(() => objectMap<boolean>()),
 }) {
   @modelAction
   update(values: FormikValues) {
@@ -121,6 +124,61 @@ export default class Session extends Model({
     this.showBookmarksPanel = !this.showBookmarksPanel;
   }
 
+  @modelAction
+  deactivateBookmarks() {
+    this.bookmarks.forEach((bookmark) => {
+      bookmark.setActive(false);
+    });
+  }
+
+  /**
+   * Push a specific bookmark onto the seen list.
+   * @param bookmark The bookmark that was seen
+   */
+  @modelAction
+  addToSeenBookmarkIds(bookmark: Bookmark) {
+    consola.info(`Adding bookmark to seen bookmarks: ${bookmark.timestamp}`);
+    this.seenBookmarkIds.set(bookmark.id, true);
+  }
+
+  /**
+   * Bookmarks after this time will be removed from the seen bookmark tracking.
+   */
+  @modelAction
+  unseeBookmarksAfter(time: number) {
+    consola.info(`Unseeing bookmarks after: ${time}`);
+
+    this.seenBookmarkIds.forEach((value, id) => {
+      const bookmark = this.getBookmarkById(id);
+      const hasSeen =
+        this.currentTime === null ||
+        bookmark === undefined ||
+        bookmark.timestamp === null ||
+        bookmark.timestamp > time;
+
+      this.seenBookmarkIds.set(id, !hasSeen);
+    });
+  }
+
+  /**
+   * Bookmarks before this time will be added to the bookmark seen tracking.
+   */
+  @modelAction
+  seeBookmarksBefore(time: number) {
+    consola.info(`Seeing bookmarks before: ${time}`);
+
+    this.seenBookmarkIds.forEach((value, id) => {
+      const bookmark = this.getBookmarkById(id);
+      const hasSeen =
+        this.currentTime === null ||
+        bookmark === undefined ||
+        bookmark.timestamp === null ||
+        bookmark.timestamp < time;
+
+      this.seenBookmarkIds.set(id, hasSeen);
+    });
+  }
+
   @computed
   get root() {
     return getRoot(this);
@@ -188,7 +246,7 @@ export default class Session extends Model({
   @computed
   get sortedBookmarks() {
     return [...this.bookmarks].sort((a, b) => {
-      return a.timestamp - b.timestamp;
+      return (a.timestamp || 0) - (b.timestamp || 0);
     });
   }
 
@@ -242,15 +300,30 @@ export default class Session extends Model({
   @computed
   get bookmarkPresent() {
     return this.bookmarks.some((bookmark) => {
-      if (this.currentTime === null) {
+      if (this.currentTime === null || bookmark.timestamp === null) {
         return;
       }
 
-      return Math.round(bookmark.timestamp) === Math.round(this.currentTime);
+      return (
+        bookmark.timestamp > this.currentTime - VIDEO_FUDGE_FACTOR &&
+        bookmark.timestamp < this.currentTime + VIDEO_FUDGE_FACTOR
+      );
     });
   }
 
   getVideoById(id: string) {
     return this.videos.find((video) => video.id === id);
+  }
+
+  getBookmarkById(id: string) {
+    return this.bookmarks.find((bookmark) => bookmark.id === id);
+  }
+
+  /**
+   * Have we seen this bookmark id yet?
+   * @param bookmark
+   */
+  hasSeenBookmark(bookmark: Bookmark) {
+    return this.seenBookmarkIds.get(bookmark.id) === true;
   }
 }

@@ -11,7 +11,7 @@ type Props = {
 const Container = observer(({ children, bookmark }: Props) => {
   const classes = classNames({
     "border-b border-stone-700": true,
-    "bg-stone-800": bookmark.active,
+    "opacity-60": bookmark.active === false,
   });
 
   return (

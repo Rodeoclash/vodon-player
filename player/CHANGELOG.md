@@ -1,3 +1,7 @@
+### 08/03/2023
+
+- Overhauled the way bookmarks are stored to ensure we can have them closer together and that activation is consistent. This is the first part of a two step process to improve the bookmarking system and to allow a "print view" of sessions (and downloadable PDFs)
+
 ### 06/03/2023
 
 - Improved layout of session management page (from table to tiles).

@@ -3,7 +3,7 @@ import Video from "services/models/video";
 import { secondsToHms } from "services/time";
 import Bookmark from "services/models/bookmark";
 import { bookmarkPageRef } from "services/models/references";
-import { createBookmarkPage } from "services/bookmark_pages";
+import { create } from "services/bookmark_pages";
 import { SessionInInvalidState } from "services/errors";
 
 type Props = {
@@ -20,17 +20,17 @@ const AddBookmark = observer(({ video }: Props) => {
       );
     }
 
-    const bookmarkPage = createBookmarkPage(video);
+    const bookmarkPage = create(video);
 
     const bookmark = new Bookmark({
       bookmarkPages: [bookmarkPage],
-      timestamp: session.currentTime,
       selectedBookmarkPageRef: bookmarkPageRef(bookmarkPage),
       editingInProgress: true,
       active: true,
     });
 
     session.addBookmark(bookmark);
+    session.addToSeenBookmarkIds(bookmark);
   };
 
   if (video.session.bookmarkPresent === true) {
