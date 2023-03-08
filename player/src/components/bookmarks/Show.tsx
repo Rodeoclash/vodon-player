@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import Bookmark from "services/models/bookmark";
 import RichTextViewer from "components/ui/RichTextViewer";
+import { activate } from "services/bookmark_pages";
 
 type Props = {
   bookmark: Bookmark;
@@ -8,6 +9,7 @@ type Props = {
 
 const Show = observer(({ bookmark }: Props) => {
   const handleClick = () => {
+    activate(bookmark.selectedBookmarkPage, true);
     bookmark.setEditingInProgress(true);
   };
 

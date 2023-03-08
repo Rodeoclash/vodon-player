@@ -30,9 +30,26 @@ export const buildElement = async (
 
   el.addEventListener("seeked", async () => {
     video.setReviewVideoSeeking(false);
-    video.session.deactivateBookmarks();
+
+    // We only want to run post seek operations against the current video
+    // of the session.
+    if (video.session.isCurrentVideo(video) === false) {
+      return;
+    }
+
+    // Update our seen / not seen tracking
     video.session.seeBookmarksBefore(el.currentTime - VIDEO_FUDGE_FACTOR);
     video.session.unseeBookmarksAfter(el.currentTime + VIDEO_FUDGE_FACTOR);
+    video.session.deactivateBookmarks();
+
+    // Finally, reactivate any bookmarks that have been marked to reactivate
+    // after a seek operation.
+    video.session.bookmarks.forEach((bookmark) => {
+      if (bookmark.activateAfterNextSeek === true) {
+        bookmark.setActive(true);
+        bookmark.setActivateAfterNextSeek(false);
+      }
+    });
   });
 
   // Fired every time the frame in the video changes, used to automatically
@@ -48,23 +65,24 @@ export const buildElement = async (
 
     // We only want to do bookmark checks using a single video so if we're not
     // the selected video in the session, skip
-    //if (video.session.selectedVideo !== null && video.session.selectedVideo.id == video.id) {
+    if (session.isCurrentVideo(video) === true) {
+      // iterate through all bookmarks and pages to determine which bookmarks
+      // should be marked as active. Marking a bookmark as active triggers
+      // watchers on that attribute that pause the video.
+      session.bookmarks.forEach((bookmark) => {
+        // We only care about comparing the time on the first bookmark page
+        const bookmarkPage = bookmark.bookmarkPages[0];
 
-    // iterate through all bookmarks and pages to determine which bookmarks
-    // should be marked as active. Marking a bookmark as active triggers
-    // watchers on that attribute that pause the video.
-    session.bookmarks.forEach((bookmark) => {
-      const bookmarkPage = bookmark.bookmarkPages[0];
-
-      if (bookmarkPage.video.id === video.id) {
-        if (
-          bookmarkPage.videoTimestamp <= metadata.mediaTime &&
-          session.hasSeenBookmark(bookmark) === false
-        ) {
-          activate(bookmarkPage, false);
+        if (bookmarkPage.video.id === video.id) {
+          if (
+            bookmarkPage.videoTimestamp <= metadata.mediaTime &&
+            session.hasSeenBookmark(bookmark) === false
+          ) {
+            activate(bookmarkPage, false);
+          }
         }
-      }
-    });
+      });
+    }
 
     el.requestVideoFrameCallback(handleVideoFrame);
   };

@@ -36,19 +36,24 @@ export const activate = (bookmarkPage: BookmarkPage, updateTime: Boolean) => {
 
   // Set the time of the video to match what's stored on the page
   if (updateTime === true) {
+    bookmark.setActivateAfterNextSeek(true);
     video.reviewVideoEl.currentTime = newTime;
 
     // We need to wait until after the video has seeked to activate the
     // bookmark as we deactive *all* bookmarks in the seek operation.
+    /*
     const handleAfterSeek = () => {
       if (video.reviewVideoEl === null) {
         return;
       }
-      bookmark.setActive(true);
+
       video.reviewVideoEl.removeEventListener("seeked", handleAfterSeek);
+      console.log('=== setting active')
+      bookmark.setActive(true);
     };
 
     video.reviewVideoEl.addEventListener("seeked", handleAfterSeek);
+    */
   }
 
   // Ensure follower videos are at the correct time
@@ -58,6 +63,7 @@ export const activate = (bookmarkPage: BookmarkPage, updateTime: Boolean) => {
   bookmark.selectBookmarkPage(bookmarkPage);
 
   // Deactive all bookmarks
+  console.log("=== clearing");
   session.deactivateBookmarks();
 
   // Activate the bookmark that was clicked on

@@ -24,7 +24,7 @@ const Header = observer(({ bookmark }: Props) => {
   return (
     <header className="flex items-stretch border-b border-stone-700 h-10">
       <div
-        className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700"
+        className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700 select-none"
         onClick={() => handleClickTimecode()}
       >
         {secondsToHms(bookmark.timestamp)}

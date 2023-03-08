@@ -126,6 +126,7 @@ export default class Session extends Model({
 
   @modelAction
   deactivateBookmarks() {
+    consola.info(`Deactivate all bookmarks`);
     this.bookmarks.forEach((bookmark) => {
       bookmark.setActive(false);
     });
@@ -153,8 +154,8 @@ export default class Session extends Model({
       const hasSeen =
         this.currentTime === null ||
         bookmark === undefined ||
-        bookmark.timestamp === null ||
-        bookmark.timestamp > time;
+        bookmark.videoTimestamp === null ||
+        bookmark.videoTimestamp > time;
 
       this.seenBookmarkIds.set(id, !hasSeen);
     });
@@ -172,8 +173,8 @@ export default class Session extends Model({
       const hasSeen =
         this.currentTime === null ||
         bookmark === undefined ||
-        bookmark.timestamp === null ||
-        bookmark.timestamp < time;
+        bookmark.videoTimestamp === null ||
+        bookmark.videoTimestamp < time;
 
       this.seenBookmarkIds.set(id, hasSeen);
     });
@@ -325,5 +326,12 @@ export default class Session extends Model({
    */
   hasSeenBookmark(bookmark: Bookmark) {
     return this.seenBookmarkIds.get(bookmark.id) === true;
+  }
+
+  /**
+   * Is the given video the one that is currently selected in the session?
+   */
+  isCurrentVideo(video: Video) {
+    return this.selectedVideo?.id === video.id;
   }
 }

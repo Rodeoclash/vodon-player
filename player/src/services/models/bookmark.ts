@@ -23,7 +23,17 @@ import { SessionInInvalidState } from "services/errors";
 export default class Bookmark extends Model({
   id: idProp,
   createdAt: tProp(types.number, Date.now()),
+
+  // Is this bookmark currently active? (i.e. displaying highlighted in the
+  // sidebar and displaying drawing from the current page)
   active: tProp(types.boolean, false).withSetter(),
+
+  // Will trigger the bookmark to be active after the next seek. This is useful
+  // when we restore from being saved or want to activate the bookmark after
+  // clicking on its timecode
+  activateAfterNextSeek: tProp(types.boolean, false).withSetter(),
+
+  // Is this bookmark currently being edited?
   editingInProgress: tProp(types.boolean, false).withSetter(),
   selectedBookmarkPageRef: prop<Ref<BookmarkPage>>(),
   bookmarkPages: tProp(
@@ -42,7 +52,7 @@ export default class Bookmark extends Model({
             return;
           }
 
-          this.session.selectVideo(this.selectedBookmarkPage.video);
+          //this.session.selectVideo(this.selectedBookmarkPage.video);
           this.selectedBookmarkPage.video.reviewVideoEl.pause();
           bus.emit("video.pause", this.selectedBookmarkPage.video);
         }
@@ -51,6 +61,10 @@ export default class Bookmark extends Model({
         fireImmediately: true,
       }
     );
+
+    if (this.active === true) {
+      this.setActivateAfterNextSeek(true);
+    }
 
     return () => {
       reactionDisposer();
@@ -114,11 +128,19 @@ export default class Bookmark extends Model({
   }
 
   /**
-   * Timestamps of bookmarks always related to this first page that's in them.
+   * The session time of the bookmark page.
    */
   @computed
   get timestamp() {
     return this.bookmarkPages[0].timestamp;
+  }
+
+  /**
+   * The "real" time of bookmark page.
+   */
+  @computed
+  get videoTimestamp() {
+    return this.bookmarkPages[0].videoTimestamp;
   }
 
   @computed
