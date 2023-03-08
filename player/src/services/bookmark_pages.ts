@@ -32,38 +32,21 @@ export const activate = (bookmarkPage: BookmarkPage, updateTime: Boolean) => {
   const newTime = bookmarkPage.videoTimestamp;
 
   // Set the video attached to the bookmark page to be active in the display
-  session.selectVideo(bookmarkPage.video);
+  session.selectVideo(video);
 
   // Set the time of the video to match what's stored on the page
   if (updateTime === true) {
     bookmark.setActivateAfterNextSeek(true);
     video.reviewVideoEl.currentTime = newTime;
-
-    // We need to wait until after the video has seeked to activate the
-    // bookmark as we deactive *all* bookmarks in the seek operation.
-    /*
-    const handleAfterSeek = () => {
-      if (video.reviewVideoEl === null) {
-        return;
-      }
-
-      video.reviewVideoEl.removeEventListener("seeked", handleAfterSeek);
-      console.log('=== setting active')
-      bookmark.setActive(true);
-    };
-
-    video.reviewVideoEl.addEventListener("seeked", handleAfterSeek);
-    */
   }
 
   // Ensure follower videos are at the correct time
-  bus.emit("video.gotoTime", bookmarkPage.video, newTime);
+  bus.emit("video.gotoTime", video, newTime);
 
   // Select the first page in the bookmark set
   bookmark.selectBookmarkPage(bookmarkPage);
 
   // Deactive all bookmarks
-  console.log("=== clearing");
   session.deactivateBookmarks();
 
   // Activate the bookmark that was clicked on

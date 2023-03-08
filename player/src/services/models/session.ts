@@ -146,18 +146,19 @@ export default class Session extends Model({
    * Bookmarks after this time will be removed from the seen bookmark tracking.
    */
   @modelAction
-  unseeBookmarksAfter(time: number) {
-    consola.info(`Unseeing bookmarks after: ${time}`);
+  unseeBookmarksAfter(timestamp: number) {
+    consola.info(`Unseeing bookmarks after: ${timestamp}`);
 
-    this.seenBookmarkIds.forEach((value, id) => {
-      const bookmark = this.getBookmarkById(id);
-      const hasSeen =
+    this.sortedBookmarks.forEach((bookmark) => {
+      const bookmarkAhead =
         this.currentTime === null ||
         bookmark === undefined ||
-        bookmark.videoTimestamp === null ||
-        bookmark.videoTimestamp > time;
+        bookmark.timestamp === null ||
+        bookmark.timestamp > timestamp;
 
-      this.seenBookmarkIds.set(id, !hasSeen);
+      if (bookmarkAhead === true) {
+        this.seenBookmarkIds.set(bookmark.id, false);
+      }
     });
   }
 
@@ -165,18 +166,19 @@ export default class Session extends Model({
    * Bookmarks before this time will be added to the bookmark seen tracking.
    */
   @modelAction
-  seeBookmarksBefore(time: number) {
-    consola.info(`Seeing bookmarks before: ${time}`);
+  seeBookmarksBefore(timestamp: number) {
+    consola.info(`Seeing bookmarks before: ${timestamp}`);
 
-    this.seenBookmarkIds.forEach((value, id) => {
-      const bookmark = this.getBookmarkById(id);
-      const hasSeen =
+    this.sortedBookmarks.forEach((bookmark) => {
+      const bookmarkBehind =
         this.currentTime === null ||
         bookmark === undefined ||
-        bookmark.videoTimestamp === null ||
-        bookmark.videoTimestamp < time;
+        bookmark.timestamp === null ||
+        bookmark.timestamp < timestamp;
 
-      this.seenBookmarkIds.set(id, hasSeen);
+      if (bookmarkBehind === true) {
+        this.seenBookmarkIds.set(bookmark.id, true);
+      }
     });
   }
 
