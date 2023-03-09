@@ -1,10 +1,12 @@
 import BookmarkPage from "services/models/bookmark_page";
 import Video from "services/models/video";
+import VideoFrame from "services/models/video_frame";
 import { videoRef } from "services/models/references";
 import { InvalidVideo } from "./errors";
 import bus from "services/bus";
-import { storeFrame, removeFrame } from "services/bookmark_pages/assets";
+import { store as storeVideoFrame } from "services/video_frames/assets";
 import { screenshot } from "services/videos";
+import { remove as removeVideoFrame } from "services/video_frames";
 import fileHandles from "services/file_handles";
 import { frozen } from "mobx-keystone";
 import { blankDocument } from "./tiptap";
@@ -32,14 +34,6 @@ export const create = async (
     );
   }
 
-  // Create the bookmarkPage itself
-  const bookmarkPage = new BookmarkPage({
-    content: frozen(content || blankDocument),
-    drawing: frozen(null),
-    videoRef: videoRef(video),
-    videoTimestamp: video.currentTime + 0.01,
-  });
-
   // Take a screenshot of the current video frame of the review element
   const frame = await screenshot(
     video.reviewVideoEl,
@@ -47,8 +41,20 @@ export const create = async (
     video.height
   );
 
+  // Create the video frame that will hold the frame of the bookmark page.
+  const videoFrame = new VideoFrame({});
+
   // Store the frame against the bookmark page
-  await storeFrame(bookmarkPage, frame);
+  await storeVideoFrame(videoFrame, frame);
+
+  // Create the bookmarkPage itself
+  const bookmarkPage = new BookmarkPage({
+    content: frozen(content || blankDocument),
+    drawing: frozen(null),
+    videoRef: videoRef(video),
+    videoTimestamp: video.currentTime + 0.01,
+    videoFrame,
+  });
 
   return bookmarkPage;
 };
@@ -61,11 +67,12 @@ export const create = async (
  * @returns The deleted bookmarkPage
  */
 export const remove = async (bookmarkPage: BookmarkPage) => {
-  await removeFrame(bookmarkPage);
-  await fileHandles
-    .table("bookmarkPageFrameFileHandles")
-    .delete(bookmarkPage.id);
+  if (bookmarkPage.videoFrame !== null) {
+    await removeVideoFrame(bookmarkPage.videoFrame);
+  }
+
   bookmarkPage.delete();
+
   return bookmarkPage;
 };
 
