@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import classNames from "classnames";
+import { create as createBookmarkPage } from "services/bookmark_pages";
 
 import Bookmark from "services/models/bookmark";
 import Tooltip from "components/ui/Tooltip";
@@ -9,8 +10,20 @@ type Props = {
 };
 
 const AddPage = observer(({ bookmark }: Props) => {
-  const handleClick = () => {
-    bookmark.createBookmarkPage();
+  const handleClick = async () => {
+    if (bookmark.session.selectedVideo === null) {
+      return;
+    }
+
+    const bookmarkPage = await createBookmarkPage(
+      bookmark.session.selectedVideo,
+      bookmark.selectedBookmarkPage.content.data
+    );
+
+    bookmark.addBookmarkPage(bookmarkPage);
+    bookmark.selectBookmarkPage(bookmarkPage);
+    bookmark.setEditingInProgress(true);
+    bookmark.setActive(true);
   };
 
   const classes = classNames({

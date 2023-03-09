@@ -243,6 +243,16 @@ export default class Video extends Model({
     return findParent<Session>(this, (p) => p instanceof Session)!;
   }
 
+  /**
+   * All bookmark pages belonging to this video.
+   */
+  @computed
+  get bookmarkPages() {
+    return this.session.bookmarkPages.filter((bookmarkPage) => {
+      return bookmarkPage.video.id === this.id;
+    });
+  }
+
   @computed
   get frameRate() {
     return this.videoData.data.FrameRate;

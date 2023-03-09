@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useRouteLoaderData } from "react-router-dom";
 import bus from "services/bus";
-import { bindBus, unbindBus } from "services/session";
+import { bindBus, unbindBus } from "services/sessions";
 import consola from "consola";
 import { useHotkeys } from "react-hotkeys-hook";
 

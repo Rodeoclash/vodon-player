@@ -1,6 +1,16 @@
 import consola from "consola";
+import Session from "services/models/session";
 import Video from "services/models/video";
 import bus from "services/bus";
+import { remove as removeVideo } from "services/videos";
+
+export const remove = async (session: Session) => {
+  const results = session.videos.map((video) => {
+    return removeVideo(video);
+  });
+  await Promise.all(results);
+  session.delete();
+};
 
 const handlePlay = (originVideo: Video) => {
   originVideo.session.videos.forEach((video) => {

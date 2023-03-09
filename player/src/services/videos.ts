@@ -3,7 +3,7 @@ import { frozen } from "mobx-keystone";
 import fileHandles from "services/file_handles";
 import {
   storeVideoFile,
-  removeVideoFlie as removeVideoFile,
+  removeVideoFile as removeVideoFile,
 } from "services/videos/assets";
 
 import {
@@ -12,6 +12,7 @@ import {
 } from "./videos/mediainfo";
 
 import { InvalidVideo } from "services/errors";
+import { remove as removeBookmarkPage } from "services/bookmark_pages";
 
 import Session from "services/models/session";
 import Video from "services/models/video";
@@ -84,11 +85,13 @@ export const createLocalVideoInSession = async (
  * Helper function for removing videos. Will first remove all the assets that
  * are related to the video then will remove the video itself.
  *
- * TODO: This also needs to remove the bookmarkPage frames
- *
  * @param video The video to remove
  */
 export const remove = async (video: Video) => {
+  const results = video.bookmarkPages.map((bookmarkPage) => {
+    return removeBookmarkPage(bookmarkPage);
+  });
+  await Promise.all(results);
   await removeVideoFile(video);
   video.delete();
 };

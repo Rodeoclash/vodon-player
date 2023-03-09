@@ -81,6 +81,12 @@ export default class Bookmark extends Model({
   }
 
   @modelAction
+  addBookmarkPage(bookmarkPage: BookmarkPage) {
+    consola.info(`Adding bookmark page: ${bookmarkPage.id}`);
+    this.bookmarkPages.push(bookmarkPage);
+  }
+
+  @modelAction
   selectBookmarkPage(bookmarkPage: BookmarkPage) {
     consola.info(`Selecting bookmark page: ${bookmarkPage.id}`);
 
@@ -90,26 +96,6 @@ export default class Bookmark extends Model({
       );
 
     this.selectedBookmarkPageRef = bookmarkPageRef(bookmarkPage);
-  }
-
-  /**
-   * Creates a new bookmark page under this bookmark. Will automatically
-   * duplicate the contents of the currently selected bookmark then
-   * switch to the bookmark page.
-   */
-  @modelAction
-  createBookmarkPage() {
-    consola.info("Creating new blank bookmark page");
-    if (this.session.selectedVideo === null) {
-      throw new SessionInInvalidState(
-        "Tried to create bookmark page but session had no selected video"
-      );
-    }
-
-    const bookmarkPage = create(this.session.selectedVideo);
-    this.bookmarkPages.push(bookmarkPage);
-    this.selectBookmarkPage(bookmarkPage);
-    this.setEditingInProgress(true);
   }
 
   /**

@@ -64,7 +64,7 @@ export const storeVideoFile = async (
  *
  * @param video The video to remove
  */
-export const removeVideoFlie = async (video: Video): Promise<Video> => {
+export const removeVideoFile = async (video: Video): Promise<Video> => {
   return new Promise((resolve, reject) => {
     opfsRemove(video.videoFilePath, {
       onComplete: async () => {
