@@ -1,9 +1,7 @@
 import { InvalidVideo } from "services/errors";
 import { screenshot } from "services/videos";
-import {
-  remove as removeVideoFrame,
-  store as storeVideoFrame,
-} from "services/video_frames/assets";
+import { remove as removeVideoFrame } from "services/video_frames/assets";
+import { create as createVideoFrame } from "services/video_frames";
 import debounce from "lodash.debounce";
 
 import Video from "services/models/video";
@@ -23,10 +21,8 @@ const captureSetupVideoSyncFrame = async (video: Video) => {
 
   // Generate a new sync frame
   const frame = await screenshot(video.setupVideoEl, video.width, video.height);
-  const videoFrame = new VideoFrame({});
 
-  // Store it
-  await storeVideoFrame(videoFrame, frame);
+  const videoFrame = await createVideoFrame(frame);
 
   // Finally, tell the video that it exists by linking it.
   video.setVideoSyncFrame(videoFrame);

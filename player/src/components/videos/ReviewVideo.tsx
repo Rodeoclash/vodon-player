@@ -226,7 +226,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         hideOverlays === false &&
         (mouseActive === true || controlsHovered === true) && (
           <div
-            className="absolute left-0 top-0 bottom-0 z-20 flex justify-center items-center pointer-events-none"
+            className="absolute left-0 top-0 bottom-0 z-40 flex justify-center items-center pointer-events-none"
             onMouseEnter={() => handleControlsEnter()}
             onMouseLeave={() => handleControlsLeave()}
           >
