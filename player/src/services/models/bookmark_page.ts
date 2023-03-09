@@ -32,6 +32,8 @@ export default class BookmarkPage extends Model({
   videoRef: prop<Ref<Video>>(),
   videoTimestamp: tProp(types.number),
 }) {
+  frameImageUrl: string | null = null;
+
   onAttachedToRootStore() {
     // Start observing the video storage file handle...
     const frameFileHandleObservable = liveQuery(() =>
@@ -50,20 +52,7 @@ export default class BookmarkPage extends Model({
 
           const file = await result.fileHandle.getFile();
           const url = URL.createObjectURL(file);
-
-          console.log("url", url);
-
-          /*
-          const file = await result.fileHandle.getFile();
-          const url = URL.createObjectURL(file);
-
-          this.setupVideoEl = await buildSetupElement(this, url);
-          this.reviewVideoEl = await buildReviewElement(this, url);
-
-          // Mark that all setup videos have now been created, this controls
-          // further UI being created
-          this.setVideoElementsCreated(true);
-          */
+          this.frameImageUrl = url;
         },
         error: (error) => console.error(error),
       });

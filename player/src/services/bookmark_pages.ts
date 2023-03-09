@@ -26,6 +26,13 @@ export const create = async (
   video: Video,
   content?: JSONContent
 ): Promise<BookmarkPage> => {
+  if (video.reviewVideoEl === null) {
+    throw new InvalidVideo(
+      "Review video element was not present so could not take screenshot"
+    );
+  }
+
+  // Create the bookmarkPage itself
   const bookmarkPage = new BookmarkPage({
     content: frozen(content || blankDocument),
     drawing: frozen(null),
@@ -33,8 +40,12 @@ export const create = async (
     videoTimestamp: video.currentTime + 0.01,
   });
 
-  // Take a screenshot of the current video frame
-  const frame = await screenshot(video);
+  // Take a screenshot of the current video frame of the review element
+  const frame = await screenshot(
+    video.reviewVideoEl,
+    video.width,
+    video.height
+  );
 
   // Store the frame against the bookmark page
   await storeFrame(bookmarkPage, frame);

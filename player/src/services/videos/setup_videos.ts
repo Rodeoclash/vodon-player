@@ -1,9 +1,16 @@
+import { InvalidVideo } from "services/errors";
 import Video from "services/models/video";
 import { screenshot } from "services/videos";
 import { storeSetupVideoSyncFrame } from "./assets";
 
 const captureSetupVideoSyncFrame = async (video: Video) => {
-  const frame = await screenshot(video);
+  if (video.setupVideoEl === null) {
+    throw new InvalidVideo(
+      "Setup video element was not present so could not take screenshot"
+    );
+  }
+
+  const frame = await screenshot(video.setupVideoEl, video.width, video.height);
   await storeSetupVideoSyncFrame(video, frame);
 };
 

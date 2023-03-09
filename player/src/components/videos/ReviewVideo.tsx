@@ -104,9 +104,11 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
    * @param document
    */
   const handlePersistDrawing = (document: TDDocument) => {
-    if (selectedBookmarkPage) {
-      selectedBookmarkPage.setDrawing(document);
+    if (selectedBookmarkPage === undefined) {
+      return;
     }
+
+    selectedBookmarkPage.setDrawing(document);
   };
 
   // Mount the video when it is selected
@@ -149,7 +151,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
 
           return (
             <div style={dimensionsStyle} className="relative">
-              <div className="absolute inset-0 z-20">
+              <div className="absolute inset-0 z-30">
                 <Drawing
                   drawingId={selectedBookmarkPage?.id || "freeform"}
                   drawing={selectedBookmarkPage?.drawing.data || null}
@@ -158,6 +160,16 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
                   onPersist={(document) => handlePersistDrawing(document)}
                 />
               </div>
+
+              {selectedBookmarkPage !== undefined &&
+                selectedBookmarkPage.frameImageUrl !== null && (
+                  <div className="absolute inset-0 z-20 bg-zinc-700">
+                    <img
+                      className="w-full h-full"
+                      src={selectedBookmarkPage.frameImageUrl}
+                    />
+                  </div>
+                )}
 
               <div
                 className="absolute inset-0 z-10 reviewVideo"
@@ -176,7 +188,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
         (mouseActive === true || controlsHovered === true) &&
         video.frameLength !== null && (
           <div
-            className="absolute bottom-0 left-0 right-0 z-20 bg-zinc-900/80 p-4"
+            className="absolute bottom-0 left-0 right-0 z-40 bg-zinc-900/80 p-4"
             onMouseEnter={() => handleControlsEnter()}
             onMouseLeave={() => handleControlsLeave()}
           >
