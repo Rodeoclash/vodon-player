@@ -162,11 +162,12 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
               </div>
 
               {selectedBookmarkPage !== undefined &&
-                selectedBookmarkPage.frameImageUrl !== null && (
+                selectedBookmarkPage.videoFrame !== null &&
+                selectedBookmarkPage.videoFrame.url !== null && (
                   <div className="absolute inset-0 z-20 bg-zinc-700">
                     <img
                       className="w-full h-full"
-                      src={selectedBookmarkPage.frameImageUrl}
+                      src={selectedBookmarkPage.videoFrame.url}
                     />
                   </div>
                 )}
