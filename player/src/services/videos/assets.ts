@@ -2,7 +2,6 @@ import consola from "consola";
 import {
   addFromBlob,
   addFromFileHandle,
-  CompleteEvent,
   remove as opfsRemove,
 } from "services/opfs";
 import fileHandles from "services/file_handles";

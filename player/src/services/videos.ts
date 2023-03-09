@@ -1,7 +1,10 @@
 import { frozen } from "mobx-keystone";
 
 import fileHandles from "services/file_handles";
-import { storeVideoFile, removeVideoFlie } from "services/videos/assets";
+import {
+  storeVideoFile,
+  removeVideoFlie as removeVideoFile,
+} from "services/videos/assets";
 
 import {
   readMediaDataFromFile,
@@ -81,10 +84,12 @@ export const createLocalVideoInSession = async (
  * Helper function for removing videos. Will first remove all the assets that
  * are related to the video then will remove the video itself.
  *
+ * TODO: This also needs to remove the bookmarkPage frames
+ *
  * @param video The video to remove
  */
 export const remove = async (video: Video) => {
-  await removeVideoFlie(video);
+  await removeVideoFile(video);
   video.delete();
 };
 

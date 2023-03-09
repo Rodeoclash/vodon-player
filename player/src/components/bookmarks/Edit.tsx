@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import Bookmark from "services/models/bookmark";
 import RichTextEditor from "components/ui/RichTextEditor";
 import { JSONContent } from "@tiptap/react";
+import { remove } from "services/bookmark_pages";
 
 type Props = {
   bookmark: Bookmark;
@@ -16,7 +17,7 @@ const Edit = observer(({ bookmark }: Props) => {
 
   const handleClickDelete = () => {
     if (window.confirm("Are you sure you want to delete this bookmark page?")) {
-      selectedBookmarkPage.delete();
+      remove(selectedBookmarkPage);
     }
   };
 

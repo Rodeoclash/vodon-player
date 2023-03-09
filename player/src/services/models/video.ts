@@ -289,7 +289,7 @@ export default class Video extends Model({
    */
   @computed
   get storageBasePath() {
-    return `${safeFileName(this.session.id)}/${safeFileName(this.id)}`;
+    return `videos/${safeFileName(this.id)}`;
   }
 
   /**

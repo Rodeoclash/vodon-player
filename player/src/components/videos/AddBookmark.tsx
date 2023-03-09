@@ -1,41 +1,32 @@
+import * as React from "react";
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import { secondsToHms } from "services/time";
-import Bookmark from "services/models/bookmark";
-import { bookmarkPageRef } from "services/models/references";
-import { create } from "services/bookmark_pages";
-import { SessionInInvalidState } from "services/errors";
+import { create } from "services/bookmarks";
 
 type Props = {
   video: Video;
 };
 
 const AddBookmark = observer(({ video }: Props) => {
-  const handleClick = () => {
-    const session = video.session;
+  const [busy, setBusy] = React.useState<boolean>(false);
 
-    if (session.currentTime === null) {
-      throw new SessionInInvalidState(
-        "Cannot add bookmark with a session currentTime"
-      );
+  const handleClick = async () => {
+    if (busy === true) {
+      return;
     }
 
-    const bookmarkPage = create(video);
-
-    const bookmark = new Bookmark({
-      bookmarkPages: [bookmarkPage],
-      selectedBookmarkPageRef: bookmarkPageRef(bookmarkPage),
-      editingInProgress: true,
-      active: true,
-    });
-
-    session.addBookmark(bookmark);
-    session.addToSeenBookmarkIds(bookmark);
+    setBusy(true);
+    await create(video);
+    setBusy(false);
   };
 
   if (video.session.bookmarkPresent === true) {
     return (
-      <button className="btn btn-primary btn-disabled block w-full cursor-not-allowed">
+      <button
+        className="btn btn-primary btn-disabled block w-full cursor-not-allowed"
+        disabled={true}
+      >
         Bookmark exists at {secondsToHms(video.currentTimeInSession)}
       </button>
     );
@@ -45,6 +36,7 @@ const AddBookmark = observer(({ video }: Props) => {
     <button
       className="btn btn-primary block w-full"
       onClick={() => handleClick()}
+      disabled={busy}
     >
       Add bookmark at {secondsToHms(video.currentTimeInSession)}
     </button>

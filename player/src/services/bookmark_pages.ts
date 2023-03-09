@@ -3,20 +3,77 @@ import Video from "services/models/video";
 import { videoRef } from "services/models/references";
 import { InvalidVideo } from "./errors";
 import bus from "services/bus";
-
+import { storeFrame, removeFrame } from "services/bookmark_pages/assets";
+import { screenshot } from "services/videos";
+import fileHandles from "services/file_handles";
 import { frozen } from "mobx-keystone";
 import { blankDocument } from "./tiptap";
 import { JSONContent } from "@tiptap/react";
 
-export const create = (video: Video, content?: JSONContent) => {
-  return new BookmarkPage({
+/**
+ * Creates a new bookmark page, it assumed that it is attached to a bookmark
+ * itself outside of this function. This will also have the side affect of
+ * populating the bookmark page file handles table with a screenshot of the
+ * video at this point in time.
+ *
+ * @param video The current video that the bookmark page will use.
+ * @param content Content of the bookmark page, can be omitted and a blank
+ * document will be used instead. This is used to duplicate content from the
+ * previous bookmark page in a bookmark to ease creating content.
+ * @returns The created bookmark page.
+ */
+export const create = async (
+  video: Video,
+  content?: JSONContent
+): Promise<BookmarkPage> => {
+  const bookmarkPage = new BookmarkPage({
     content: frozen(content || blankDocument),
     drawing: frozen(null),
     videoRef: videoRef(video),
     videoTimestamp: video.currentTime + 0.01,
   });
+
+  // Take a screenshot of the current video frame
+  const frame = await screenshot(video);
+
+  // Store the frame against the bookmark page
+  const bookmarkPageFrameFileHandle = await storeFrame(bookmarkPage, frame);
+
+  // Finally, save the file handle into the file system database so it
+  // becomes available when using the bookmark page.
+  await fileHandles.table("bookmarkPageFrameFileHandles").put({
+    id: bookmarkPage.id,
+    fileHandle: bookmarkPageFrameFileHandle,
+  });
+
+  return bookmarkPage;
 };
 
+/**
+ * Remove a bookmark page from the system, ensures the the frame is removed
+ * from the OPFS and file handles database as well.
+ *
+ * @param bookmarkPage The bookmarkPage to remove
+ * @returns The deleted bookmarkPage
+ */
+export const remove = async (bookmarkPage: BookmarkPage) => {
+  await removeFrame(bookmarkPage);
+  await fileHandles
+    .table("bookmarkPageFrameFileHandles")
+    .delete(bookmarkPage.id);
+  bookmarkPage.delete();
+  return bookmarkPage;
+};
+
+/**
+ * Activates the given bookmark in the system.
+ *
+ * @param bookmarkPage The bookmark page to activate
+ * @param updateTime If we want to update the video time as well. We do this
+ * when clicking onto a bookmarkPage at a different time from the one we're
+ * currently on, but not when clicking between pages on the same time.
+ * @returns The bookmark page that was activated.
+ */
 export const activate = (bookmarkPage: BookmarkPage, updateTime: Boolean) => {
   const video = bookmarkPage.video;
   const session = bookmarkPage.session;
@@ -55,4 +112,6 @@ export const activate = (bookmarkPage: BookmarkPage, updateTime: Boolean) => {
   // mark that we've seen this bookmark id in the session, it will now be
   // excluded from activation checks
   session.addToSeenBookmarkIds(bookmark);
+
+  return bookmarkPage;
 };

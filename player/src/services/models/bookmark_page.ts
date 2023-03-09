@@ -1,5 +1,8 @@
 import consola from "consola";
 import { computed } from "mobx";
+import { safeFileName } from "services/opfs";
+import fileHandles from "services/file_handles";
+import { liveQuery } from "dexie";
 
 import {
   model,
@@ -29,6 +32,47 @@ export default class BookmarkPage extends Model({
   videoRef: prop<Ref<Video>>(),
   videoTimestamp: tProp(types.number),
 }) {
+  onAttachedToRootStore() {
+    // Start observing the video storage file handle...
+    const frameFileHandleObservable = liveQuery(() =>
+      fileHandles.table("bookmarkPageFrameFileHandles").get({ id: this.id })
+    );
+
+    // When we encounter elements in this storage, we're ready to build the
+    // video HTML elements. These will either be present on boot, or present
+    // after we're stored a record (see the video/assets file).
+    const frameFileHandleObservableDisposer =
+      frameFileHandleObservable.subscribe({
+        next: async (result) => {
+          if (result === undefined) {
+            return;
+          }
+
+          const file = await result.fileHandle.getFile();
+          const url = URL.createObjectURL(file);
+
+          console.log("url", url);
+
+          /*
+          const file = await result.fileHandle.getFile();
+          const url = URL.createObjectURL(file);
+
+          this.setupVideoEl = await buildSetupElement(this, url);
+          this.reviewVideoEl = await buildReviewElement(this, url);
+
+          // Mark that all setup videos have now been created, this controls
+          // further UI being created
+          this.setVideoElementsCreated(true);
+          */
+        },
+        error: (error) => console.error(error),
+      });
+
+    return () => {
+      frameFileHandleObservableDisposer.unsubscribe();
+    };
+  }
+
   @modelAction
   setContent(content: JSONContent) {
     consola.info("Persisting content into bookmark page");
@@ -111,5 +155,13 @@ export default class BookmarkPage extends Model({
     return this.bookmark.bookmarkPages.findIndex((bookmarkPage) => {
       return bookmarkPage.id === this.id;
     });
+  }
+
+  /**
+   * Path for storage of the frame
+   */
+  @computed
+  get framePath() {
+    return `bookmarkPages/${safeFileName(this.id)}/frame.png`;
   }
 }
