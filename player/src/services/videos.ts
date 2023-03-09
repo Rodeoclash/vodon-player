@@ -1,9 +1,9 @@
 import { frozen } from "mobx-keystone";
 
-import fileHandles from "services/file_handles";
 import {
   storeVideoFile,
-  removeVideoFile as removeVideoFile,
+  removeVideoFile,
+  removeSetupVideoSyncFrame,
 } from "services/videos/assets";
 
 import {
@@ -71,12 +71,7 @@ export const createLocalVideoInSession = async (
   session.addVideo(video);
 
   // Trigger storing the file
-  const responseFileHandle = await storeVideoFile(video, fileHandle);
-
-  await fileHandles.table("storageVideoFileHandles").put({
-    id: video.id,
-    fileHandle: responseFileHandle,
-  });
+  await storeVideoFile(video, fileHandle);
 
   return video;
 };
@@ -93,6 +88,7 @@ export const remove = async (video: Video) => {
   });
   await Promise.all(results);
   await removeVideoFile(video);
+  await removeSetupVideoSyncFrame(video);
   video.delete();
 };
 

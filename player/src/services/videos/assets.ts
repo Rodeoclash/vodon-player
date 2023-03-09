@@ -11,11 +11,30 @@ import Video from "services/models/video";
 export const storeSetupVideoSyncFrame = async (
   video: Video,
   frame: Blob
-): Promise<FileSystemFileHandle> => {
+): Promise<Video> => {
   return new Promise((resolve, reject) => {
     addFromBlob(video.syncFramePath, frame, {
       onComplete: async (event) => {
-        resolve(event.fileHandle);
+        await fileHandles.table("setupVideoSyncImageFileHandles").put({
+          id: video.id,
+          fileHandle: event.fileHandle,
+        });
+        resolve(video);
+      },
+    });
+  });
+};
+
+export const removeSetupVideoSyncFrame = async (
+  video: Video
+): Promise<Video> => {
+  return new Promise((resolve, reject) => {
+    opfsRemove(video.syncFramePath, {
+      onComplete: async () => {
+        await fileHandles
+          .table("setupVideoSyncImageFileHandles")
+          .delete(video.id);
+        resolve(video);
       },
     });
   });
@@ -31,7 +50,7 @@ export const storeSetupVideoSyncFrame = async (
 export const storeVideoFile = async (
   video: Video,
   fileHandle: FileSystemFileHandle
-): Promise<FileSystemFileHandle> => {
+): Promise<Video> => {
   if ((await fileHandle.queryPermission({ mode: "read" })) !== "granted") {
     throw new MissingLocalFileHandle(
       "Attempting to copy file but it does not have permission granted"
@@ -42,17 +61,21 @@ export const storeVideoFile = async (
   return new Promise((resolve, reject) => {
     addFromFileHandle(video.videoFilePath, fileHandle, {
       onStart: (event) => {
-        consola.info("Starting copy of video file handle into OPFS");
         video.setCopyToStorageProgress(event.progress);
       },
       onProgress: (event) => {
-        consola.info(`Video copy into OPFS progress: ${event.progress}`);
         video.setCopyToStorageProgress(event.progress);
       },
       onComplete: async (event) => {
-        consola.info("Completed copy of video file handle into OPFS");
         video.setCopyToStorageProgress(event.progress);
-        resolve(event.fileHandle);
+
+        // Store the file handle
+        await fileHandles.table("storageVideoFileHandles").put({
+          id: video.id,
+          fileHandle: event.fileHandle,
+        });
+
+        resolve(video);
       },
     });
   });

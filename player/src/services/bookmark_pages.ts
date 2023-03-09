@@ -37,14 +37,7 @@ export const create = async (
   const frame = await screenshot(video);
 
   // Store the frame against the bookmark page
-  const bookmarkPageFrameFileHandle = await storeFrame(bookmarkPage, frame);
-
-  // Finally, save the file handle into the file system database so it
-  // becomes available when using the bookmark page.
-  await fileHandles.table("bookmarkPageFrameFileHandles").put({
-    id: bookmarkPage.id,
-    fileHandle: bookmarkPageFrameFileHandle,
-  });
+  await storeFrame(bookmarkPage, frame);
 
   return bookmarkPage;
 };

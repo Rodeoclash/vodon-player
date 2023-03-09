@@ -1,16 +1,10 @@
 import Video from "services/models/video";
 import { screenshot } from "services/videos";
 import { storeSetupVideoSyncFrame } from "./assets";
-import fileHandles from "services/file_handles";
 
 const captureSetupVideoSyncFrame = async (video: Video) => {
   const frame = await screenshot(video);
-  const fileHandle = await storeSetupVideoSyncFrame(video, frame);
-
-  return await fileHandles.table("setupVideoSyncImageFileHandles").put({
-    id: video.id,
-    fileHandle,
-  });
+  await storeSetupVideoSyncFrame(video, frame);
 };
 
 export const buildElement = async (
