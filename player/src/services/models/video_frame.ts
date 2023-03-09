@@ -18,11 +18,10 @@ export default class VideoFrame
   extends Model({
     id: idProp,
     createdAt: tProp(types.number, Date.now()),
+    url: tProp(types.maybeNull(types.string)).withSetter(),
   })
   implements Storable
 {
-  url: string | null = null;
-
   onAttachedToRootStore() {
     // Start observing the video storage file handle...
     const frameFileHandleObservable = liveQuery(() =>
@@ -41,7 +40,7 @@ export default class VideoFrame
 
           const file = await result.fileHandle.getFile();
           const url = URL.createObjectURL(file);
-          this.url = url;
+          this.setUrl(url);
         },
         error: (error) => console.error(error),
       });
