@@ -16,8 +16,6 @@ import bus from "services/bus";
 import BookmarkPage from "./bookmark_page";
 import Session from "./session";
 import { bookmarkPageRef } from "./references";
-import { create } from "services/bookmark_pages";
-import { SessionInInvalidState } from "services/errors";
 
 @model("VodonPlayer/Bookmark")
 export default class Bookmark extends Model({

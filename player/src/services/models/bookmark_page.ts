@@ -1,8 +1,7 @@
 import consola from "consola";
 import { computed } from "mobx";
 import { safeFileName } from "services/opfs";
-import fileHandles from "services/file_handles";
-import { liveQuery } from "dexie";
+import VideoFrame from "services/models/video_frame";
 
 import {
   model,
@@ -31,37 +30,8 @@ export default class BookmarkPage extends Model({
   drawing: tProp(types.frozen(types.unchecked<TDDocument | null>())),
   videoRef: prop<Ref<Video>>(),
   videoTimestamp: tProp(types.number),
+  videoFrame: tProp(types.maybeNull(types.model(VideoFrame))),
 }) {
-  frameImageUrl: string | null = null;
-
-  onAttachedToRootStore() {
-    // Start observing the video storage file handle...
-    const frameFileHandleObservable = liveQuery(() =>
-      fileHandles.table("bookmarkPageFrameFileHandles").get({ id: this.id })
-    );
-
-    // When we encounter elements in this storage, we're ready to build the
-    // video HTML elements. These will either be present on boot, or present
-    // after we're stored a record (see the video/assets file).
-    const frameFileHandleObservableDisposer =
-      frameFileHandleObservable.subscribe({
-        next: async (result) => {
-          if (result === undefined) {
-            return;
-          }
-
-          const file = await result.fileHandle.getFile();
-          const url = URL.createObjectURL(file);
-          this.frameImageUrl = url;
-        },
-        error: (error) => console.error(error),
-      });
-
-    return () => {
-      frameFileHandleObservableDisposer.unsubscribe();
-    };
-  }
-
   @modelAction
   setContent(content: JSONContent) {
     consola.info("Persisting content into bookmark page");

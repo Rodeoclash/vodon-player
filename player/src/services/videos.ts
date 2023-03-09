@@ -1,10 +1,8 @@
 import { frozen } from "mobx-keystone";
 
-import {
-  storeVideoFile,
-  removeVideoFile,
-  removeSetupVideoSyncFrame,
-} from "services/videos/assets";
+import { storeVideoFile, removeVideoFile } from "services/videos/assets";
+
+import { remove as removeVideoFrame } from "services/video_frames/assets";
 
 import {
   readMediaDataFromFile,
@@ -35,6 +33,7 @@ export const createRemoteVideoInSession = async (
     type: contentType,
     url,
     videoData: frozen(videoTrack),
+    videoSyncFrame: null,
   });
 
   session.addVideo(video);
@@ -65,6 +64,7 @@ export const createLocalVideoInSession = async (
     type: file.type,
     url: null,
     videoData: frozen(videoTrack),
+    videoSyncFrame: null,
   });
 
   // Join the video to the session it was being created under
@@ -87,8 +87,13 @@ export const remove = async (video: Video) => {
     return removeBookmarkPage(bookmarkPage);
   });
   await Promise.all(results);
+
+  if (video.videoSyncFrame !== null) {
+    await removeVideoFrame(video.videoSyncFrame);
+  }
+
   await removeVideoFile(video);
-  await removeSetupVideoSyncFrame(video);
+
   video.delete();
 };
 

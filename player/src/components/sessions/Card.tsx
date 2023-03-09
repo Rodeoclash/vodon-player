@@ -62,12 +62,14 @@ const Card = observer(({ session }: Props) => {
         onMouseLeave={() => handleMouseLeave()}
       >
         <Link className="link" to={`/sessions/${session.id}/review`}>
-          {video !== undefined && video.previewImageUrl !== null && (
-            <img
-              src={video.previewImageUrl}
-              className="w-full h-full object-contain"
-            />
-          )}
+          {video !== undefined &&
+            video.videoSyncFrame !== null &&
+            video.videoSyncFrame.url !== null && (
+              <img
+                src={video.videoSyncFrame.url}
+                className="w-full h-full object-contain"
+              />
+            )}
         </Link>
       </div>
       <div className="p-4 header-3 border-b border-zinc-600 flex items-center">

@@ -3,9 +3,12 @@ import Video from "services/models/video";
 import { videoRef } from "services/models/references";
 import { InvalidVideo } from "./errors";
 import bus from "services/bus";
-import { storeFrame, removeFrame } from "services/bookmark_pages/assets";
+import {
+  remove as removeVideoFrame,
+  store as storeVideoFrame,
+} from "services/video_frames/assets";
+import { create as createVideoFrame } from "services/video_frames";
 import { screenshot } from "services/videos";
-import fileHandles from "services/file_handles";
 import { frozen } from "mobx-keystone";
 import { blankDocument } from "./tiptap";
 import { JSONContent } from "@tiptap/react";
@@ -32,14 +35,6 @@ export const create = async (
     );
   }
 
-  // Create the bookmarkPage itself
-  const bookmarkPage = new BookmarkPage({
-    content: frozen(content || blankDocument),
-    drawing: frozen(null),
-    videoRef: videoRef(video),
-    videoTimestamp: video.currentTime + 0.01,
-  });
-
   // Take a screenshot of the current video frame of the review element
   const frame = await screenshot(
     video.reviewVideoEl,
@@ -47,8 +42,16 @@ export const create = async (
     video.height
   );
 
-  // Store the frame against the bookmark page
-  await storeFrame(bookmarkPage, frame);
+  const videoFrame = await createVideoFrame(frame);
+
+  // Create the bookmarkPage itself
+  const bookmarkPage = new BookmarkPage({
+    content: frozen(content || blankDocument),
+    drawing: frozen(null),
+    videoRef: videoRef(video),
+    videoTimestamp: video.currentTime + 0.01,
+    videoFrame,
+  });
 
   return bookmarkPage;
 };
@@ -61,11 +64,12 @@ export const create = async (
  * @returns The deleted bookmarkPage
  */
 export const remove = async (bookmarkPage: BookmarkPage) => {
-  await removeFrame(bookmarkPage);
-  await fileHandles
-    .table("bookmarkPageFrameFileHandles")
-    .delete(bookmarkPage.id);
+  if (bookmarkPage.videoFrame !== null) {
+    await removeVideoFrame(bookmarkPage.videoFrame);
+  }
+
   bookmarkPage.delete();
+
   return bookmarkPage;
 };
 
