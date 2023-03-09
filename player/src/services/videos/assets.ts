@@ -1,44 +1,8 @@
 import consola from "consola";
-import {
-  addFromBlob,
-  addFromFileHandle,
-  remove as opfsRemove,
-} from "services/opfs";
+import { addFromFileHandle, remove as opfsRemove } from "services/opfs";
 import fileHandles from "services/file_handles";
 import { MissingLocalFileHandle } from "services/errors";
 import Video from "services/models/video";
-
-export const storeSetupVideoSyncFrame = async (
-  video: Video,
-  frame: Blob
-): Promise<Video> => {
-  return new Promise((resolve, reject) => {
-    addFromBlob(video.syncFramePath, frame, {
-      onComplete: async (event) => {
-        await fileHandles.table("setupVideoSyncImageFileHandles").put({
-          id: video.id,
-          fileHandle: event.fileHandle,
-        });
-        resolve(video);
-      },
-    });
-  });
-};
-
-export const removeSetupVideoSyncFrame = async (
-  video: Video
-): Promise<Video> => {
-  return new Promise((resolve, reject) => {
-    opfsRemove(video.syncFramePath, {
-      onComplete: async () => {
-        await fileHandles
-          .table("setupVideoSyncImageFileHandles")
-          .delete(video.id);
-        resolve(video);
-      },
-    });
-  });
-};
 
 /**
  * Handles storing the video (currently only OPFS, this should be expanded to

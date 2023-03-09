@@ -16,7 +16,8 @@ import { buildElement as buildSetupElement } from "services/videos/setup_videos"
 import { buildElement as buildReviewElement } from "services/videos/review_videos";
 import fileHandles from "services/file_handles";
 
-import Session from "./session";
+import Session from "services/models/session";
+import VideoFrame from "services/models/video_frame";
 
 @model("VodonPlayer/Video")
 export default class Video extends Model({
@@ -42,10 +43,6 @@ export default class Video extends Model({
     types.maybeNull(types.boolean),
     null
   ).withSetter(),
-
-  // URL to the preview image of this. Created locally from the sync frame
-  // but this might change once the remove storage comes into play.
-  previewImageUrl: tProp(types.maybeNull(types.string), null).withSetter(),
 
   // Mime type of the original video file
   type: tProp(types.maybeNull(types.string), null).withSetter(),
@@ -80,6 +77,9 @@ export default class Video extends Model({
 
   // Volume of the video
   volume: tProp(types.number, 0.5).withSetter(),
+
+  // The current frame used to sync the video
+  videoSyncFrame: tProp(types.maybeNull(types.model(VideoFrame))).withSetter(),
 }) {
   setupVideoEl: HTMLVideoElement | null = null;
   reviewVideoEl: HTMLVideoElement | null = null;
@@ -92,7 +92,6 @@ export default class Video extends Model({
     // We reset this back to false as the elements will have to be created
     // again from scratch
     this.setVideoElementsCreated(false);
-    this.setPreviewImageUrl(null);
 
     // Videos always start in a non playing state
     this.setSetupVideoPlaying(false);
@@ -141,29 +140,8 @@ export default class Video extends Model({
         error: (error) => console.error(error),
       });
 
-    // Start observing the video storage file handle...
-    const storageSyncImageFileHandleObservable = liveQuery(() =>
-      fileHandles.table("setupVideoSyncImageFileHandles").get({ id: this.id })
-    );
-
-    // Build the URL to the preview image
-    const storageSyncImageFileHandleObservableDisposer =
-      storageSyncImageFileHandleObservable.subscribe({
-        next: async (result) => {
-          if (result === undefined) {
-            return;
-          }
-
-          const file = await result.fileHandle.getFile();
-          const url = URL.createObjectURL(file);
-          this.setPreviewImageUrl(url);
-        },
-        error: (error) => console.error(error),
-      });
-
     return () => {
       storageVideoFileHandleObservableDisposer.unsubscribe();
-      storageSyncImageFileHandleObservableDisposer.unsubscribe();
     };
   }
 

@@ -27,6 +27,7 @@
     "formik": "^2.2.9",
     "idb-keyval": "^6.2.0",
     "javascript-time-ago": "^2.5.9",
+    "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "mediainfo.js": "^0.1.9",
     "mime-types": "^2.1.35",
@@ -49,6 +50,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.throttle": "^4.1.7",
     "@types/mime-types": "^2.1.1",
     "@types/react": "^18.0.26",

@@ -7,14 +7,12 @@ export interface FileHandle {
 
 class Storage extends Dexie {
   storageVideoFileHandles!: Table<FileHandle, number>;
-  setupVideoSyncImageFileHandles!: Table<FileHandle, number>; // remove
   videoFrameFileHandles!: Table<FileHandle, number>;
 
   constructor() {
     super("vodon-player");
     this.version(1).stores({
       storageVideoFileHandles: "id",
-      setupVideoSyncImageFileHandles: "id", // remove
       videoFrameFileHandles: "id",
     });
   }

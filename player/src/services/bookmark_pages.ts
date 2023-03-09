@@ -4,10 +4,11 @@ import VideoFrame from "services/models/video_frame";
 import { videoRef } from "services/models/references";
 import { InvalidVideo } from "./errors";
 import bus from "services/bus";
-import { store as storeVideoFrame } from "services/video_frames/assets";
+import {
+  remove as removeVideoFrame,
+  store as storeVideoFrame,
+} from "services/video_frames/assets";
 import { screenshot } from "services/videos";
-import { remove as removeVideoFrame } from "services/video_frames";
-import fileHandles from "services/file_handles";
 import { frozen } from "mobx-keystone";
 import { blankDocument } from "./tiptap";
 import { JSONContent } from "@tiptap/react";

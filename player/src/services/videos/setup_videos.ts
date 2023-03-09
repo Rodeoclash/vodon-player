@@ -1,7 +1,13 @@
 import { InvalidVideo } from "services/errors";
-import Video from "services/models/video";
 import { screenshot } from "services/videos";
-import { storeSetupVideoSyncFrame } from "./assets";
+import {
+  remove as removeVideoFrame,
+  store as storeVideoFrame,
+} from "services/video_frames/assets";
+import debounce from "lodash.debounce";
+
+import Video from "services/models/video";
+import VideoFrame from "services/models/video_frame";
 
 const captureSetupVideoSyncFrame = async (video: Video) => {
   if (video.setupVideoEl === null) {
@@ -10,9 +16,28 @@ const captureSetupVideoSyncFrame = async (video: Video) => {
     );
   }
 
+  // Remove any existing sync frames we might already have
+  if (video.videoSyncFrame !== null) {
+    removeVideoFrame(video.videoSyncFrame);
+  }
+
+  // Generate a new sync frame
   const frame = await screenshot(video.setupVideoEl, video.width, video.height);
-  await storeSetupVideoSyncFrame(video, frame);
+  const videoFrame = new VideoFrame({});
+
+  // Store it
+  await storeVideoFrame(videoFrame, frame);
+
+  // Finally, tell the video that it exists by linking it.
+  video.setVideoSyncFrame(videoFrame);
 };
+
+// We can trigger a lot of "seeked" operations when dragging the slider. This
+// debounced function ensures we don't overwhelm storing the sync frames.
+const debouncedCaptureSetupVideoSyncFrame = debounce(
+  captureSetupVideoSyncFrame,
+  200
+);
 
 export const buildElement = async (
   video: Video,
@@ -42,7 +67,7 @@ export const buildElement = async (
 
   el.addEventListener("seeked", async () => {
     video.setSetupVideoSeeking(false);
-    captureSetupVideoSyncFrame(video);
+    debouncedCaptureSetupVideoSyncFrame(video);
   });
 
   el.addEventListener("volumechange", async (event: Event) => {
