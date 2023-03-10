@@ -64,3 +64,12 @@ export class SessionInInvalidState extends CustomError {
     );
   }
 }
+
+export class UnknownFileSource extends CustomError {
+  public constructor(message?: string) {
+    super(
+      message ||
+        "We attempted to use the file source to store a file but could not determine the type"
+    );
+  }
+}

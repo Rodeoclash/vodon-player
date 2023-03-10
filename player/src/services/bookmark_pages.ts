@@ -4,10 +4,9 @@ import { videoRef } from "services/models/references";
 import { InvalidVideo } from "./errors";
 import bus from "services/bus";
 import {
+  create as createVideoFrame,
   remove as removeVideoFrame,
-  store as storeVideoFrame,
-} from "services/video_frames/assets";
-import { create as createVideoFrame } from "services/video_frames";
+} from "services/video_frames";
 import { screenshot } from "services/videos";
 import { frozen } from "mobx-keystone";
 import { blankDocument } from "./tiptap";

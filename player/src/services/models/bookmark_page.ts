@@ -115,12 +115,4 @@ export default class BookmarkPage extends Model({
       return bookmarkPage.id === this.id;
     });
   }
-
-  /**
-   * Path for storage of the frame
-   */
-  @computed
-  get framePath() {
-    return `bookmarkPages/${safeFileName(this.id)}/frame.png`;
-  }
 }

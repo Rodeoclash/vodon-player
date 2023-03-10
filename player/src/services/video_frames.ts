@@ -1,5 +1,5 @@
 import VideoFrame from "services/models/video_frame";
-import { store as storeVideoFrame } from "services/video_frames/assets";
+import { store as storeAsset, remove as removeAsset } from "services/assets";
 
 export const create = async (frame: Blob) => {
   const frameURL = URL.createObjectURL(frame);
@@ -9,8 +9,14 @@ export const create = async (frame: Blob) => {
     url: frameURL,
   });
 
+  videoFrame.fileSource = frame;
+
   // Store it
-  await storeVideoFrame(videoFrame, frame);
+  await storeAsset(videoFrame);
 
   return videoFrame;
+};
+
+export const remove = async (videoFrame: VideoFrame) => {
+  await removeAsset(videoFrame);
 };

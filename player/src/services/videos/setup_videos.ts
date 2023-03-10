@@ -1,11 +1,12 @@
 import { InvalidVideo } from "services/errors";
 import { screenshot } from "services/videos";
-import { remove as removeVideoFrame } from "services/video_frames/assets";
-import { create as createVideoFrame } from "services/video_frames";
+import {
+  create as createVideoFrame,
+  remove as removeVideoFrame,
+} from "services/video_frames";
 import debounce from "lodash.debounce";
 
 import Video from "services/models/video";
-import VideoFrame from "services/models/video_frame";
 
 const captureSetupVideoSyncFrame = async (video: Video) => {
   if (video.setupVideoEl === null) {

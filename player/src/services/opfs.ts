@@ -44,18 +44,18 @@ export type CompleteEvent = {
   fileHandle: FileSystemFileHandle;
 };
 
-type AddFromFileHandleOperationOptions = {
+export type AddFromFileHandleOperationOptions = {
   onStart?: (event: StartEvent) => void;
   onProgress?: (event: ProgressEvent) => void;
   onComplete?: (event: CompleteEvent) => void;
 };
 
-type AddFromBlobOperationOptions = {
+export type AddFromBlobOperationOptions = {
   onStart?: (event: StartEvent) => void;
   onComplete?: (event: CompleteEvent) => void;
 };
 
-type RemoveOperationOptions = {
+export type RemoveOperationOptions = {
   onStart?: (event: StartEvent) => void;
   onComplete?: (event: CompleteEvent) => void;
 };

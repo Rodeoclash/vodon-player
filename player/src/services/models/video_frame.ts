@@ -22,10 +22,13 @@ export default class VideoFrame
   })
   implements Storable
 {
+  fileSource: Blob | null = null;
+  fileHandlesTable = "videoFileHandles";
+
   onAttachedToRootStore() {
     // Start observing the video storage file handle...
     const frameFileHandleObservable = liveQuery(() =>
-      fileHandles.table("videoFrameFileHandles").get({ id: this.id })
+      fileHandles.table("videoFileHandles").get({ id: this.id })
     );
 
     // When we encounter elements in this storage, we're ready to build the

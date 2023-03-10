@@ -3,5 +3,8 @@
  * backend.
  */
 export interface Storable {
+  id: string;
   filePath: string;
+  fileSource: Blob | FileSystemFileHandle | null;
+  fileHandlesTable: string;
 }
