@@ -1,8 +1,5 @@
 import { frozen } from "mobx-keystone";
-
-import { storeVideoFile, removeVideoFile } from "services/videos/assets";
-
-import { remove as removeAsset } from "services/assets";
+import { store as storeAsset, remove as removeAsset } from "services/assets";
 
 import {
   readMediaDataFromFile,
@@ -71,8 +68,19 @@ export const createLocalVideoInSession = async (
   // Join the video to the session it was being created under
   session.addVideo(video);
 
-  // Trigger storing the file
-  await storeVideoFile(video);
+  // Trigger the asset to be stored and provide feedback via the UI as it is
+  // processed
+  await storeAsset(video, {
+    onStart: (event) => {
+      video.setCopyToStorageProgress(event.progress);
+    },
+    onProgress: (event) => {
+      video.setCopyToStorageProgress(event.progress);
+    },
+    onComplete: async (event) => {
+      video.setCopyToStorageProgress(event.progress);
+    },
+  });
 
   return video;
 };
@@ -93,7 +101,7 @@ export const remove = async (video: Video) => {
     await removeAsset(video.videoSyncFrame);
   }
 
-  await removeVideoFile(video);
+  await removeAsset(video);
 
   video.delete();
 };
