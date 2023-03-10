@@ -162,6 +162,7 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
               </div>
 
               {selectedBookmarkPage !== undefined &&
+                selectedBookmarkPage.video.id === video.id &&
                 selectedBookmarkPage.videoFrame !== null &&
                 selectedBookmarkPage.videoFrame.url !== null && (
                   <div className="absolute inset-0 z-20 bg-zinc-700">
