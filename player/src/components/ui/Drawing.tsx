@@ -1,15 +1,23 @@
 import * as React from "react";
-import { Tldraw, TldrawApp, TDDocument } from "@tldraw/tldraw";
+import { Tldraw, TldrawApp, TDDocument, TDExport } from "@tldraw/tldraw";
 
 type Props = {
   drawingId: string;
   drawing: TDDocument | null;
-  onMount: (app: TldrawApp) => void;
-  onPersist: (document: TDDocument) => void;
+  onMount?: (app: TldrawApp) => void;
+  onPersist?: (document: TDDocument) => void;
+  onExport?: (app: TldrawApp, info: TDExport) => Promise<void>;
   scale: number;
 };
 
-const Drawing = ({ onMount, scale, onPersist, drawing, drawingId }: Props) => {
+const Drawing = ({
+  onMount,
+  scale,
+  onPersist,
+  drawing,
+  drawingId,
+  onExport,
+}: Props) => {
   const tlDrawRef = React.useRef<TldrawApp | null>(null);
 
   const handleMount = (app: TldrawApp) => {
@@ -20,7 +28,9 @@ const Drawing = ({ onMount, scale, onPersist, drawing, drawingId }: Props) => {
       app.loadDocument(structuredClone(drawing));
     }
 
-    onMount(app);
+    if (onMount !== undefined) {
+      onMount(app);
+    }
   };
 
   /**
@@ -44,7 +54,9 @@ const Drawing = ({ onMount, scale, onPersist, drawing, drawingId }: Props) => {
     const tool = app.useStore.getState().appState.activeTool;
     app.selectNone();
 
-    onPersist(app.document);
+    if (onPersist !== undefined) {
+      onPersist(app.document);
+    }
 
     // BUG BUG: We need to select two tools here to correctly highlight the one
     // we want to use!?
@@ -83,6 +95,7 @@ const Drawing = ({ onMount, scale, onPersist, drawing, drawingId }: Props) => {
 
   return (
     <Tldraw
+      onExport={onExport}
       onMount={(app) => handleMount(app)}
       onPersist={(app) => handlePersist(app)}
       showUI={false}

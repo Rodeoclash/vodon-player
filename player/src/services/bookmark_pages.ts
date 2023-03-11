@@ -47,9 +47,10 @@ export const create = async (
   const bookmarkPage = new BookmarkPage({
     content: frozen(content || blankDocument),
     drawing: frozen(null),
+    drawingSVG: null,
+    videoFrame,
     videoRef: videoRef(video),
     videoTimestamp: video.currentTime + 0.01,
-    videoFrame,
   });
 
   return bookmarkPage;

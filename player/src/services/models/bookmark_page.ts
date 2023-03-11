@@ -28,6 +28,7 @@ export default class BookmarkPage extends Model({
   createdAt: tProp(types.number, Date.now()),
   content: tProp(types.frozen(types.unchecked<JSONContent>())),
   drawing: tProp(types.frozen(types.unchecked<TDDocument | null>())),
+  drawingSVG: tProp(types.maybeNull(types.string)).withSetter(),
   videoRef: prop<Ref<Video>>(),
   videoTimestamp: tProp(types.number),
   videoFrame: tProp(types.maybeNull(types.model(VideoFrame))),

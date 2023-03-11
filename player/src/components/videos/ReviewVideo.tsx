@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 import bus from "services/bus";
-import { TldrawApp, TDDocument } from "@tldraw/tldraw";
+import { TldrawApp, TDDocument, TDExportType, TDExport } from "@tldraw/tldraw";
 
 import Drawing from "components/ui/Drawing";
 import DrawingControls from "components/ui/Drawing/DrawingControls";
@@ -103,12 +103,23 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
    * Persists the current drawing if we're are on a bookmark page.
    * @param document
    */
-  const handlePersistDrawing = (document: TDDocument) => {
+  const handlePersistDrawing = (document: TDDocument, scale: number) => {
+    if (selectedBookmarkPage === undefined || tlDrawInstance === null) {
+      return;
+    }
+
+    tlDrawInstance.exportImage(TDExportType.SVG, { scale, quality: 1 });
+
+    selectedBookmarkPage.setDrawing(document);
+  };
+
+  const handleExport = async (app: TldrawApp, info: TDExport) => {
     if (selectedBookmarkPage === undefined) {
       return;
     }
 
-    selectedBookmarkPage.setDrawing(document);
+    const content = await info.blob.text();
+    selectedBookmarkPage.setDrawingSVG(content);
   };
 
   // Mount the video when it is selected
@@ -157,7 +168,12 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
                   drawing={selectedBookmarkPage?.drawing.data || null}
                   scale={scale}
                   onMount={(app) => handleTLDrawMounted(app)}
-                  onPersist={(document) => handlePersistDrawing(document)}
+                  onPersist={(document) =>
+                    handlePersistDrawing(document, scale)
+                  }
+                  onExport={(app: TldrawApp, info: TDExport) =>
+                    handleExport(app, info)
+                  }
                 />
               </div>
 

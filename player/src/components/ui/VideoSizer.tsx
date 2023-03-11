@@ -11,7 +11,7 @@ type Props = {
   originalWidth: number;
   originalHeight: number;
   children(dimensions: Dimensions): React.ReactNode;
-  onMount: (dimensions: Dimensions) => void;
+  onMount?: (dimensions: Dimensions) => void;
 };
 
 const VideoSizer = ({
@@ -42,7 +42,10 @@ const VideoSizer = ({
       };
 
       setDimensions(dimensions);
-      onMount(dimensions);
+
+      if (onMount !== undefined) {
+        onMount(dimensions);
+      }
     };
 
     window.addEventListener("resize", handleResize);

@@ -9,6 +9,7 @@ import SessionLayout from "layouts/Session";
 import ManageSessions from "pages/ManageSessions";
 import ReviewSession from "pages/ReviewSession";
 import SetupSession from "pages/SetupSession";
+import DownloadSession from "pages/DownloadSession";
 
 export type SessionLoaderData = {
   session: Session;
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
           {
             element: <SetupSession />,
             path: "setup",
+          },
+          {
+            element: <DownloadSession />,
+            path: "download",
           },
         ],
       },

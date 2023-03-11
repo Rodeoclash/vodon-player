@@ -65,6 +65,12 @@ export default function Session() {
               <NavLink className="navlink" to="setup">
                 Setup
               </NavLink>
+
+              {/*
+              <NavLink className="navlink" to="download">
+                Download
+              </NavLink>
+              */}
             </div>
 
             <div className="flex items-center flex-shrink gap-4 pr-4">

@@ -4,7 +4,7 @@ import SetupVideoList from "components/sessions/SetupVideoList";
 
 import type { SessionLoaderData } from "services/routes";
 
-export default function SetupSessions() {
+export default function SetupSession() {
   const data = useRouteLoaderData("session") as SessionLoaderData;
 
   return (
