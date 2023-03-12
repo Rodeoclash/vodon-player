@@ -39,13 +39,12 @@ const ReviewSession = observer(() => {
                           }
 
                           return (
-                            <div style={dimensionsStyle}>
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: bookmarkPage.drawingSVG,
-                                }}
-                              />
-                            </div>
+                            <div
+                              style={dimensionsStyle}
+                              dangerouslySetInnerHTML={{
+                                __html: bookmarkPage.drawingSVG,
+                              }}
+                            />
                           );
                         }}
                       </VideoSizer>

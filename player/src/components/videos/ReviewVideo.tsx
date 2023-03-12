@@ -118,8 +118,15 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       return;
     }
 
+    const { width, height } = app.rendererBounds;
+
     const content = await info.blob.text();
-    selectedBookmarkPage.setDrawingSVG(content);
+
+    console.log(content);
+
+    selectedBookmarkPage.setDrawingSVG(
+      `<svg width="${width}" height="${height}" viewbox="${width} ${height} 0 0">${content}</svg>`
+    );
   };
 
   // Mount the video when it is selected
