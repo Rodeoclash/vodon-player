@@ -8,6 +8,12 @@ import router from "services/routes";
 import "./App.css";
 
 function App() {
+  if ("getDirectory" in navigator.storage === false) {
+    throw new MissingRequiredAPIs(
+      "vodon-player requires the Filesystem & FileWriter API API to be present"
+    );
+  }
+
   if ("requestVideoFrameCallback" in HTMLVideoElement.prototype === false) {
     throw new MissingRequiredAPIs(
       "vodon-player requires the `requestVideoFrameCallback` API to be present"
