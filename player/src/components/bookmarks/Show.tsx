@@ -15,7 +15,9 @@ const Show = observer(({ bookmark }: Props) => {
 
   return (
     <>
-      <RichTextViewer content={bookmark.selectedBookmarkPage.content.data} />
+      <div className="p-4">
+        <RichTextViewer content={bookmark.selectedBookmarkPage.content.data} />
+      </div>
       <div className="p-4 pt-0">
         <button
           className="btn btn-secondary block w-full"

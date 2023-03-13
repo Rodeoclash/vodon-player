@@ -30,7 +30,7 @@ const Edit = observer(({ bookmark }: Props) => {
 
   return (
     <>
-      <div>
+      <div className="p-4">
         <RichTextEditor
           content={selectedBookmarkPage.content.data}
           onUpdate={(content) => handleContentUpdate(content)}
