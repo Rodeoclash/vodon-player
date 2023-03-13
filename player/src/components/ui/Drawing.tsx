@@ -22,11 +22,13 @@ const Drawing = ({
 
   const handleMount = (app: TldrawApp) => {
     tlDrawRef.current = app;
-    tlDrawRef.current.setCamera([0, 0], scale, "layout_mounted");
 
     if (drawing !== null) {
       app.loadDocument(structuredClone(drawing));
     }
+
+    // Ensure we resize the layout after the document has been loaded
+    tlDrawRef.current.setCamera([0, 0], scale, "layout_mounted");
 
     if (onMount !== undefined) {
       onMount(app);
