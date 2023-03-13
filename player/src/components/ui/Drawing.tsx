@@ -2,21 +2,23 @@ import * as React from "react";
 import { Tldraw, TldrawApp, TDDocument, TDExport } from "@tldraw/tldraw";
 
 type Props = {
-  drawingId: string;
   drawing: TDDocument | null;
+  drawingId: string;
+  onExport?: (app: TldrawApp, info: TDExport) => Promise<void>;
   onMount?: (app: TldrawApp) => void;
   onPersist?: (document: TDDocument) => void;
-  onExport?: (app: TldrawApp, info: TDExport) => Promise<void>;
+  readOnly?: boolean;
   scale: number;
 };
 
 const Drawing = ({
-  onMount,
-  scale,
-  onPersist,
   drawing,
   drawingId,
   onExport,
+  onMount,
+  onPersist,
+  readOnly = false,
+  scale,
 }: Props) => {
   const tlDrawRef = React.useRef<TldrawApp | null>(null);
 
@@ -32,6 +34,10 @@ const Drawing = ({
 
     if (onMount !== undefined) {
       onMount(app);
+    }
+
+    if (readOnly === true) {
+      app.readOnly = true;
     }
   };
 

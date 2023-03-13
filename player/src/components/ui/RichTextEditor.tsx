@@ -27,11 +27,7 @@ const RichTextEditor = ({ content, onUpdate }: Props) => {
     editor.commands.setContent(content);
   }, [content]);
 
-  return (
-    <div className="bg-stone-900 p-4">
-      <EditorContent editor={editor} />
-    </div>
-  );
+  return <EditorContent editor={editor} />;
 };
 
 export default RichTextEditor;

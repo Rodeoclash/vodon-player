@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { getSnapshot } from "mobx-keystone";
 
-import { saveAsJSON, loadFromJSON } from "services/import_export";
+import { saveAsJSON } from "services/import_export";
 
 import { Outlet, NavLink, useRouteLoaderData } from "react-router-dom";
 import Modal from "components/ui/Modal";
@@ -66,11 +66,12 @@ export default function Session() {
                 Setup
               </NavLink>
 
-              {/*
-              <NavLink className="navlink" to="download">
-                Download
+              <NavLink className="navlink" to="print">
+                Print{" "}
+                <span className="text-sm px-3 py-1 bg-zinc-700 rounded-full ml-2">
+                  alpha
+                </span>
               </NavLink>
-              */}
             </div>
 
             <div className="flex items-center flex-shrink gap-4 pr-4">

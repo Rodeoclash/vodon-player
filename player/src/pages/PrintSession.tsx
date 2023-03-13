@@ -3,18 +3,21 @@ import { useRouteLoaderData } from "react-router-dom";
 import { secondsToHms } from "services/time";
 import RichTextViewer from "components/ui/RichTextViewer";
 import VideoSizer from "components/ui/VideoSizer";
+import Drawing from "components/ui/Drawing";
 
 import type { SessionLoaderData } from "services/routes";
 
-const ReviewSession = observer(() => {
+const PrintSession = observer(() => {
   const data = useRouteLoaderData("session") as SessionLoaderData;
   const session = data.session;
 
   const renderedBookmarks = session.sortedBookmarks.map((bookmark) => {
     const renderedBookmarkPages = bookmark.sortedBookmarkPages.map(
       (bookmarkPage, idx) => {
+        const video = bookmarkPage.video;
+
         const imageStyle = {
-          aspectRatio: `${bookmarkPage.video.width}/${bookmarkPage.video.height}`,
+          aspectRatio: `${video.width}/${video.height}`,
         };
 
         return (
@@ -25,8 +28,8 @@ const ReviewSession = observer(() => {
                   <div className="relative">
                     <div className="absolute inset-0">
                       <VideoSizer
-                        originalWidth={bookmarkPage.video.width}
-                        originalHeight={bookmarkPage.video.height}
+                        originalWidth={video.width}
+                        originalHeight={video.height}
                       >
                         {({ width, height, scale }) => {
                           const dimensionsStyle = {
@@ -34,17 +37,16 @@ const ReviewSession = observer(() => {
                             height: `${height}px`,
                           };
 
-                          if (bookmarkPage.drawingSVG === null) {
-                            return null;
-                          }
-
                           return (
-                            <div style={dimensionsStyle}>
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: bookmarkPage.drawingSVG,
-                                }}
-                              />
+                            <div style={dimensionsStyle} className="relative">
+                              <div className="absolute inset-0 z-30">
+                                <Drawing
+                                  drawingId={bookmarkPage.id}
+                                  drawing={bookmarkPage.drawing.data || null}
+                                  scale={scale}
+                                  readOnly={true}
+                                />
+                              </div>
                             </div>
                           );
                         }}
@@ -57,7 +59,7 @@ const ReviewSession = observer(() => {
                       style={imageStyle}
                     />
                   </div>
-                  <div className="mt-4">
+                  <div className="bg-zinc-800 p-4">
                     <RichTextViewer content={bookmarkPage.content.data} />
                   </div>
                 </>
@@ -68,7 +70,7 @@ const ReviewSession = observer(() => {
     );
 
     return (
-      <div key={bookmark.id}>
+      <div key={bookmark.id} className="mb-8">
         <h2 className="header-2 mb-4">{secondsToHms(bookmark.timestamp)}</h2>
         <div className="grid grid-cols-3 gap-4">{renderedBookmarkPages}</div>
       </div>
@@ -83,4 +85,4 @@ const ReviewSession = observer(() => {
   );
 });
 
-export default ReviewSession;
+export default PrintSession;

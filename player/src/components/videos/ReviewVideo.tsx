@@ -118,7 +118,11 @@ const ReviewVideo = observer(({ hideOverlays, video }: Props) => {
       return;
     }
 
+    // Renable if we can use the actual SVG graphic on the print page.
+    // const { width, height } = app.rendererBounds;
+
     const content = await info.blob.text();
+
     selectedBookmarkPage.setDrawingSVG(content);
   };
 
