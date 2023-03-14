@@ -1,6 +1,5 @@
 import consola from "consola";
 import { computed } from "mobx";
-import { safeFileName } from "services/opfs";
 import VideoFrame from "services/models/video_frame";
 
 import {
@@ -20,7 +19,7 @@ import Bookmark from "./bookmark";
 import Video from "./video";
 
 import { JSONContent } from "@tiptap/react";
-import { TDDocument } from "@tldraw/tldraw";
+import { TDDocument } from "vendor/tldraw";
 
 @model("VodonPlayer/BookmarkPage")
 export default class BookmarkPage extends Model({

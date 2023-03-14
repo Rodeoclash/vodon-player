@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TldrawApp, ColorStyle } from "@tldraw/tldraw";
+import { TldrawApp, ColorStyle, TDSnapshot } from "vendor/tldraw";
 
 import PopoutControl from "components/ui/Drawing/PopoutControl";
 import Tooltip from "components/ui/Tooltip";
@@ -26,7 +26,7 @@ const colors = {
 const DrawingSelectColour = ({ app }: PropsType) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const currentStyle = app.useStore((s) => s.appState.currentStyle);
+  const currentStyle = app.useStore((s: TDSnapshot) => s.appState.currentStyle);
 
   const handleColourPick = React.useCallback(
     (color: ColorStyle) => {
@@ -62,6 +62,7 @@ const DrawingSelectColour = ({ app }: PropsType) => {
   });
 
   const currentSwatchStyle = {
+    // @ts-ignore
     backgroundColor: colors[currentStyle.color],
   };
 

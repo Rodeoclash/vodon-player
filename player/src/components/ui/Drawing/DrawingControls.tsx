@@ -1,5 +1,5 @@
 import consola from "consola";
-import { TldrawApp, TDToolType, TDShapeType } from "@tldraw/tldraw";
+import { TldrawApp, TDToolType, TDShapeType } from "vendor/tldraw";
 import classNames from "classnames";
 
 import {
@@ -26,6 +26,7 @@ const DrawingControls = ({ app }: Props) => {
     app.toggleToolLock();
   };
 
+  // @ts-ignore
   const activeTool = app.useStore((s) => s.appState.activeTool);
 
   const handlePickSelect = () => {

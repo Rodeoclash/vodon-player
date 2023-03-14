@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TldrawApp, SizeStyle } from "@tldraw/tldraw";
+import { TldrawApp, SizeStyle, TDSnapshot } from "vendor/tldraw";
 
 import PopoutControl from "components/ui/Drawing/PopoutControl";
 import Tooltip from "components/ui/Tooltip";
@@ -17,7 +17,7 @@ const sizes = {
 const DrawingSelectSize = ({ app }: PropsType) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const currentStyle = app.useStore((s) => s.appState.currentStyle);
+  const currentStyle = app.useStore((s: TDSnapshot) => s.appState.currentStyle);
 
   const handleDashPick = React.useCallback(
     (size: SizeStyle) => {
@@ -53,6 +53,9 @@ const DrawingSelectSize = ({ app }: PropsType) => {
     </div>
   );
 
+  // @ts-ignore
+  const currentSize = sizes[currentStyle.size].slice(0, 1).toUpperCase();
+
   return (
     <PopoutControl
       open={isOpen}
@@ -64,7 +67,7 @@ const DrawingSelectSize = ({ app }: PropsType) => {
           className="w-8 h-8 flex items-center justify-center"
           onClick={() => handleClickSwatch()}
         >
-          {sizes[currentStyle.size].slice(0, 1).toUpperCase()}
+          {currentSize}
         </div>
       </Tooltip>
     </PopoutControl>

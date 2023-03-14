@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TldrawApp, DashStyle } from "@tldraw/tldraw";
+import { TldrawApp, DashStyle, TDSnapshot } from "vendor/tldraw";
 import {
   TbScribble,
   TbLineDashed,
@@ -24,7 +24,7 @@ const dashes = {
 const DrawingSelectDash = ({ app }: PropsType) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const currentStyle = app.useStore((s) => s.appState.currentStyle);
+  const currentStyle = app.useStore((s: TDSnapshot) => s.appState.currentStyle);
 
   const handleDashPick = React.useCallback(
     (dash: DashStyle) => {
@@ -62,6 +62,9 @@ const DrawingSelectDash = ({ app }: PropsType) => {
     </div>
   );
 
+  // @ts-ignore
+  const currentDashStyle = dashes[currentStyle.dash][0];
+
   return (
     <PopoutControl
       open={isOpen}
@@ -70,7 +73,7 @@ const DrawingSelectDash = ({ app }: PropsType) => {
     >
       <Tooltip content="Line style">
         <div className="w-8 h-8" onClick={() => handleClickSwatch()}>
-          {dashes[currentStyle.dash][0]}
+          {currentDashStyle}
         </div>
       </Tooltip>
     </PopoutControl>

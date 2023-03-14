@@ -1,5 +1,5 @@
 import consola from "consola";
-import { TldrawApp, TDToolType, TDShapeType } from "@tldraw/tldraw";
+import { TldrawApp, TDToolType, TDShapeType } from "vendor/tldraw";
 import { useHotkeys } from "react-hotkeys-hook";
 
 type Props = {
