@@ -1,3 +1,7 @@
+### 14/03/2023
+
+- Fixed bugs with copy paste and the scroll wheel moving the drawings.
+
 ### 13/03/2023
 
 - Added a page for printing / downloading session (currently not working 100%)
