@@ -78,7 +78,7 @@ const PrintSession = observer(() => {
   });
 
   return (
-    <div className="w-full h-full p-8">
+    <div className="w-full p-8">
       <h1 className="header-1 text-center mb-8">{session.name}</h1>
       {renderedBookmarks}
     </div>
