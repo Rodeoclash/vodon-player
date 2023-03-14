@@ -100,6 +100,26 @@ export default function Session() {
           <h1 className="header-2">Help</h1>
         </ModalHeader>
         <ModalBody>
+          <h2 className="header-3 mb-2">Contact</h2>
+          <p className="mb-4">
+            Want to get in touch? Email me at{" "}
+            <a className="link" href="mailto:sam@richardson.co.nz">
+              sam@richardson.co.nz
+            </a>{" "}
+            or find me on Discord as{" "}
+            <span className="font-mono">Rodeoclash#4192</span>
+          </p>
+          <p>
+            Why not join the{" "}
+            <a
+              className="link"
+              target="_blank"
+              href="https://discord.gg/EaJdhHtZEk"
+            >
+              Vodon Discord?
+            </a>
+          </p>
+          <h2 className="header-3 mt-4 mb-2">Keyboard shortcuts</h2>
           <table className="table">
             <thead>
               <tr>

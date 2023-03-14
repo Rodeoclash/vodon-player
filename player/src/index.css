@@ -12,7 +12,7 @@
   }
 
   .header-3 {
-    @apply text-xl;
+    @apply text-xl font-bold;
   }
 
   .link {
