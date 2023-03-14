@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Tldraw, TldrawApp, TDDocument, TDExport } from "@tldraw/tldraw";
+import { Tldraw, TldrawApp, TDDocument, TDExport } from "vendor/tldraw";
 
 type Props = {
   drawing: TDDocument | null;
