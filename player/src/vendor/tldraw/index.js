@@ -19185,15 +19185,13 @@ function Sa(r, e, t) {
                 );
             }
             let g = hn.Utils.getRelativeTransformedBoundingBox(i, i, m, !0, !1);
-            return k
-              .getShapeUtil(p)
-              .transform(p, g, {
-                type: hn.TLBoundsCorner.TopLeft,
-                scaleX: -1,
-                scaleY: 1,
-                initialShape: p,
-                transformOrigin: [0.5, 0.5],
-              });
+            return k.getShapeUtil(p).transform(p, g, {
+              type: hn.TLBoundsCorner.TopLeft,
+              scaleX: -1,
+              scaleY: 1,
+              initialShape: p,
+              transformOrigin: [0.5, 0.5],
+            });
           }
           case "vertical": {
             if (h && !d) {
@@ -19216,15 +19214,13 @@ function Sa(r, e, t) {
                 );
             }
             let g = hn.Utils.getRelativeTransformedBoundingBox(i, i, m, !1, !0);
-            return k
-              .getShapeUtil(p)
-              .transform(p, g, {
-                type: hn.TLBoundsCorner.TopLeft,
-                scaleX: 1,
-                scaleY: -1,
-                initialShape: p,
-                transformOrigin: [0.5, 0.5],
-              });
+            return k.getShapeUtil(p).transform(p, g, {
+              type: hn.TLBoundsCorner.TopLeft,
+              scaleX: 1,
+              scaleY: -1,
+              initialShape: p,
+              transformOrigin: [0.5, 0.5],
+            });
           }
         }
       },
@@ -19285,16 +19281,14 @@ function hp(r, e, t, n) {
     x = up.Utils.getCommonBounds(c.map((L) => k.getBounds(L)));
   for (
     o[t] = void 0,
-      s[t] = k
-        .getShapeUtil("group")
-        .create({
-          id: t,
-          childIndex: T,
-          parentId: f,
-          point: [x.minX, x.minY],
-          size: [x.width, x.height],
-          children: g.map((L) => L.id),
-        }),
+      s[t] = k.getShapeUtil("group").create({
+        id: t,
+        childIndex: T,
+        parentId: f,
+        point: [x.minX, x.minY],
+        size: [x.width, x.height],
+        children: g.map((L) => L.id),
+      }),
       g.forEach((L, v) => {
         if (L.parentId !== n) {
           let I = r.getShape(L.parentId);
@@ -19727,15 +19721,13 @@ function Tp(r, e, t) {
         switch (t) {
           case "horizontal": {
             let h = w(S({}, m), { minX: d.minX, maxX: d.maxX, width: d.width });
-            return k
-              .getShapeUtil(p)
-              .transformSingle(p, h, {
-                type: Lr.TLBoundsCorner.TopLeft,
-                scaleX: h.width / m.width,
-                scaleY: 1,
-                initialShape: p,
-                transformOrigin: [0.5, 0.5],
-              });
+            return k.getShapeUtil(p).transformSingle(p, h, {
+              type: Lr.TLBoundsCorner.TopLeft,
+              scaleX: h.width / m.width,
+              scaleY: 1,
+              initialShape: p,
+              transformOrigin: [0.5, 0.5],
+            });
           }
           case "vertical": {
             let h = w(S({}, m), {
@@ -19743,15 +19735,13 @@ function Tp(r, e, t) {
               maxY: d.maxY,
               height: d.height,
             });
-            return k
-              .getShapeUtil(p)
-              .transformSingle(p, h, {
-                type: Lr.TLBoundsCorner.TopLeft,
-                scaleX: 1,
-                scaleY: h.height / m.height,
-                initialShape: p,
-                transformOrigin: [0.5, 0.5],
-              });
+            return k.getShapeUtil(p).transformSingle(p, h, {
+              type: Lr.TLBoundsCorner.TopLeft,
+              scaleX: 1,
+              scaleY: h.height / m.height,
+              initialShape: p,
+              transformOrigin: [0.5, 0.5],
+            });
           }
         }
       },
@@ -21943,15 +21933,13 @@ var Wa = class extends Je {
             h || b.isAspectRatioLocked || y.isAspectRatioLocked
           )));
       }
-      let I = k
-        .getShapeUtil(b)
-        .transformSingle(b, R, {
-          initialShape: t,
-          type: this.transformType,
-          scaleX: R.scaleX,
-          scaleY: R.scaleY,
-          transformOrigin: [0.5, 0.5],
-        });
+      let I = k.getShapeUtil(b).transformSingle(b, R, {
+        initialShape: t,
+        type: this.transformType,
+        scaleX: R.scaleX,
+        scaleY: R.scaleY,
+        transformOrigin: [0.5, 0.5],
+      });
       return (
         I && (T[b.id] = I),
         s && I && I.point && (I.point = uo.Vec.snap(I.point, m)),
@@ -24292,20 +24280,18 @@ var _a = Dt.Utils.uniqueId(),
                 h = p.includes(`
 `);
               o.push(
-                k
-                  .getShapeUtil("text")
-                  .getShape({
-                    id: Dt.Utils.uniqueId(),
-                    type: "text",
-                    parentId: this.appState.currentPageId,
-                    text: k.normalizeText(p.trim()),
-                    point: m,
-                    style: w(S({}, this.appState.currentStyle), {
-                      textAlign: h
-                        ? "start"
-                        : this.appState.currentStyle.textAlign,
-                    }),
-                  })
+                k.getShapeUtil("text").getShape({
+                  id: Dt.Utils.uniqueId(),
+                  type: "text",
+                  parentId: this.appState.currentPageId,
+                  text: k.normalizeText(p.trim()),
+                  point: m,
+                  style: w(S({}, this.appState.currentStyle), {
+                    textAlign: h
+                      ? "start"
+                      : this.appState.currentStyle.textAlign,
+                  }),
+                })
               );
             },
             i = (p) => {

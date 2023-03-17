@@ -1,4 +1,4 @@
-import { computed, observable } from "mobx";
+import { computed, observable, reaction } from "mobx";
 import { InvalidVideo } from "services/errors";
 import mime from "mime";
 import {
@@ -43,6 +43,7 @@ export default class Video
 
     // Have the video element been created for this video? The creation of these
     // elements is performed when we've attached the video to the root store.
+    // TODO: Could deprecate this and watch the attributes directly
     videoElementsCreated: tProp(
       types.maybeNull(types.boolean),
       null
@@ -96,6 +97,7 @@ export default class Video
   implements Storable
 {
   // Implements the "Storable" contract
+  // TODO: How will this work wrt online files and OPFS?
   fileSource: FileSystemFileHandle | null = null;
   fileHandlesTable = "videoFileHandles";
 
@@ -126,7 +128,8 @@ export default class Video
 
     // If URLs exist on the videos, build from them. Later we'll check for
     // local file handles and build from them if they exist
-    // TODO: This will actually need to download from URLs
+    // TODO: Enable this once we've figured out cloud storage
+    /*
     (async () => {
       if (this.url !== null) {
         this.setupVideoEl = await buildSetupElement(this, this.url);
@@ -134,15 +137,21 @@ export default class Video
         this.setVideoElementsCreated(true);
       }
     })();
+    */
 
     // Start observing the OPFS video storage file handle...
+    // TODO: Enable this once OPFS figured out
+    /*
     const videoFileHandleOPFSObservable = liveQuery(() =>
       fileHandles.table(this.fileHandlesTable).get({ id: this.id })
     );
+    */
 
     // When we encounter elements in the OPFS storage, we're ready to build the
     // video HTML elements. These will either be present on boot, or present
     // after we're stored a record (see the video/assets file).
+    // TODO: Enable this once OPFS figured out
+    /*
     const videoFileHandleOPFSObservableDisposer =
       videoFileHandleOPFSObservable.subscribe({
         next: async (result) => {
@@ -162,13 +171,15 @@ export default class Video
         },
         error: (error) => console.error(error),
       });
+    */
 
     // Start observing the local video storage file handle...
     const videoFileHandleLocalObservable = liveQuery(() =>
       fileHandles.table("videoFileHandlesLocal").get({ id: this.id })
     );
 
-    // TODO: Local file system permissions
+    // On the file handle becoming available in the store, check the
+    // permissions on it.
     const videoFileHandleLocalObservableDisposer =
       videoFileHandleLocalObservable.subscribe({
         next: async (result) => {
@@ -176,34 +187,67 @@ export default class Video
             return;
           }
 
-          // Check to see that we don't already have an OPFS storage option, we
-          // want to prefer that if we do have it because it removes the need
-          // for the permissions request
-          // TODO:
-
           const fileHandle = await result.fileHandle;
 
           const readPermission = await fileHandle.queryPermission({
             mode: "read",
           });
 
-          console.log("==== HERE");
-          console.log(readPermission);
-
-          this.localFileHandlePermission = readPermission;
+          this.setLocalFileHandlePermission(readPermission);
         },
         error: (error) => console.error(error),
       });
 
+    // Track the state of the permissions for the video and when readable,
+    // activate the "build" of the videos.
+    const reactionDisposer = reaction(
+      () => this.localFileHandlePermission,
+      async (permission: PermissionState | null) => {
+        if (permission !== "granted") {
+          return;
+        }
+
+        // Permissions were granted on the video, find in the local store
+        const result = await fileHandles
+          .table("videoFileHandlesLocal")
+          .get({ id: this.id });
+
+        if (result === undefined) {
+          throw new InvalidVideo(
+            "Video file handle should have been in local store but it wasn't"
+          );
+        }
+
+        // Construct a URL that we can give to element (this will be to a
+        // local file on the computer)
+        const file = await result.fileHandle.getFile();
+        const url = URL.createObjectURL(file);
+
+        // Finally, build the elements with this local URL
+        this.setupVideoEl = await buildSetupElement(this, url);
+        this.reviewVideoEl = await buildReviewElement(this, url);
+        this.setVideoElementsCreated(true);
+      },
+      {
+        fireImmediately: true,
+      }
+    );
+
     return () => {
-      videoFileHandleOPFSObservableDisposer.unsubscribe();
+      // videoFileHandleOPFSObservableDisposer.unsubscribe();
       videoFileHandleLocalObservableDisposer.unsubscribe();
+      reactionDisposer();
     };
   }
 
   @modelAction
   delete() {
     return this.session.removeVideo(this);
+  }
+
+  @modelAction
+  setLocalFileHandlePermission(permission: PermissionState) {
+    return (this.localFileHandlePermission = permission);
   }
 
   /**

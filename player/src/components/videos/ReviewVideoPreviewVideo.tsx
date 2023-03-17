@@ -31,8 +31,10 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
       containerEl.current === null ||
       video.reviewVideoEl === null ||
       (selectedVideo !== null && selectedVideo.id === video.id) ||
+      video.afterPlayableRange === true ||
       video.beforePlayableRange === true ||
-      video.videoElementsCreated === true
+      video.videoElementsCreated === false ||
+      video.localFileHandlePermission !== "granted"
     ) {
       return;
     }
@@ -44,6 +46,7 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
     video.afterPlayableRange,
     video.beforePlayableRange,
     video.videoElementsCreated,
+    video.localFileHandlePermission,
   ]);
 
   // If we don't have permissions to access the video, display a special

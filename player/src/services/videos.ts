@@ -64,6 +64,12 @@ export const createLocalVideoInSession = async (
     videoSyncFrame: null,
   });
 
+  // Start tracking the file handle in local storage
+  await fileHandles.table("videoFileHandlesLocal").put({
+    id: video.id,
+    fileHandle: fileHandle,
+  });
+
   // Allows the video to conform to the storable interface so it can be save
   // into the OPFS if required.
   video.fileSource = fileHandle;
@@ -90,11 +96,6 @@ export const createLocalVideoInSession = async (
   });
   */
 
-  await fileHandles.table("videoFileHandlesLocal").put({
-    id: video.id,
-    fileHandle: fileHandle,
-  });
-
   return video;
 };
 
@@ -114,7 +115,8 @@ export const remove = async (video: Video) => {
     await removeAsset(video.videoSyncFrame);
   }
 
-  await removeAsset(video);
+  // Reenable this one videos are stored in the OPFS again
+  // await removeAsset(video);
 
   video.delete();
 };

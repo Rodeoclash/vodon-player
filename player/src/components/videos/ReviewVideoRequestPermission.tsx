@@ -27,8 +27,11 @@ const ReviewVideoRequestPermission = observer(({ video }: Props) => {
         mode: "read",
       })) === "granted"
     ) {
-      console.log("=== FOUND THIS");
-      video.localFileHandlePermission = "granted";
+      const readPermission = await result.fileHandle.queryPermission({
+        mode: "read",
+      });
+
+      video.setLocalFileHandlePermission(readPermission);
     }
   };
 

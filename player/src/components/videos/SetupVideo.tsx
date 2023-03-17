@@ -3,9 +3,10 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 
+import ReviewVideoRequestPermission from "components/videos/ReviewVideoRequestPermission";
+import Toolbar from "components/videos/Toolbar";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
-import Toolbar from "components/videos/Toolbar";
 
 type Props = {
   video: Video;
@@ -31,6 +32,7 @@ const SetupListItem = observer(({ video }: Props) => {
   };
 
   // Once the local file handle is present, append it to the player
+  // TODO: This could be converted to observing the element property itself
   React.useEffect(() => {
     if (containerEl.current === null || video.setupVideoEl === null) {
       return;
@@ -38,6 +40,11 @@ const SetupListItem = observer(({ video }: Props) => {
 
     containerEl.current.appendChild(video.setupVideoEl);
   }, [video.videoElementsCreated]);
+
+  // If we require the user to bring the video online
+  if (video.localFileHandlePermission === "prompt") {
+    return <ReviewVideoRequestPermission video={video} />;
+  }
 
   // This video isn't ready for some reason
   if (

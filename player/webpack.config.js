@@ -45,10 +45,15 @@ const productionConfig = {};
 
 const developmentConfig = {
   devtool: "eval",
+  output: {
+    publicPath: "/",
+  },
   devServer: {
-    compress: true,
-    port: 3000,
+    allowedHosts: "all",
+    historyApiFallback: true,
     host: "0.0.0.0",
+    hot: true,
+    port: 3000,
   },
   plugins: [
     new HtmlWebpackPlugin({
