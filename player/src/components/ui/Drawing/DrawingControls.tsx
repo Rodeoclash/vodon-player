@@ -1,5 +1,5 @@
 import consola from "consola";
-import { TldrawApp, TDToolType, TDShapeType } from "vendor/tldraw";
+import { TldrawApp, TDToolType, TDShapeType } from "vendor/tldraw/index.js";
 import classNames from "classnames";
 
 import {

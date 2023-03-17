@@ -1,7 +1,20 @@
 import consola from "consola";
 import MediaInfoFactory, { MediaInfo, ReadChunkFunc } from "mediainfo.js";
 import type { ResultObject } from "mediainfo.js/dist/types";
+import { MediaInfoInstanceNotReady } from "services/errors";
 
+let mediainfoInstance: MediaInfo | null = null;
+
+MediaInfoFactory({
+  coverData: false,
+  format: "object",
+  locateFile: (path, prefix) => {
+    return `/${path}`;
+  },
+}).then((mediainfo) => {
+  mediainfoInstance = mediainfo;
+});
+/*
 const mediainfoInstance = (await MediaInfoFactory({
   coverData: false,
   format: "object",
@@ -9,6 +22,7 @@ const mediainfoInstance = (await MediaInfoFactory({
     return `/${path}`;
   },
 })) as MediaInfo;
+*/
 
 /**
  * Get media info about a local video file.
@@ -34,6 +48,10 @@ export const readMediaDataFromFile = async (file: File) => {
       };
       reader.readAsArrayBuffer(file.slice(offset, offset + chunkSize));
     });
+
+  if (mediainfoInstance === null) {
+    throw new MediaInfoInstanceNotReady();
+  }
 
   return (await mediainfoInstance.analyzeData(
     () => file.size,
@@ -107,6 +125,10 @@ export const readMediaDataFromURL = async (url: string) => {
 
       resolve(partialFile.slice(offset, chunkSize + offset));
     });
+
+  if (mediainfoInstance === null) {
+    throw new MediaInfoInstanceNotReady();
+  }
 
   const result = (await mediainfoInstance.analyzeData(
     () => fileSize,

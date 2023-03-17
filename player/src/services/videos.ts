@@ -1,5 +1,6 @@
 import { frozen } from "mobx-keystone";
 import { store as storeAsset, remove as removeAsset } from "services/assets";
+import fileHandles from "services/file_handles";
 
 import {
   readMediaDataFromFile,
@@ -63,13 +64,19 @@ export const createLocalVideoInSession = async (
     videoSyncFrame: null,
   });
 
+  // Allows the video to conform to the storable interface so it can be save
+  // into the OPFS if required.
   video.fileSource = fileHandle;
+  video.localFileHandlePermission = await fileHandle.queryPermission();
 
   // Join the video to the session it was being created under
   session.addVideo(video);
 
+  // store a reference to the local file handle as well
+
   // Trigger the asset to be stored and provide feedback via the UI as it is
   // processed
+  /*
   await storeAsset(video, {
     onStart: (event) => {
       video.setCopyToStorageProgress(event.progress);
@@ -80,6 +87,12 @@ export const createLocalVideoInSession = async (
     onComplete: async (event) => {
       video.setCopyToStorageProgress(event.progress);
     },
+  });
+  */
+
+  await fileHandles.table("videoFileHandlesLocal").put({
+    id: video.id,
+    fileHandle: fileHandle,
   });
 
   return video;

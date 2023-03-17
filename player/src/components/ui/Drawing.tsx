@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Tldraw, TldrawApp, TDDocument, TDExport } from "vendor/tldraw";
+import {
+  Tldraw,
+  TldrawApp,
+  TDDocument,
+  TDExport,
+} from "vendor/tldraw/index.js";
 
 type Props = {
   drawing: TDDocument | null;

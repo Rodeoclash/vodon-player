@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TldrawApp, DashStyle, TDSnapshot } from "vendor/tldraw";
+import { TldrawApp, DashStyle, TDSnapshot } from "vendor/tldraw/index.js";
 import {
   TbScribble,
   TbLineDashed,

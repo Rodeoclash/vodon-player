@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import Session from "services/models/session";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import ReviewVideoPreview from "components/videos/ReviewVideoPreview";
+import ReviewVideoPreview from "components/videos/ReviewVideoPreviewVideo";
 
 type Props = {
   session: Session;
@@ -11,7 +11,7 @@ type Props = {
 const ReviewVideoList = observer(({ session }: Props) => {
   const videos = session.videos;
 
-  const renderedReviewVideos = videos.map((video, index) => (
+  const renderedReviewVideos = videos.map((video) => (
     <ReviewVideoPreview key={video.id} video={video} />
   ));
 

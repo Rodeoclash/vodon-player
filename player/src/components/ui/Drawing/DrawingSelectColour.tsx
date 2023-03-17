@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TldrawApp, ColorStyle, TDSnapshot } from "vendor/tldraw";
+import { TldrawApp, ColorStyle, TDSnapshot } from "vendor/tldraw/index.js";
 
 import PopoutControl from "components/ui/Drawing/PopoutControl";
 import Tooltip from "components/ui/Tooltip";

@@ -73,3 +73,9 @@ export class UnknownFileSource extends CustomError {
     );
   }
 }
+
+export class MediaInfoInstanceNotReady extends CustomError {
+  public constructor(message?: string) {
+    super(message || "The MediaInfo instance was used before it was ready");
+  }
+}

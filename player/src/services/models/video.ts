@@ -1,6 +1,6 @@
-import { computed } from "mobx";
+import { computed, observable } from "mobx";
 import { InvalidVideo } from "services/errors";
-import mime from "mime-types";
+import mime from "mime";
 import {
   findParent,
   idProp,
@@ -95,11 +95,17 @@ export default class Video
   })
   implements Storable
 {
+  // Implements the "Storable" contract
   fileSource: FileSystemFileHandle | null = null;
   fileHandlesTable = "videoFileHandles";
 
+  // Video elements used to display video in the UI
   setupVideoEl: HTMLVideoElement | null = null;
   reviewVideoEl: HTMLVideoElement | null = null;
+
+  // What state is the local file system access handle in?
+  @observable
+  localFileHandlePermission: PermissionState | null = null;
 
   getRefId() {
     return this.id;
@@ -129,16 +135,16 @@ export default class Video
       }
     })();
 
-    // Start observing the video storage file handle...
-    const videoFileHandleObservable = liveQuery(() =>
+    // Start observing the OPFS video storage file handle...
+    const videoFileHandleOPFSObservable = liveQuery(() =>
       fileHandles.table(this.fileHandlesTable).get({ id: this.id })
     );
 
-    // When we encounter elements in this storage, we're ready to build the
+    // When we encounter elements in the OPFS storage, we're ready to build the
     // video HTML elements. These will either be present on boot, or present
     // after we're stored a record (see the video/assets file).
-    const videoFileHandleObservableDisposer =
-      videoFileHandleObservable.subscribe({
+    const videoFileHandleOPFSObservableDisposer =
+      videoFileHandleOPFSObservable.subscribe({
         next: async (result) => {
           if (result === undefined) {
             return;
@@ -157,8 +163,41 @@ export default class Video
         error: (error) => console.error(error),
       });
 
+    // Start observing the local video storage file handle...
+    const videoFileHandleLocalObservable = liveQuery(() =>
+      fileHandles.table("videoFileHandlesLocal").get({ id: this.id })
+    );
+
+    // TODO: Local file system permissions
+    const videoFileHandleLocalObservableDisposer =
+      videoFileHandleLocalObservable.subscribe({
+        next: async (result) => {
+          if (result === undefined) {
+            return;
+          }
+
+          // Check to see that we don't already have an OPFS storage option, we
+          // want to prefer that if we do have it because it removes the need
+          // for the permissions request
+          // TODO:
+
+          const fileHandle = await result.fileHandle;
+
+          const readPermission = await fileHandle.queryPermission({
+            mode: "read",
+          });
+
+          console.log("==== HERE");
+          console.log(readPermission);
+
+          this.localFileHandlePermission = readPermission;
+        },
+        error: (error) => console.error(error),
+      });
+
     return () => {
-      videoFileHandleObservableDisposer.unsubscribe();
+      videoFileHandleOPFSObservableDisposer.unsubscribe();
+      videoFileHandleLocalObservableDisposer.unsubscribe();
     };
   }
 
@@ -286,7 +325,7 @@ export default class Video
       return null;
     }
 
-    return mime.extension(this.type);
+    return mime.getExtension(this.type);
   }
 
   /**
@@ -302,5 +341,32 @@ export default class Video
     }
 
     return `videos/${safeFileName(this.id)}/video.${this.mimeExtension}`;
+  }
+
+  /**
+   * Is this video in a session time where it has "started". Started does not
+   * mean playing, just that it's now in a valid session time for it to be
+   * visible on the screen.
+   */
+  @computed
+  get beforePlayableRange() {
+    if (this.session === null || this.session.currentTime === null) {
+      return null;
+    }
+
+    return this.session.currentTime < this.beginsAt;
+  }
+
+  /**
+   * Similar to the started time, but the opposite, is the video past the time
+   * in the session where it can be displayed.
+   */
+  @computed
+  get afterPlayableRange() {
+    if (this.session === null || this.session.currentTime === null) {
+      return null;
+    }
+
+    return this.session.currentTime > this.finishesAt;
   }
 }

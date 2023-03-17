@@ -2,12 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
-
 import Modal from "react-modal";
-
 import App from "./App";
 import AppErrorDisplay from "components/AppErrorDisplay";
-import Changelog from "components/Changelog";
 
 import "index.css";
 
@@ -25,7 +22,6 @@ ReactDOM.createRoot(el).render(
   <React.StrictMode>
     <AppErrorDisplay>
       <App />
-      <Changelog />
     </AppErrorDisplay>
   </React.StrictMode>
 );

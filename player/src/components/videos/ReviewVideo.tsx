@@ -4,7 +4,12 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 import bus from "services/bus";
-import { TldrawApp, TDDocument, TDExportType, TDExport } from "vendor/tldraw";
+import {
+  TldrawApp,
+  TDDocument,
+  TDExportType,
+  TDExport,
+} from "vendor/tldraw/index.js";
 
 import Drawing from "components/ui/Drawing";
 import DrawingControls from "components/ui/Drawing/DrawingControls";
