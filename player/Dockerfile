@@ -14,9 +14,8 @@ RUN npm install
 
 COPY ./public ./
 COPY ./src ./
-COPY ./index.html ./
+COPY ./postcss.config.cjs ./
+COPY ./tailwind.config.cjs ./
 COPY ./tsconfig.json ./
-COPY ./tsconfig.node.json ./
-COPY ./vite.config.ts ./
-
-CMD npm run dev
+COPY ./vercel.json ./
+COPY ./webpack.config.js ./

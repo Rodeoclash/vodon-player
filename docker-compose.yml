@@ -1,10 +1,11 @@
 version: "3.7"
 
 services:
-  player: &app
+  player:
     build:
       context: ./player
       dockerfile: Dockerfile
+    command: npm run serve
     ports:
       - "3000:3000"
     user: "1000"
@@ -12,6 +13,5 @@ services:
       - ./player:/usr/src/app
       - ./passwd:/etc/passwd
       - home:/home/server
-
 volumes:
   home:

@@ -5,8 +5,6 @@ import { MissingRequiredAPIs } from "services/errors";
 
 import router from "services/routes";
 
-import "./App.css";
-
 function App() {
   if ("getDirectory" in navigator.storage === false) {
     throw new MissingRequiredAPIs(
