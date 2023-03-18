@@ -16,6 +16,9 @@ const wasmFile = path.resolve(
 
 const commonConfig = {
   entry: "./src/index.tsx",
+  output: {
+    publicPath: "/",
+  },
   module: {
     rules: [
       {
@@ -54,17 +57,11 @@ const commonConfig = {
       template: "src/index.html",
     }),
     new HtmlWebpackHarddiskPlugin(),
-    new CopyPlugin({
-      patterns: [{ from: wasmFile, to: "./public", force: true }],
-    }),
   ],
 };
 
 const developmentConfig = {
   devtool: "eval",
-  output: {
-    publicPath: "/",
-  },
   devServer: {
     allowedHosts: "all",
     historyApiFallback: true,
@@ -72,13 +69,22 @@ const developmentConfig = {
     hot: true,
     port: 3000,
   },
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: wasmFile, to: path.resolve(__dirname, "public"), force: true },
+      ],
+    }),
+  ],
 };
 
 const productionConfig = {
   devtool: "source-map",
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: wasmFile, to: "./dist" }],
+      patterns: [
+        { from: wasmFile, to: path.resolve(__dirname, "dist"), force: true },
+      ],
     }),
   ],
 };
