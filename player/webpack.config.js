@@ -39,9 +39,14 @@ const commonConfig = {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      template: "src/index.html",
+    }),
+    new HtmlWebpackHarddiskPlugin(),
+  ],
 };
-
-const productionConfig = {};
 
 const developmentConfig = {
   devtool: "eval",
@@ -55,13 +60,10 @@ const developmentConfig = {
     hot: true,
     port: 3000,
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: "src/index.html",
-    }),
-    new HtmlWebpackHarddiskPlugin(),
-  ],
+};
+
+const productionConfig = {
+  devtool: "source-map",
 };
 
 module.exports = (env, args) => {

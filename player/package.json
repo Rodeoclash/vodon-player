@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "serve": "webpack server --config webpack.config.js --mode=development",
-    "tailwind": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+    "build": "webpack --config webpack.config.js --mode=production"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
