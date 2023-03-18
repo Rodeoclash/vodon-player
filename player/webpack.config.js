@@ -1,9 +1,18 @@
 const path = require("path");
 const { merge } = require("webpack-merge");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin");
+
+const wasmFile = path.resolve(
+  __dirname,
+  "node_modules",
+  "mediainfo.js",
+  "dist",
+  "MediaInfoModule.wasm"
+);
 
 const commonConfig = {
   entry: "./src/index.tsx",
@@ -45,6 +54,9 @@ const commonConfig = {
       template: "src/index.html",
     }),
     new HtmlWebpackHarddiskPlugin(),
+    new CopyPlugin({
+      patterns: [{ from: wasmFile, to: "./public", force: true }],
+    }),
   ],
 };
 
@@ -64,6 +76,11 @@ const developmentConfig = {
 
 const productionConfig = {
   devtool: "source-map",
+  plugins: [
+    new CopyPlugin({
+      patterns: [{ from: wasmFile, to: "./dist" }],
+    }),
+  ],
 };
 
 module.exports = (env, args) => {
