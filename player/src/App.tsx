@@ -6,9 +6,12 @@ import { MissingRequiredAPIs } from "services/errors";
 import router from "services/routes";
 
 function App() {
-  if ("getDirectory" in navigator.storage === false) {
+  if (
+    "getDirectory" in navigator.storage === false ||
+    "showOpenFilePicker" in window === false
+  ) {
     throw new MissingRequiredAPIs(
-      "vodon-player requires the Filesystem & FileWriter API API to be present"
+      "vodon-player requires the Filesystem & FileWriter API to be present"
     );
   }
 

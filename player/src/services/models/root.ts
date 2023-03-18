@@ -23,7 +23,7 @@ import Session from "./session";
 import Video from "./video";
 
 // Changing this will wipe out all local data!
-const localStorageKey = "vodon-player-data-2";
+export const localStorageKey = "vodon-player-data-2";
 
 setGlobalConfig({
   // use uuidv4 to generate client side unique ids that can be saved to the
