@@ -80,6 +80,9 @@ const developmentConfig = {
 
 const productionConfig = {
   devtool: "source-map",
+  output: {
+    publicPath: "/",
+  },
   plugins: [
     new CopyPlugin({
       patterns: [
