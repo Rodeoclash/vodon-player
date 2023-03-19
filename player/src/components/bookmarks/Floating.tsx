@@ -36,7 +36,7 @@ const Floating = observer(({ bookmark }: Props) => {
 
   return (
     <Draggable handle=".floating-drag-handle" bounds="parent">
-      <div className="w-96 pointer-events-auto">
+      <div className="w-96 pointer-events-auto bg-zinc-800">
         <div style={style} className="cursor-move h-6 floating-drag-handle" />
         <div>{renderedContents}</div>
       </div>
