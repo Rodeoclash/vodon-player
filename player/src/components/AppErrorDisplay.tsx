@@ -1,9 +1,8 @@
 import { Component, ErrorInfo, ReactNode } from "react";
-import consola from "consola";
 import { TbMoodCry } from "react-icons/tb";
 import { MissingRequiredAPIs } from "services/errors";
 import * as Sentry from "@sentry/browser";
-import { localStorageKey } from "services/models/root";
+import { clearLocalData } from "services/state";
 
 interface Props {
   children?: ReactNode;
@@ -41,10 +40,7 @@ class ErrorBoundary extends Component<Props, State> {
       return;
     }
 
-    consola.info("User reset data");
-
-    localStorage.removeItem(localStorageKey);
-    location.reload();
+    clearLocalData();
   }
 
   public render() {
@@ -83,7 +79,7 @@ class ErrorBoundary extends Component<Props, State> {
                   className="btn btn-warning"
                   onClick={this.handleClickReset}
                 >
-                  Reset Player
+                  Reset Vodon Player
                 </button>
               </div>
             </p>

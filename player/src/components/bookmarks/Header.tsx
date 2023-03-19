@@ -5,31 +5,53 @@ import { activate } from "services/bookmark_pages";
 
 import Pagination from "./Pagination";
 import AddPage from "./AddPage";
+import Tooltip from "components/ui/Tooltip";
 
 type Props = {
   bookmark: Bookmark;
 };
 
 const Header = observer(({ bookmark }: Props) => {
+  const rootBookmarkPage = bookmark.bookmarkPages[0];
+  const videoNotReady = rootBookmarkPage.video.videoElementsCreated === false;
+
   /**
    * Goto the selected time. We don't need to set the active video here because
    * we'll automatically switch to the active bookmark when arriving at this
    * time.
    */
   const handleClickTimecode = () => {
-    const bookmarkPage = bookmark.bookmarkPages[0];
-    activate(bookmarkPage, true);
+    if (videoNotReady === true) {
+      return;
+    }
+
+    activate(rootBookmarkPage, true);
   };
+
+  const timecodeNotReady = (
+    <div className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700 select-none">
+      <Tooltip
+        content={
+          "Cannot go to bookmark as the video is not ready. Please restore it"
+        }
+      >
+        {secondsToHms(bookmark.timestamp)}
+      </Tooltip>
+    </div>
+  );
+
+  const timecodeReady = (
+    <div
+      className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700 select-none"
+      onClick={() => handleClickTimecode()}
+    >
+      {secondsToHms(bookmark.timestamp)}
+    </div>
+  );
 
   return (
     <header className="flex items-stretch border-b border-stone-700 h-10">
-      <div
-        className="flex-shrink text-sm cursor-pointer flex items-center px-4 border-r border-stone-700 select-none"
-        onClick={() => handleClickTimecode()}
-      >
-        {secondsToHms(bookmark.timestamp)}
-      </div>
-
+      {videoNotReady === true ? timecodeNotReady : timecodeReady}
       <div className="flex-shrink flex items-center text-sm px-4 truncate">
         {bookmark.selectedBookmarkPage.video.name}
       </div>

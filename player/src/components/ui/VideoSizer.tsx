@@ -1,5 +1,6 @@
 import * as React from "react";
 import { getRatioDimensions } from "services/layout";
+import { observer } from "mobx-react-lite";
 
 type Dimensions = {
   width: number;
@@ -14,54 +15,51 @@ type Props = {
   onMount?: (dimensions: Dimensions) => void;
 };
 
-const VideoSizer = ({
-  originalWidth,
-  originalHeight,
-  children,
-  onMount,
-}: Props) => {
-  const ref = React.useRef<HTMLDivElement | null>(null);
-  const [dimensions, setDimensions] = React.useState<Dimensions | null>(null);
+const VideoSizer = observer(
+  ({ originalWidth, originalHeight, children, onMount }: Props) => {
+    const ref = React.useRef<HTMLDivElement | null>(null);
+    const [dimensions, setDimensions] = React.useState<Dimensions | null>(null);
 
-  React.useLayoutEffect(() => {
-    const handleResize = () => {
-      if (ref.current === null) {
-        return;
-      }
+    React.useLayoutEffect(() => {
+      const handleResize = () => {
+        if (ref.current === null) {
+          return;
+        }
 
-      const [width, height, scale] = getRatioDimensions(
-        originalWidth,
-        originalHeight,
-        ref.current
-      );
+        const [width, height, scale] = getRatioDimensions(
+          originalWidth,
+          originalHeight,
+          ref.current
+        );
 
-      const dimensions = {
-        width,
-        height,
-        scale,
+        const dimensions = {
+          width,
+          height,
+          scale,
+        };
+
+        setDimensions(dimensions);
+
+        if (onMount !== undefined) {
+          onMount(dimensions);
+        }
       };
 
-      setDimensions(dimensions);
+      window.addEventListener("resize", handleResize);
 
-      if (onMount !== undefined) {
-        onMount(dimensions);
-      }
-    };
+      handleResize();
 
-    window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return (
-    <div ref={ref} className="w-full h-full flex items-center justify-center">
-      {dimensions && children(dimensions)}
-    </div>
-  );
-};
+    return (
+      <div ref={ref} className="w-full h-full flex items-center justify-center">
+        {dimensions && children(dimensions)}
+      </div>
+    );
+  }
+);
 
 export default VideoSizer;

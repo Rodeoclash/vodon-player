@@ -17,13 +17,14 @@ export default class VideoFrame extends Model({
   createdAt: tProp(types.number, Date.now()),
   url: tProp(types.maybeNull(types.string)).withSetter(),
 }) {
-  //fileSource: Blob | null = null;
-  //fileHandlesTable = "videoFileHandles";
-
   onAttachedToRootStore() {
+    // All URLs need to start as null as they're reconstructed on loading the
+    // file handle from the store
+    this.setUrl(null);
+
     // Start observing the video storage file handle...
     const frameFileHandleObservable = liveQuery(() =>
-      fileHandles.table("videoFileHandles").get({ id: this.id })
+      fileHandles.table("videoFrameFileHandles").get({ id: this.id })
     );
 
     // When we encounter elements in this storage, we're ready to build the
@@ -38,6 +39,7 @@ export default class VideoFrame extends Model({
 
           const file = await result.fileHandle.getFile();
           const url = URL.createObjectURL(file);
+
           this.setUrl(url);
         },
         error: (error) => console.error(error),

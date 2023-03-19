@@ -2,6 +2,7 @@ import consola from "consola";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import { localStorageKey } from "services/state";
 import examples from "services/examples";
 import { MissingRequiredAPIs } from "services/errors";
 
@@ -21,9 +22,6 @@ import { reaction, computed } from "mobx";
 
 import Session from "./session";
 import Video from "./video";
-
-// Changing this will wipe out all local data!
-export const localStorageKey = "vodon-player-data-2";
 
 setGlobalConfig({
   // use uuidv4 to generate client side unique ids that can be saved to the
