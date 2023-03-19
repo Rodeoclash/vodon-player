@@ -86,7 +86,9 @@ const productionConfig = {
   },
   optimization: {
     minimize: true,
-    splitChunks: true,
+    splitChunks: {
+      minSize: 0,
+    },
   },
   plugins: [
     new CopyPlugin({
