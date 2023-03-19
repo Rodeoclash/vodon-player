@@ -16,10 +16,6 @@ const wasmFile = path.resolve(
 
 const commonConfig = {
   entry: "./src/index.tsx",
-  output: {
-    publicPath: "/",
-    filename: "[name].[contenthash].bundle.js",
-  },
   module: {
     rules: [
       {
@@ -70,6 +66,10 @@ const developmentConfig = {
     hot: true,
     port: 3000,
   },
+  output: {
+    publicPath: "/",
+    filename: "[name].[contenthash].bundle.js",
+  },
   plugins: [
     new CopyPlugin({
       patterns: [
@@ -86,6 +86,10 @@ const productionConfig = {
     splitChunks: {
       minSize: 0,
     },
+  },
+  output: {
+    publicPath: "/",
+    filename: "[name].[contenthash].bundle.js",
   },
   plugins: [
     new CopyPlugin({
