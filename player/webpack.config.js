@@ -81,10 +81,6 @@ const developmentConfig = {
 
 const productionConfig = {
   devtool: "source-map",
-  output: {
-    publicPath: "/",
-    filename: "[name].[contenthash].bundle.js",
-  },
   optimization: {
     minimize: true,
     splitChunks: {
