@@ -44,17 +44,6 @@ const commonConfig = {
       module: false,
     },
   },
-  output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: "src/index.html",
-    }),
-    new HtmlWebpackHarddiskPlugin(),
-  ],
 };
 
 const developmentConfig = {
@@ -71,6 +60,11 @@ const developmentConfig = {
     filename: "[name].[contenthash].bundle.js",
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      template: "src/index.html",
+    }),
+    new HtmlWebpackHarddiskPlugin(),
     new CopyPlugin({
       patterns: [
         { from: wasmFile, to: path.resolve(__dirname, "public"), force: true },
@@ -92,6 +86,11 @@ const productionConfig = {
     filename: "[name].[contenthash].bundle.js",
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      template: "src/index.html",
+    }),
+    new HtmlWebpackHarddiskPlugin(),
     new CopyPlugin({
       patterns: [
         { from: wasmFile, to: path.resolve(__dirname, "dist"), force: true },
