@@ -18,6 +18,7 @@ const commonConfig = {
   entry: "./src/index.tsx",
   output: {
     publicPath: "/",
+    filename: "[name].[contenthash].bundle.js",
   },
   module: {
     rules: [
@@ -82,6 +83,10 @@ const productionConfig = {
   devtool: "source-map",
   output: {
     publicPath: "/",
+  },
+  optimization: {
+    minimize: true,
+    splitChunks: true,
   },
   plugins: [
     new CopyPlugin({
