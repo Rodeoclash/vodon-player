@@ -13,7 +13,8 @@ type Props = {
 
 const Header = observer(({ bookmark }: Props) => {
   const rootBookmarkPage = bookmark.bookmarkPages[0];
-  const videoNotReady = rootBookmarkPage.video.videoElementsCreated === false;
+  const videoNotReady =
+    rootBookmarkPage.video.localFileHandlePermission === "prompt";
 
   /**
    * Goto the selected time. We don't need to set the active video here because

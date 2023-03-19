@@ -1,8 +1,7 @@
 import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import { TbAlertCircle } from "react-icons/tb";
-import fileHandles from "services/file_handles";
-import { MissingLocalFileHandle } from "services/errors";
+import { activate } from "services/videos";
 
 type Props = {
   video: Video;
@@ -12,27 +11,7 @@ const ReviewVideoRequestPermission = observer(({ video }: Props) => {
   const style = { aspectRatio: `${video.width}/${video.height}` };
 
   const handleClick = async () => {
-    const result = await fileHandles
-      .table("videoFileHandlesLocal")
-      .get({ id: video.id });
-
-    if (result === undefined) {
-      throw new MissingLocalFileHandle(
-        "Tried to restore permission on local file handle but it was not found"
-      );
-    }
-
-    if (
-      (await result.fileHandle.requestPermission({
-        mode: "read",
-      })) === "granted"
-    ) {
-      const readPermission = await result.fileHandle.queryPermission({
-        mode: "read",
-      });
-
-      video.setLocalFileHandlePermission(readPermission);
-    }
+    await activate(video);
   };
 
   return (

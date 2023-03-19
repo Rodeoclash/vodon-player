@@ -1,10 +1,7 @@
 import { frozen } from "mobx-keystone";
-import {
-  store as storeVideo,
-  remove as removeVideo,
-} from "services/videos/assets";
 import { remove as removeVideoFrame } from "services/video_frames/assets";
 import fileHandles from "services/file_handles";
+import { MissingLocalFileHandle } from "services/errors";
 
 import {
   readMediaDataFromFile,
@@ -151,4 +148,35 @@ export const screenshot = (
       resolve(blob);
     }, "image/png");
   });
+};
+
+/**
+ * This function is used to restore the read permissions on a video that has
+ * a file handle in the store but is not currently granted permissions to
+ * be read frm.
+ *
+ * @param video The video to activate read permissions on.
+ */
+export const activate = async (video: Video) => {
+  const result = await fileHandles
+    .table("videoFileHandlesLocal")
+    .get({ id: video.id });
+
+  if (result === undefined) {
+    throw new MissingLocalFileHandle(
+      "Tried to restore permission on local file handle but it was not found"
+    );
+  }
+
+  if (
+    (await result.fileHandle.requestPermission({
+      mode: "read",
+    })) === "granted"
+  ) {
+    const readPermission = await result.fileHandle.queryPermission({
+      mode: "read",
+    });
+
+    video.setLocalFileHandlePermission(readPermission);
+  }
 };

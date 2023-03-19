@@ -164,17 +164,11 @@ const ReviewSession = observer(() => {
 
     return (
       <div ref={fullscreenTargetRef} className="w-full h-full relative">
-        <ReviewVideo video={selectedVideo} hideOverlays={hideOverlays} />
-        {hideOverlays === true && (
-          <div className="absolute bottom-0 left-0 z-10">
-            <button
-              className="bg-red-700 p-1 text-sm"
-              onClick={() => handleEnableOverlays()}
-            >
-              REENABLE OVERLAYS
-            </button>
-          </div>
-        )}
+        <ReviewVideo
+          video={selectedVideo}
+          hideOverlays={hideOverlays}
+          onEnableOverlays={() => handleEnableOverlays()}
+        />
       </div>
     );
   })();
