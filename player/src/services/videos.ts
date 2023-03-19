@@ -1,5 +1,9 @@
 import { frozen } from "mobx-keystone";
-import { store as storeAsset, remove as removeAsset } from "services/assets";
+import {
+  store as storeVideo,
+  remove as removeVideo,
+} from "services/videos/assets";
+import { remove as removeVideoFrame } from "services/video_frames/assets";
 import fileHandles from "services/file_handles";
 
 import {
@@ -72,7 +76,6 @@ export const createLocalVideoInSession = async (
 
   // Allows the video to conform to the storable interface so it can be save
   // into the OPFS if required.
-  video.fileSource = fileHandle;
   video.localFileHandlePermission = await fileHandle.queryPermission();
 
   // Join the video to the session it was being created under
@@ -82,19 +85,7 @@ export const createLocalVideoInSession = async (
 
   // Trigger the asset to be stored and provide feedback via the UI as it is
   // processed
-  /*
-  await storeAsset(video, {
-    onStart: (event) => {
-      video.setCopyToStorageProgress(event.progress);
-    },
-    onProgress: (event) => {
-      video.setCopyToStorageProgress(event.progress);
-    },
-    onComplete: async (event) => {
-      video.setCopyToStorageProgress(event.progress);
-    },
-  });
-  */
+  // await storeVideo(video, fileHandle);
 
   return video;
 };
@@ -112,7 +103,7 @@ export const remove = async (video: Video) => {
   await Promise.all(results);
 
   if (video.videoSyncFrame !== null) {
-    await removeAsset(video.videoSyncFrame);
+    await removeVideoFrame(video.videoSyncFrame);
   }
 
   // Reenable this one videos are stored in the OPFS again

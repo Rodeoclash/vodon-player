@@ -70,14 +70,14 @@ const handleGotoTime = (originVideo: Video, newTime: number) => {
 };
 
 export const bindBus = () => {
-  consola.log(`Binding bus listeners`);
+  consola.info(`Binding bus listeners`);
   bus.on(`video.play`, handlePlay);
   bus.on(`video.pause`, handlePause);
   bus.on(`video.gotoTime`, handleGotoTime);
 };
 
 export const unbindBus = () => {
-  consola.log(`Unbinding bus listeners`);
+  consola.info(`Unbinding bus listeners`);
   bus.off(`video.play`, handlePlay);
   bus.off(`video.pause`, handlePause);
   bus.off(`video.pause`, handleGotoTime);

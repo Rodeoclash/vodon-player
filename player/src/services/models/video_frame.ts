@@ -11,19 +11,14 @@ import { idProp, model, Model, tProp, types } from "mobx-keystone";
 
 import { computed } from "mobx";
 
-import type { Storable } from "./types";
-
 @model("VodonPlayer/VideoFrame")
-export default class VideoFrame
-  extends Model({
-    id: idProp,
-    createdAt: tProp(types.number, Date.now()),
-    url: tProp(types.maybeNull(types.string)).withSetter(),
-  })
-  implements Storable
-{
-  fileSource: Blob | null = null;
-  fileHandlesTable = "videoFileHandles";
+export default class VideoFrame extends Model({
+  id: idProp,
+  createdAt: tProp(types.number, Date.now()),
+  url: tProp(types.maybeNull(types.string)).withSetter(),
+}) {
+  //fileSource: Blob | null = null;
+  //fileHandlesTable = "videoFileHandles";
 
   onAttachedToRootStore() {
     // Start observing the video storage file handle...

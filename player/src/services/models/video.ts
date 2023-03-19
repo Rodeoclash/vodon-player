@@ -20,86 +20,73 @@ import fileHandles from "services/file_handles";
 import Session from "services/models/session";
 import VideoFrame from "services/models/video_frame";
 
-import type { Storable } from "./types";
-
 @model("VodonPlayer/Video")
-export default class Video
-  extends Model({
-    id: idProp,
+export default class Video extends Model({
+  id: idProp,
 
-    // (usually) the name of the player in the video. Defaults to the filename.
-    name: tProp(types.string).withSetter(),
+  // (usually) the name of the player in the video. Defaults to the filename.
+  name: tProp(types.string).withSetter(),
 
-    createdAt: tProp(types.number, Date.now()),
+  createdAt: tProp(types.number, Date.now()),
 
-    // The URL of where this video exists
-    url: tProp(types.maybeNull(types.string)),
+  // The URL of where this video exists
+  url: tProp(types.maybeNull(types.string)),
 
-    // How far through the copy process we are
-    copyToStorageProgress: tProp(
-      types.maybeNull(types.number),
-      null
-    ).withSetter(),
+  // How far through the copy process we are
+  copyToStorageProgress: tProp(
+    types.maybeNull(types.number),
+    null
+  ).withSetter(),
 
-    // Have the video element been created for this video? The creation of these
-    // elements is performed when we've attached the video to the root store.
-    // TODO: Could deprecate this and watch the attributes directly
-    videoElementsCreated: tProp(
-      types.maybeNull(types.boolean),
-      null
-    ).withSetter(),
+  // Have the video element been created for this video? The creation of these
+  // elements is performed when we've attached the video to the root store.
+  // TODO: Could deprecate this and watch the attributes directly
+  videoElementsCreated: tProp(
+    types.maybeNull(types.boolean),
+    null
+  ).withSetter(),
 
-    // Mime type of the original video file
-    type: tProp(types.maybeNull(types.string), null).withSetter(),
+  // Mime type of the original video file
+  type: tProp(types.maybeNull(types.string), null).withSetter(),
 
-    // The time offset of this video to bring it into alignment with the others
-    // in the session.
-    offset: tProp(types.number, 0).withSetter(),
+  // The time offset of this video to bring it into alignment with the others
+  // in the session.
+  offset: tProp(types.number, 0).withSetter(),
 
-    // The current time of the review video
-    currentTime: tProp(types.number, 0).withSetter(),
+  // The current time of the review video
+  currentTime: tProp(types.number, 0).withSetter(),
 
-    // Data about the video returned from mediainfo.js, this is reached into
-    // to collect data about the video file itself (framerate, height etc)
-    videoData: tProp(types.frozen(types.unchecked<any>())),
+  // Data about the video returned from mediainfo.js, this is reached into
+  // to collect data about the video file itself (framerate, height etc)
+  videoData: tProp(types.frozen(types.unchecked<any>())),
 
-    // Is the setup video currently being hovered over and showing its controls?
-    // we track this here because we want to show the controls as active after
-    // being added
-    setupVideoHovered: tProp(types.boolean, false).withSetter(),
+  // Is the setup video currently being hovered over and showing its controls?
+  // we track this here because we want to show the controls as active after
+  // being added
+  setupVideoHovered: tProp(types.boolean, false).withSetter(),
 
-    // Is the setup video currently playing?
-    setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
+  // Is the setup video currently playing?
+  setupVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
-    // Is the setup video currently seeking?
-    setupVideoSeeking: tProp(types.maybeNull(types.boolean), null).withSetter(),
+  // Is the setup video currently seeking?
+  setupVideoSeeking: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
-    // Is the review video currently playing?
-    reviewVideoPlaying: tProp(
-      types.maybeNull(types.boolean),
-      null
-    ).withSetter(),
+  // Is the review video currently playing?
+  reviewVideoPlaying: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
-    // Is the review video currently seeking?
-    reviewVideoSeeking: tProp(
-      types.maybeNull(types.boolean),
-      null
-    ).withSetter(),
+  // Is the review video currently seeking?
+  reviewVideoSeeking: tProp(types.maybeNull(types.boolean), null).withSetter(),
 
-    // Volume of the video
-    volume: tProp(types.number, 0.5).withSetter(),
+  // Volume of the video
+  volume: tProp(types.number, 0.5).withSetter(),
 
-    // The current frame used to sync the video
-    videoSyncFrame: tProp(
-      types.maybeNull(types.model(VideoFrame))
-    ).withSetter(),
-  })
-  implements Storable
-{
+  // The current frame used to sync the video
+  videoSyncFrame: tProp(types.maybeNull(types.model(VideoFrame))).withSetter(),
+}) {
   // Implements the "Storable" contract
   // TODO: How will this work wrt online files and OPFS?
-  fileSource: FileSystemFileHandle | null = null;
-  fileHandlesTable = "videoFileHandles";
+  // fileSource: FileSystemFileHandle | null = null;
+  // fileHandlesTable = "videoFileHandles";
 
   // Video elements used to display video in the UI
   setupVideoEl: HTMLVideoElement | null = null;
