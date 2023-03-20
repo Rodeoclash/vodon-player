@@ -3,7 +3,8 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 
 import ReviewVideoPreviewMessage from "components/videos/ReviewVideoPreviewMessage";
-import ReviewVideoRequestPermission from "components/videos/ReviewVideoRequestPermission";
+import RequestPermission from "components/videos/RequestPermission";
+import ReplaceVideo from "components/videos/ReplaceVideo";
 
 import { MessageKind } from "components/videos/ReviewVideoPreviewMessage";
 
@@ -53,7 +54,11 @@ const ReviewVideoPreview = observer(({ video }: Props) => {
   // clickable component which can be used to rerequest permission to access
   // the video again
   if (video.localFileHandlePermission === "prompt") {
-    return <ReviewVideoRequestPermission video={video} />;
+    return <RequestPermission video={video} />;
+  }
+
+  if (video.fileMissing === true) {
+    return <ReplaceVideo video={video} />;
   }
 
   // We can't display the video in two places, so set a message instead here

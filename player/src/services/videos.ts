@@ -2,6 +2,8 @@ import { frozen } from "mobx-keystone";
 import { remove as removeVideoFrame } from "services/video_frames/assets";
 import fileHandles from "services/file_handles";
 import { MissingLocalFileHandle } from "services/errors";
+import { buildElement as buildSetupElement } from "services/videos/setup_videos";
+import { buildElement as buildReviewElement } from "services/videos/review_videos";
 
 import {
   readMediaDataFromFile,
@@ -18,6 +20,18 @@ import { ResultObject } from "mediainfo.js/dist/types";
 // Browser video is inaccurate on seeking, we accomodate an inaccuracy of the
 // following amount when dealing with seeking.
 export const VIDEO_FUDGE_FACTOR = 0.1;
+
+export const pickerOpts = {
+  types: [
+    {
+      description: "Videos",
+      accept: {
+        "video/*": [".mp4", ".webm", ".mkv"],
+      },
+    },
+  ],
+  excludeAcceptAllOption: true,
+};
 
 export const createRemoteVideoInSession = async (
   session: Session,
@@ -54,7 +68,6 @@ export const createLocalVideoInSession = async (
   fileHandle: FileSystemFileHandle
 ): Promise<Video> => {
   const file = await fileHandle.getFile();
-
   const videoTrack = extractVideoTrack(await readMediaDataFromFile(file));
 
   const video = new Video({
@@ -71,18 +84,11 @@ export const createLocalVideoInSession = async (
     fileHandle: fileHandle,
   });
 
-  // Allows the video to conform to the storable interface so it can be save
-  // into the OPFS if required.
-  video.localFileHandlePermission = await fileHandle.queryPermission();
+  // Set the permission of the video (this will be `granted`)
+  video.setLocalFileHandlePermission(await fileHandle.queryPermission());
 
   // Join the video to the session it was being created under
   session.addVideo(video);
-
-  // store a reference to the local file handle as well
-
-  // Trigger the asset to be stored and provide feedback via the UI as it is
-  // processed
-  // await storeVideo(video, fileHandle);
 
   return video;
 };
@@ -153,7 +159,7 @@ export const screenshot = (
 /**
  * This function is used to restore the read permissions on a video that has
  * a file handle in the store but is not currently granted permissions to
- * be read frm.
+ * be read from.
  *
  * @param video The video to activate read permissions on.
  */
@@ -178,5 +184,77 @@ export const activate = async (video: Video) => {
     });
 
     video.setLocalFileHandlePermission(readPermission);
+  }
+};
+
+/**
+ * Replaces a videos file handle, this gets called when a user has moved the
+ * file and the player cannot find it.
+ *
+ * @param video The video to that will host the replacement file handle.
+ */
+export const replace = async (
+  video: Video,
+  fileHandle: FileSystemFileHandle
+) => {
+  const file = await fileHandle.getFile();
+  const videoTrack = extractVideoTrack(await readMediaDataFromFile(file));
+
+  // Update the video attributes from the newly set video
+  video.setName(file.name);
+  video.setType(file.type);
+  video.setUrl(null);
+  video.setVideoData(frozen(videoTrack));
+  video.setVideoSyncFrame(null);
+
+  // Start tracking the new file handle in local storage
+  await fileHandles.table("videoFileHandlesLocal").put({
+    id: video.id,
+    fileHandle: fileHandle,
+  });
+
+  await buildVideoElements(video);
+
+  // Now that the file has been replaced, set that it is no longer missing
+  video.setFileMissing(false);
+
+  // Set the permission of the video (this will be `granted`)
+  video.setLocalFileHandlePermission(await fileHandle.queryPermission());
+
+  return video;
+};
+
+/**
+ * Builds the actual video dom elements onto the video model. Requires file
+ * handles to be present in the local file_handle database to work.
+ *
+ * @param video The video to get the dom elements built onto.
+ */
+export const buildVideoElements = async (video: Video) => {
+  const result = await fileHandles
+    .table("videoFileHandlesLocal")
+    .get({ id: video.id });
+
+  if (result === undefined) {
+    throw new InvalidVideo(
+      "Video file handle should have been in local store but it wasn't"
+    );
+  }
+
+  try {
+    const file = await result.fileHandle.getFile();
+    const url = URL.createObjectURL(file);
+
+    // Finally, build the elements with this local URL
+    video.setupVideoEl = await buildSetupElement(video, url);
+    video.reviewVideoEl = await buildReviewElement(video, url);
+
+    // TODO: Should change this to observers on the dom elemenets themselves.
+    video.setVideoElementsCreated(true);
+    // If the file has been removed, renamed etc
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "NotFoundError") {
+      video.setFileMissing(true);
+    }
   }
 };

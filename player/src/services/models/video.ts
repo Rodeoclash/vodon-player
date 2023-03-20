@@ -13,8 +13,7 @@ import {
 import { liveQuery } from "dexie";
 import { safeFileName } from "services/opfs";
 
-import { buildElement as buildSetupElement } from "services/videos/setup_videos";
-import { buildElement as buildReviewElement } from "services/videos/review_videos";
+import { buildVideoElements } from "services/videos";
 import fileHandles from "services/file_handles";
 
 import Session from "services/models/session";
@@ -30,7 +29,7 @@ export default class Video extends Model({
   createdAt: tProp(types.number, Date.now()),
 
   // The URL of where this video exists
-  url: tProp(types.maybeNull(types.string)),
+  url: tProp(types.maybeNull(types.string)).withSetter(),
 
   // How far through the copy process we are
   copyToStorageProgress: tProp(
@@ -58,11 +57,13 @@ export default class Video extends Model({
 
   // Data about the video returned from mediainfo.js, this is reached into
   // to collect data about the video file itself (framerate, height etc)
-  videoData: tProp(types.frozen(types.unchecked<any>())),
+  videoData: tProp(types.frozen(types.unchecked<any>())).withSetter(),
 
   // Is the setup video currently being hovered over and showing its controls?
   // we track this here because we want to show the controls as active after
-  // being added
+  // being added.
+  // NOTE: We don't set this hover by default anymore, maybe this can be
+  // removed and the state management returned to the local component?
   setupVideoHovered: tProp(types.boolean, false).withSetter(),
 
   // Is the setup video currently playing?
@@ -82,6 +83,10 @@ export default class Video extends Model({
 
   // The current frame used to sync the video
   videoSyncFrame: tProp(types.maybeNull(types.model(VideoFrame))).withSetter(),
+
+  // Has the local file gone missing? Used to show special UI to replace the
+  // video file.
+  fileMissing: tProp(types.boolean, false).withSetter(),
 }) {
   // Implements the "Storable" contract
   // TODO: How will this work wrt online files and OPFS?
@@ -194,26 +199,7 @@ export default class Video extends Model({
           return;
         }
 
-        // Permissions were granted on the video, find in the local store
-        const result = await fileHandles
-          .table("videoFileHandlesLocal")
-          .get({ id: this.id });
-
-        if (result === undefined) {
-          throw new InvalidVideo(
-            "Video file handle should have been in local store but it wasn't"
-          );
-        }
-
-        // Construct a URL that we can give to element (this will be to a
-        // local file on the computer)
-        const file = await result.fileHandle.getFile();
-        const url = URL.createObjectURL(file);
-
-        // Finally, build the elements with this local URL
-        this.setupVideoEl = await buildSetupElement(this, url);
-        this.reviewVideoEl = await buildReviewElement(this, url);
-        this.setVideoElementsCreated(true);
+        buildVideoElements(this);
       },
       {
         fireImmediately: true,

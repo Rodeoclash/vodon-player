@@ -3,7 +3,8 @@ import { observer } from "mobx-react-lite";
 import Video from "services/models/video";
 import useVideoControls from "services/hooks/useVideoControls";
 
-import ReviewVideoRequestPermission from "components/videos/ReviewVideoRequestPermission";
+import RequestPermission from "components/videos/RequestPermission";
+import ReplaceVideo from "components/videos/ReplaceVideo";
 import Toolbar from "components/videos/Toolbar";
 import VideoNavigationControls from "components/ui/VideoNavigationControls";
 import VideoNavigationKeyboardShortcuts from "components/ui/VideoNavigationKeyboardShortcuts";
@@ -41,25 +42,57 @@ const SetupListItem = observer(({ video }: Props) => {
     containerEl.current.appendChild(video.setupVideoEl);
   }, [video.videoElementsCreated]);
 
-  // If we require the user to bring the video online
-  if (video.localFileHandlePermission === "prompt") {
-    return <ReviewVideoRequestPermission video={video} />;
-  }
+  const renderedBody = (() => {
+    // If we require the user to bring the video online
+    if (video.localFileHandlePermission === "prompt") {
+      return <RequestPermission video={video} />;
+    }
 
-  // This video isn't ready for some reason
-  if (
-    video.videoElementsCreated === false ||
-    video.videoElementsCreated === null
-  ) {
+    // If the video has gone missing for some reason
+    if (video.fileMissing === true) {
+      return <ReplaceVideo video={video} />;
+    }
+
     return (
-      <div>
-        <p>Processing</p>
-        {video.copyToStorageProgress && (
-          <progress max={1} value={video.copyToStorageProgress} />
-        )}
-      </div>
+      <>
+        <div ref={containerEl} />
+        {video.setupVideoEl !== null &&
+          video.duration !== null &&
+          video.setupVideoHovered === true &&
+          video.frameLength !== null && (
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
+              <VideoNavigationControls
+                currentTime={video.offset}
+                duration={video.duration}
+                frameLength={video.frameLength}
+                onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
+                onGotoTime={(time) => gotoTime(time)}
+                onPause={() => pause()}
+                onPlay={() => play()}
+                playing={video.setupVideoPlaying === true}
+                seeking={video.setupVideoSeeking === true}
+                videoEl={video.setupVideoEl}
+                volume={video.volume}
+              />
+            </div>
+          )}
+        {video.setupVideoEl !== null &&
+          video.duration !== null &&
+          video.frameLength !== null && (
+            <VideoNavigationKeyboardShortcuts
+              frameLength={video.frameLength}
+              keyboardShortcutsEnabled={video.setupVideoHovered === true}
+              onGotoTime={(time) => gotoTime(time)}
+              onPause={() => pause()}
+              onPlay={() => play()}
+              playing={video.setupVideoPlaying === true}
+              seeking={video.setupVideoSeeking === true}
+              videoEl={video.setupVideoEl}
+            />
+          )}
+      </>
     );
-  }
+  })();
 
   return (
     <div
@@ -67,46 +100,14 @@ const SetupListItem = observer(({ video }: Props) => {
       onMouseEnter={() => handleMouseEnter()}
       onMouseLeave={() => handleMouseLeave()}
     >
-      {video.setupVideoHovered === true && (
-        <div className="absolute top-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
+      {(video.setupVideoHovered === true ||
+        video.fileMissing === true ||
+        video.localFileHandlePermission === "prompt") && (
+        <div className="absolute top-0 left-0 right-0 z-40 bg-zinc-900/80 p-4">
           <Toolbar video={video} />
         </div>
       )}
-      <div ref={containerEl} />
-      {video.setupVideoEl !== null &&
-        video.duration !== null &&
-        video.setupVideoHovered === true &&
-        video.frameLength !== null && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 bg-zinc-900/80 p-4">
-            <VideoNavigationControls
-              currentTime={video.offset}
-              duration={video.duration}
-              frameLength={video.frameLength}
-              onChangeVolume={(newVolume) => handleChangeVolume(newVolume)}
-              onGotoTime={(time) => gotoTime(time)}
-              onPause={() => pause()}
-              onPlay={() => play()}
-              playing={video.setupVideoPlaying === true}
-              seeking={video.setupVideoSeeking === true}
-              videoEl={video.setupVideoEl}
-              volume={video.volume}
-            />
-          </div>
-        )}
-      {video.setupVideoEl !== null &&
-        video.duration !== null &&
-        video.frameLength !== null && (
-          <VideoNavigationKeyboardShortcuts
-            frameLength={video.frameLength}
-            keyboardShortcutsEnabled={video.setupVideoHovered === true}
-            onGotoTime={(time) => gotoTime(time)}
-            onPause={() => pause()}
-            onPlay={() => play()}
-            playing={video.setupVideoPlaying === true}
-            seeking={video.setupVideoSeeking === true}
-            videoEl={video.setupVideoEl}
-          />
-        )}
+      {renderedBody}
     </div>
   );
 });

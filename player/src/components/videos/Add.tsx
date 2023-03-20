@@ -9,7 +9,7 @@ type Props = {
 
 const Add = observer(({ session }: Props) => {
   return (
-    <div className="aspect-video flex flex-col items-center justify-center bg-stone-800 cursor-pointer">
+    <div className="aspect-video flex flex-col items-center justify-center bg-zinc-800 cursor-pointer">
       {session.hasVideos === false && (
         <p className="paragraph mb-4">
           You currently have no videos in your review session
