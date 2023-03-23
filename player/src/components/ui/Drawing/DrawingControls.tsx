@@ -9,6 +9,8 @@ import {
   TbLine,
   TbRectangle,
   TbCircle,
+  TbTrash,
+  TbCursorText,
 } from "react-icons/tb";
 
 import Tooltip from "components/ui/Tooltip";
@@ -59,58 +61,80 @@ const DrawingControls = ({ app }: Props) => {
     selectTool(TDShapeType.Ellipse);
   };
 
-  const baseClasses = {
+  const handlePickText = () => {
+    consola.info(`Using tool: ${TDShapeType.Text}`);
+    selectTool(TDShapeType.Text);
+  };
+
+  const handleClickTrash = () => {
+    if (window.confirm("This will remove your drawing") === false) {
+      return;
+    }
+
+    consola.info(`Trashing drawing`);
+
+    app.deleteAll();
+  };
+
+  const base = {
     "block p-2": true,
   };
 
+  const baseClasses = classNames(base);
+
   const selectClasses = classNames({
-    ...baseClasses,
+    ...base,
     "bg-zinc-500": activeTool === "select",
   });
 
   const pencilClasses = classNames({
-    ...baseClasses,
+    ...base,
     "bg-zinc-500": activeTool === TDShapeType.Draw,
   });
 
   const arrowClasses = classNames({
-    ...baseClasses,
+    ...base,
     "bg-zinc-500": activeTool === TDShapeType.Arrow,
   });
 
   const lineClasses = classNames({
-    ...baseClasses,
+    ...base,
     "bg-zinc-500": activeTool === TDShapeType.Line,
   });
 
   const rectangleClasses = classNames({
-    ...baseClasses,
+    ...base,
     "bg-zinc-500": activeTool === TDShapeType.Rectangle,
   });
 
   const ellipseClasses = classNames({
-    ...baseClasses,
+    ...base,
     "bg-zinc-500": activeTool === TDShapeType.Ellipse,
+  });
+
+  const textClasses = classNames({
+    ...base,
+    "bg-zinc-500": activeTool === TDShapeType.Text,
   });
 
   const colourSwatchSelectClasses = classNames({
     "bg-zinc-600": true,
-    ...baseClasses,
+    ...base,
   });
 
   const dashSelectClasses = classNames({
     "bg-zinc-600": true,
-    ...baseClasses,
+    ...base,
   });
 
   const sizeSelectClasses = classNames({
     "bg-zinc-600": true,
-    ...baseClasses,
+    ...base,
   });
 
   return (
     <div className="flex flex-col gap-2">
-      <Tooltip content="Select tool (t)">
+      <Tooltip content="Select tool">
         <button className={selectClasses} onClick={() => handlePickSelect()}>
           <TbClick />
         </button>
@@ -143,6 +167,11 @@ const DrawingControls = ({ app }: Props) => {
           <TbCircle />
         </button>
       </Tooltip>
+      <Tooltip content="Text tool (t)">
+        <button className={textClasses} onClick={() => handlePickText()}>
+          <TbCursorText />
+        </button>
+      </Tooltip>
       <hr />
       <div className={colourSwatchSelectClasses}>
         <DrawingSelectColour app={app} />
@@ -153,6 +182,12 @@ const DrawingControls = ({ app }: Props) => {
       <div className={sizeSelectClasses}>
         <DrawingSelectSize app={app} />
       </div>
+      <hr />
+      <Tooltip content="Trash drawing (x)">
+        <button className={baseClasses} onClick={() => handleClickTrash()}>
+          <TbTrash />
+        </button>
+      </Tooltip>
     </div>
   );
 };

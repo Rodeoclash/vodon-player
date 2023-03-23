@@ -12,9 +12,9 @@ const DrawingControlsKeyboardShortcuts = ({ app }: Props) => {
     app.toggleToolLock();
   };
 
-  const handlePickSelect = () => {
-    consola.info("Using tool: select");
-    selectTool("select");
+  const handlePickText = () => {
+    consola.info("Using tool: text");
+    selectTool(TDShapeType.Text);
   };
 
   const handlePickDraw = () => {
@@ -42,10 +42,20 @@ const DrawingControlsKeyboardShortcuts = ({ app }: Props) => {
     selectTool(TDShapeType.Ellipse);
   };
 
+  const handleTrashDrawing = () => {
+    if (window.confirm("This will remove your drawing") === false) {
+      return;
+    }
+
+    consola.info(`Trashing drawing`);
+
+    app.deleteAll();
+  };
+
   useHotkeys(
     "t",
     () => {
-      handlePickSelect();
+      handlePickText();
     },
     [app]
   );
@@ -86,6 +96,14 @@ const DrawingControlsKeyboardShortcuts = ({ app }: Props) => {
     "c",
     () => {
       handlePickEllipse();
+    },
+    [app]
+  );
+
+  useHotkeys(
+    "x",
+    () => {
+      handleTrashDrawing();
     },
     [app]
   );

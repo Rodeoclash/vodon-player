@@ -58,7 +58,7 @@ const Tooltip = ({
           style={styles.popper}
           {...attributes.popper}
         >
-          <div className="p-2 bg-stone-800 text-sm border border-stone-700 w-72 text-center">
+          <div className="p-2 bg-stone-800 text-sm border border-stone-700 text-center whitespace-nowrap">
             {content}
           </div>
           <div ref={setArrowElement} style={styles.arrow} />

@@ -164,7 +164,7 @@ export default function Session() {
               </tr>
               <tr>
                 <td className="td font-mono">t</td>
-                <td className="th">Shape select tool</td>
+                <td className="th">Text tool</td>
               </tr>
               <tr>
                 <td className="td font-mono">p</td>
@@ -185,6 +185,10 @@ export default function Session() {
               <tr>
                 <td className="td font-mono">c</td>
                 <td className="th">Circle tool</td>
+              </tr>
+              <tr>
+                <td className="td font-mono">x</td>
+                <td className="th">Clear drawings</td>
               </tr>
             </tbody>
           </table>
