@@ -103,23 +103,14 @@ const ReviewSession = observer(() => {
    */
   React.useLayoutEffect(() => {
     const handleResize = () => {
-      const newSidePanelWidth = (() => {
-        const currentWidth = window.screen.width;
+      const minimumWidth = 250;
+      const currentWidth = window.screen.width;
+      const newSidePanelWidth =
+        (112.5 + 0.125 * currentWidth + 0 * currentWidth) ^ 2;
 
-        if (currentWidth > 2300) {
-          return 400;
-        }
-
-        if (currentWidth > 1900) {
-          return 350;
-        }
-
-        if (currentWidth > 1500) {
-          return 300;
-        }
-
-        return 250;
-      })();
+      if (newSidePanelWidth < minimumWidth) {
+        return setSidePanelWidth(minimumWidth);
+      }
 
       setSidePanelWidth(newSidePanelWidth);
     };
