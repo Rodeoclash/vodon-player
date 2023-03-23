@@ -22,12 +22,10 @@ import Tooltip from "components/ui/Tooltip";
 import type { SessionLoaderData } from "services/routes";
 import React from "react";
 
-const sidePanelWidth = 384;
-
 const ReviewSession = observer(() => {
   const fullscreenTargetRef = React.useRef<HTMLDivElement>(null);
-
   const [hideOverlays, setHideOverlays] = React.useState<boolean>(false);
+  const [sidePanelWidth, setSidePanelWidth] = React.useState<number>(384);
   const [availableVideoWidth, setAvailableVideoWidth] = React.useState<
     number | null
   >(null);
@@ -98,6 +96,47 @@ const ReviewSession = observer(() => {
     bus.emit("video.gotoTime", selectedVideo, selectedVideo.currentTime);
   }, []);
 
+  /**
+   * Uses the width of the screen to determine the size of the sidebar panels
+   * (altering this will flow into the calculation below which sets the
+   * available area of the video)
+   */
+  React.useLayoutEffect(() => {
+    const handleResize = () => {
+      const newSidePanelWidth = (() => {
+        const currentWidth = window.screen.width;
+
+        if (currentWidth > 2300) {
+          return 400;
+        }
+
+        if (currentWidth > 1900) {
+          return 350;
+        }
+
+        if (currentWidth > 1500) {
+          return 300;
+        }
+
+        return 250;
+      })();
+
+      setSidePanelWidth(newSidePanelWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  /**
+   * Calculates the available width of the video area based on the side panels
+   * being open and the width of the screen.
+   */
   React.useLayoutEffect(() => {
     const handleResize = () => {
       const reviewVideoPanelWidth = (() => {
@@ -128,7 +167,7 @@ const ReviewSession = observer(() => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [selectedVideo]);
+  }, [selectedVideo, sidePanelWidth]);
 
   const renderedCenterPanel = (() => {
     if (session.videos.length === 0) {
