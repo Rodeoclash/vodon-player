@@ -179,7 +179,16 @@ const handleRemoveFile = async ({ data }) => {
     meta: data.meta,
   });
 
-  await destinationFolders[destinationFolders.length - 1].removeEntry(fileName);
+  try {
+    await destinationFolders[destinationFolders.length - 1].removeEntry(
+      fileName
+    );
+  } catch (error) {
+    // Ignore errors about removing files that don't exist
+    if (error.name !== "NotFoundError") {
+      throw error;
+    }
+  }
 
   postMessage({
     kind: "REMOVE_FILE_COMPLETE",
