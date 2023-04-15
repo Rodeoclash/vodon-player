@@ -1,2 +1,3 @@
 node_modules
 player/dist
+player/src/vendor
