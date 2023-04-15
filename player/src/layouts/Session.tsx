@@ -66,12 +66,14 @@ export default function Session() {
                 Setup
               </NavLink>
 
+              {/*
               <NavLink className="navlink" to="print">
                 Print{" "}
                 <span className="text-sm px-3 py-1 bg-zinc-700 rounded-full ml-2">
                   alpha
                 </span>
               </NavLink>
+              */}
             </div>
 
             <div className="flex items-center flex-shrink gap-4 pr-4">
