@@ -1,2 +1,2 @@
-export * from "./StickyTool";
+export * from './StickyTool';
 //# sourceMappingURL=index.d.ts.map

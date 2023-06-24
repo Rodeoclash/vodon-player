@@ -1,2 +1,2 @@
-export * from "./IconButton";
+export * from './IconButton';
 //# sourceMappingURL=index.d.ts.map

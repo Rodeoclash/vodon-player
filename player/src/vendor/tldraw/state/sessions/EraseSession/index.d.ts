@@ -1,2 +1,2 @@
-export * from "./EraseSession";
+export * from './EraseSession';
 //# sourceMappingURL=index.d.ts.map

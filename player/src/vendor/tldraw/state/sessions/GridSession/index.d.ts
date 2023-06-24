@@ -1,2 +1,2 @@
-export * from "./GridSession";
+export * from './GridSession';
 //# sourceMappingURL=index.d.ts.map

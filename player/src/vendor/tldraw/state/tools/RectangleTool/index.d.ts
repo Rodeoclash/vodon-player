@@ -1,2 +1,2 @@
-export * from "./RectangleTool";
+export * from './RectangleTool';
 //# sourceMappingURL=index.d.ts.map

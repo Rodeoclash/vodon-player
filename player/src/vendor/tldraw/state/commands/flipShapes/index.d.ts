@@ -1,2 +1,2 @@
-export * from "./flipShapes";
+export * from './flipShapes';
 //# sourceMappingURL=index.d.ts.map

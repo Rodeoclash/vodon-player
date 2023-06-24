@@ -1,2 +1,2 @@
-export * from "./TextTool";
+export * from './TextTool';
 //# sourceMappingURL=index.d.ts.map

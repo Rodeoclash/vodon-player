@@ -1,2 +1,2 @@
-export * from "./EllipseUtil";
+export * from './EllipseUtil';
 //# sourceMappingURL=index.d.ts.map

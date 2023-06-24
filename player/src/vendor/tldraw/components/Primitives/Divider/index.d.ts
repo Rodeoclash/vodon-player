@@ -1,2 +1,2 @@
-export * from "./Divider";
+export * from './Divider';
 //# sourceMappingURL=index.d.ts.map

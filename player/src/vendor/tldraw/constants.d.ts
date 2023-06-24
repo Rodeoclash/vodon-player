@@ -1,4 +1,4 @@
-import type { Easing } from "./types";
+import type { Easing } from './types';
 export declare const LETTER_SPACING = "-0.03em";
 export declare const LINE_HEIGHT = 1;
 export declare const GRID_SIZE = 8;

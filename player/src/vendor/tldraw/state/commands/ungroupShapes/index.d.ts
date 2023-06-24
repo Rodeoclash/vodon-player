@@ -1,2 +1,2 @@
-export * from "./ungroupShapes";
+export * from './ungroupShapes';
 //# sourceMappingURL=index.d.ts.map

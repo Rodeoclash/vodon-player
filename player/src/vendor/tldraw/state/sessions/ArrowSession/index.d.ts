@@ -1,2 +1,2 @@
-export * from "./ArrowSession";
+export * from './ArrowSession';
 //# sourceMappingURL=index.d.ts.map

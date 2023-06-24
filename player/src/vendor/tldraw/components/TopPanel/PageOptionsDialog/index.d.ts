@@ -1,2 +1,2 @@
-export * from "./PageOptionsDialog";
+export * from './PageOptionsDialog';
 //# sourceMappingURL=index.d.ts.map

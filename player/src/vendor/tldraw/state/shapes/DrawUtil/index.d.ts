@@ -1,2 +1,2 @@
-export * from "./DrawUtil";
+export * from './DrawUtil';
 //# sourceMappingURL=index.d.ts.map

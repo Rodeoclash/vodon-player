@@ -1,2 +1,2 @@
-export * from "./movePage";
+export * from './movePage';
 //# sourceMappingURL=index.d.ts.map

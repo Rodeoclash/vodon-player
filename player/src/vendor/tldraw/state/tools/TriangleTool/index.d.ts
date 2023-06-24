@@ -1,2 +1,2 @@
-export * from "./TriangleTool";
+export * from './TriangleTool';
 //# sourceMappingURL=index.d.ts.map

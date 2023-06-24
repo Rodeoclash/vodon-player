@@ -1,2 +1,2 @@
-export * from "./rotateShapes";
+export * from './rotateShapes';
 //# sourceMappingURL=index.d.ts.map

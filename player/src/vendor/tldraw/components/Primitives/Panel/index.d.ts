@@ -1,2 +1,2 @@
-export * from "./Panel";
+export * from './Panel';
 //# sourceMappingURL=index.d.ts.map

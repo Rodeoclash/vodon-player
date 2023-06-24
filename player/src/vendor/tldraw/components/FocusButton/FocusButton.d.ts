@@ -1,8 +1,6 @@
 interface FocusButtonProps {
-  onSelect: () => void;
+    onSelect: () => void;
 }
-export declare function FocusButton({
-  onSelect,
-}: FocusButtonProps): JSX.Element;
+export declare function FocusButton({ onSelect }: FocusButtonProps): JSX.Element;
 export {};
 //# sourceMappingURL=FocusButton.d.ts.map

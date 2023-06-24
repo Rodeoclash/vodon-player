@@ -1,6 +1,6 @@
-import * as React from "react";
+import * as React from 'react';
 interface MenuProps {
-  readOnly: boolean;
+    readOnly: boolean;
 }
 export declare const Menu: React.NamedExoticComponent<MenuProps>;
 export {};

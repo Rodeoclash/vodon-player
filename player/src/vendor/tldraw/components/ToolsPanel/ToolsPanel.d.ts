@@ -1,6 +1,6 @@
-import * as React from "react";
+import * as React from 'react';
 interface ToolsPanelProps {
-  onBlur?: React.FocusEventHandler;
+    onBlur?: React.FocusEventHandler;
 }
 export declare const ToolsPanel: React.NamedExoticComponent<ToolsPanelProps>;
 export {};

@@ -1,2 +1,2 @@
-export * from "./stitches.config";
+export * from './stitches.config';
 //# sourceMappingURL=index.d.ts.map

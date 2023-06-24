@@ -1,2 +1,2 @@
-export * from "./RowButton";
+export * from './RowButton';
 //# sourceMappingURL=index.d.ts.map

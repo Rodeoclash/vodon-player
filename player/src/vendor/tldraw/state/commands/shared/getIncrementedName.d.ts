@@ -4,8 +4,5 @@
  * @param name The name to increment.
  * @param others The array of existing names.
  */
-export declare function getIncrementedName(
-  name: string,
-  others: string[]
-): string;
+export declare function getIncrementedName(name: string, others: string[]): string;
 //# sourceMappingURL=getIncrementedName.d.ts.map
