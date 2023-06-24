@@ -1,2 +1,2 @@
-export * from "./MultiplayerMenu";
+export * from './MultiplayerMenu';
 //# sourceMappingURL=index.d.ts.map

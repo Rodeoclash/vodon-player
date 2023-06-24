@@ -1,2 +1,2 @@
-export * from "./PreferencesMenu";
+export * from './PreferencesMenu';
 //# sourceMappingURL=index.d.ts.map

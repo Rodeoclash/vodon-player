@@ -1,2 +1,2 @@
-export * from "./LineTool";
+export * from './LineTool';
 //# sourceMappingURL=index.d.ts.map

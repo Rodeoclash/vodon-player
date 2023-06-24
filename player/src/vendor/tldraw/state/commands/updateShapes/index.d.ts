@@ -1,2 +1,2 @@
-export * from "./updateShapes";
+export * from './updateShapes';
 //# sourceMappingURL=index.d.ts.map

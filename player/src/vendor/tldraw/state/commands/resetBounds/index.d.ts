@@ -1,2 +1,2 @@
-export * from "./resetBounds";
+export * from './resetBounds';
 //# sourceMappingURL=index.d.ts.map

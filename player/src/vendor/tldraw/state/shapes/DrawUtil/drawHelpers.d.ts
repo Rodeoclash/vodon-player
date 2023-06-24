@@ -1,11 +1,8 @@
-import { StrokeOptions, StrokePoint } from "perfect-freehand";
-import type { DrawShape } from "../../../types";
+import { StrokeOptions, StrokePoint } from 'perfect-freehand';
+import type { DrawShape } from '../../../types';
 export declare function getFreehandOptions(shape: DrawShape): StrokeOptions;
 export declare function getFillPath(shape: DrawShape): string;
-export declare function getDrawStrokePoints(
-  shape: DrawShape,
-  options: StrokeOptions
-): StrokePoint[];
+export declare function getDrawStrokePoints(shape: DrawShape, options: StrokeOptions): StrokePoint[];
 /**
  * Get path data for a stroke with the DashStyle.Draw dash style.
  */

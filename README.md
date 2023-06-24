@@ -38,3 +38,7 @@ While the Vodon Player is open source, it is intended to be backed by a closed s
 4. Skip forward / back n number of seconds using w, s
 5. Settings page to configure things like skip distance
 6. Roster / players assignable to videos
+
+## Vendored TLDraw
+
+Some modifications have been made to TLDraw and the built version copied into the `src/vendor` folder. Make changes in the custom TLDraw folder, then build and copy the dist folder in.

@@ -1,2 +1,2 @@
-export * from "./distributeShapes";
+export * from './distributeShapes';
 //# sourceMappingURL=index.d.ts.map

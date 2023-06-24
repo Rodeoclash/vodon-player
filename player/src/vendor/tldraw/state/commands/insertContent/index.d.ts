@@ -1,2 +1,2 @@
-export * from "./insertContent";
+export * from './insertContent';
 //# sourceMappingURL=index.d.ts.map

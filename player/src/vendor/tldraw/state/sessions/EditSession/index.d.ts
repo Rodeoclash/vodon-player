@@ -1,2 +1,2 @@
-export * from "./EditSession";
+export * from './EditSession';
 //# sourceMappingURL=index.d.ts.map

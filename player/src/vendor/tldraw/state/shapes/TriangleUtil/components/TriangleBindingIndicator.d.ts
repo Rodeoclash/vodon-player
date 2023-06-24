@@ -1,8 +1,6 @@
 interface TriangleBindingIndicatorProps {
-  size: number[];
+    size: number[];
 }
-export declare function TriangleBindingIndicator({
-  size,
-}: TriangleBindingIndicatorProps): JSX.Element;
+export declare function TriangleBindingIndicator({ size }: TriangleBindingIndicatorProps): JSX.Element;
 export {};
 //# sourceMappingURL=TriangleBindingIndicator.d.ts.map

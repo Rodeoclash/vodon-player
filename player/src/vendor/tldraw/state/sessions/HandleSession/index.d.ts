@@ -1,2 +1,2 @@
-export * from "./HandleSession";
+export * from './HandleSession';
 //# sourceMappingURL=index.d.ts.map

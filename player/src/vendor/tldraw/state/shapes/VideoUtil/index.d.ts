@@ -1,2 +1,2 @@
-export * from "./VideoUtil";
+export * from './VideoUtil';
 //# sourceMappingURL=index.d.ts.map

@@ -1,2 +1,2 @@
-export * from "./deleteShapes";
+export * from './deleteShapes';
 //# sourceMappingURL=index.d.ts.map

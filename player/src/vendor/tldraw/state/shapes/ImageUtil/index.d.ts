@@ -1,2 +1,2 @@
-export * from "./ImageUtil";
+export * from './ImageUtil';
 //# sourceMappingURL=index.d.ts.map

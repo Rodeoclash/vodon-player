@@ -1,2 +1,2 @@
-export * from "./translations";
+export * from './translations';
 //# sourceMappingURL=index.d.ts.map

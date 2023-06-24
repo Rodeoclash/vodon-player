@@ -1,2 +1,2 @@
-export * from "./ArrowUtil";
+export * from './ArrowUtil';
 //# sourceMappingURL=index.d.ts.map
