@@ -17,6 +17,11 @@ const DrawingControlsKeyboardShortcuts = ({ app }: Props) => {
     selectTool(TDShapeType.Text);
   };
 
+  const handlePickSticky = () => {
+    consola.info("Using tool: sticky");
+    selectTool(TDShapeType.Sticky);
+  };
+
   const handlePickDraw = () => {
     consola.info("Using tool: draw");
     selectTool(TDShapeType.Draw);
@@ -56,6 +61,14 @@ const DrawingControlsKeyboardShortcuts = ({ app }: Props) => {
     "t",
     () => {
       handlePickText();
+    },
+    [app]
+  );
+
+  useHotkeys(
+    "n",
+    () => {
+      handlePickSticky();
     },
     [app]
   );

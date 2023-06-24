@@ -11,6 +11,7 @@ import {
   TbCircle,
   TbTrash,
   TbCursorText,
+  TbNote,
 } from "react-icons/tb";
 
 import Tooltip from "components/ui/Tooltip";
@@ -66,6 +67,11 @@ const DrawingControls = ({ app }: Props) => {
     selectTool(TDShapeType.Text);
   };
 
+  const handlePickSticky = () => {
+    consola.info(`Using tool: ${TDShapeType.Sticky}`);
+    selectTool(TDShapeType.Sticky);
+  };
+
   const handleClickTrash = () => {
     if (window.confirm("This will remove your drawing") === false) {
       return;
@@ -115,6 +121,11 @@ const DrawingControls = ({ app }: Props) => {
   const textClasses = classNames({
     ...base,
     "bg-zinc-500": activeTool === TDShapeType.Text,
+  });
+
+  const stickyClasses = classNames({
+    ...base,
+    "bg-zinc-500": activeTool === TDShapeType.Sticky,
   });
 
   const colourSwatchSelectClasses = classNames({
@@ -170,6 +181,11 @@ const DrawingControls = ({ app }: Props) => {
       <Tooltip content="Text tool (t)">
         <button className={textClasses} onClick={() => handlePickText()}>
           <TbCursorText />
+        </button>
+      </Tooltip>
+      <Tooltip content="Sticky notes (n)">
+        <button className={stickyClasses} onClick={() => handlePickSticky()}>
+          <TbNote />
         </button>
       </Tooltip>
       <hr />
